@@ -6,6 +6,9 @@ on:
       - 'x86_64/*.pkg.tar.zst'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   reindex:
     runs-on: ubuntu-latest
@@ -21,6 +24,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Configurar Git Safe Directory
+        run: |
+          git config --global --add safe.directory '*'
 
       - name: Importar clave privada GPG
         env:
@@ -66,7 +73,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
           git add x86_64/
           if git diff --staged --quiet; then

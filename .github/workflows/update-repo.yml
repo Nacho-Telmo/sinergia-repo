@@ -1,0 +1,77 @@
+name: Reindexar y Firmar Repositorio Sinergia
+
+on:
+  push:
+    paths:
+      - 'x86_64/*.pkg.tar.zst'
+  workflow_dispatch:
+
+jobs:
+  reindex:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
+    steps:
+      - name: Instalar dependencias necesarias
+        run: |
+          pacman -Sy --noconfirm git gnupg pacman
+
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Importar clave privada GPG
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import || echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
+          
+          mkdir -p ~/.gnupg
+          echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
+          echo "pinentry-mode loopback" > ~/.gnupg/gpg.conf
+          gpg-connect-agent reloadagent /bye
+
+      - name: Firmar paquetes no firmados y regenerar la base de datos
+        env:
+          KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          cd x86_64/
+
+          # Firmar individualmente los paquetes sin .sig
+          for pkg in *.pkg.tar.zst; do
+            if [ ! -f "${pkg}.sig" ]; then
+              echo "Firmando $pkg..."
+              if [ -n "$GPG_PASSPHRASE" ]; then
+                echo "$GPG_PASSPHRASE" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --detach-sign --use-agent -u "$KEY_ID" "$pkg"
+              else
+                gpg --batch --pinentry-mode loopback --detach-sign --use-agent -u "$KEY_ID" "$pkg"
+              fi
+            fi
+          done
+
+          # Regenerar la base de datos de pacman y firmarla
+          rm -f sinergia.db* sinergia.files*
+          repo-add -s -v -k "$KEY_ID" sinergia.db.tar.gz *.pkg.tar.zst
+
+          # Crear enlaces simbólicos estándar para pacman
+          ln -sf sinergia.db.tar.gz sinergia.db
+          ln -sf sinergia.db.tar.gz.sig sinergia.db.sig
+          ln -sf sinergia.files.tar.gz sinergia.files
+          ln -sf sinergia.files.tar.gz.sig sinergia.files.sig
+
+      - name: Commitear y subir cambios a GitHub Pages
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+          git add x86_64/
+          if git diff --staged --quiet; then
+            echo "No hay cambios en la base de datos."
+          else
+            git commit -m "bot: Reindexación automática del repositorio y firmas GPG"
+            git push origin main
+          fi

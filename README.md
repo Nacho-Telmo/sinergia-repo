@@ -1,85 +1,99 @@
-Repositorio Oficial de Sinergia - Comunidad Linuxera
+# 🐧 Repositorio Oficial de Sinergia - Comunidad Linuxera
 
-Repositorio oficial de paquetes precompilados mantenido por Sinergia - Comunidad Linuxera. Diseñado para Arch Linux y cualquier distribución derivada (EndeavourOS, Manjaro, Garuda, CachyOS, ArcoLinux, etc.).
+Repositorio de paquetes precompilados mantenido por **Sinergia Comunidad Linuxera**. Diseñado para **Arch Linux** y cualquier distribución derivada (**EndeavourOS, Manjaro, CachyOS, Garuda, ArcoLinux, etc.**).
 
-Todos los paquetes y la base de datos están firmados mediante clave criptográfica GPG para garantizar descargas seguras e inalteradas.
+Todos los paquetes y la base de datos están firmados criptográficamente con GPG para garantizar descargas seguras e inalteradas.
 
-📋 Requisitos Previos
+---
 
-Sistema operativo basado en Arch Linux.
+## ⚡ Guía de Instalación Rápida (3 Pasos)
 
-Gestor de paquetes pacman.
+### Paso 1: Importar y Validar la Clave GPG Pública
 
-Herramientas básicas de terminal (curl, sudo).
+Ejecutá este comando en tu terminal para importar y validar la clave de firma del repositorio en el llavero de tu sistema:
 
-🚀 Guía de Instalación
-
-Paso 1: Importar la Clave GPG del Repositorio
-
-Para que pacman pueda validar las firmas de los paquetes de Sinergia, importá y confirmá la clave pública en el llavero oficial de tu sistema:
-
+```bash
 curl -s https://Nacho-Telmo.github.io/sinergia-repo/x86_64/sinergia.gpg | sudo pacman-key --add -
 sudo pacman-key --lsign-key 4CBFA5A14BB153A7
+```
 
+> **Detalles de la clave:**
+> * **ID de Clave:** `4CBFA5A14BB153A7`
+> * **Propietario:** `Sinergia - Comunidad Linuxera (Repositorio de Sinergia) <sinergia.comunidad.linuxera@gmail.com>`
 
-Datos de Identificación de la Clave:
+---
 
-ID de Clave: 4CBFA5A14BB153A7
+### Paso 2: Agregar el Repositorio a `pacman.conf`
 
-Propietario: Sinergia - Comunidad Linuxera (Repositorio de Sinergia) <sinergia.comunidad.linuxera@gmail.com>
+Edita el archivo de configuración de `pacman`:
 
-Paso 2: Agregar el Repositorio a pacman.conf
-
-Editá el archivo de configuración de pacman con tu editor preferido:
-
+```bash
 sudo nano /etc/pacman.conf
+```
 
+Agregá las siguientes líneas al final del archivo:
 
-Agregá el siguiente bloque al final de todo el archivo:
-
+```ini
 [sinergia]
 SigLevel = Required DatabaseOptional
 Server = https://Nacho-Telmo.github.io/sinergia-repo/$arch
+```
 
+*(En Nano: guardá con `Ctrl + O`, presioná `Enter` y salí con `Ctrl + X`)*.
 
-(En Nano: guardá los cambios presionando Ctrl + O, luego Enter y salí con Ctrl + X).
+---
 
-Paso 3: Sincronizar la Base de Datos
+### Paso 3: Sincronizar las Bases de Datos
 
-Actualizá los índices de tu sistema para reconocer la lista de software de Sinergia:
+Actualizá los índices de tu sistema para reconocer el nuevo repositorio:
 
-sudo pacman -Syy
+```bash
+sudo pacman -Sy
+```
 
+---
 
-📦 Gestión de Paquetes
+## 📦 Software Disponible
 
-Listar todo el software disponible en el repositorio
+| Paquete | Descripción | Instalación |
+| :--- | :--- | :--- |
+| `sinergia-appimage-manager` | Gestor e integrador de aplicaciones AppImage | `sudo pacman -S sinergia-appimage-manager` |
+| `sinergia-webapp-manager` | Creador y gestor de aplicaciones web (WebApps) | `sudo pacman -S sinergia-webapp-manager` |
+| `sinergia-dd-burner` | Grabador de imágenes ISO en unidades USB | `sudo pacman -S sinergia-dd-burner` |
 
-pacman -Sl sinergia
+---
 
+## 💡 Comandos Útiles
 
-Buscar un paquete específico
+* **Buscar paquetes en el repositorio:**
+  ```bash
+  pacman -Ss sinergia
+  ```
 
-pacman -Ss sinergia
+* **Listar todo el software servido por Sinergia:**
+  ```bash
+  pacman -Sl sinergia
+  ```
 
+* **Actualizar el sistema incluyendo paquetes de Sinergia:**
+  ```bash
+  sudo pacman -Syu
+  ```
 
-Instalar una aplicación
+---
 
-sudo pacman -S sinergia-appimage-manager
+## 🛠️ Solución de Problemas
 
+Si en algún momento el sistema indica un error de firmas (`error: sinergia: key "4CBFA5A14BB153A7" is unknown`), re-importá la clave directamente ejecutando:
 
-🛠️ Solución de Problemas
-
-Error de Clave Desconocida (key "4CBFA5A14BB153A7" is unknown)
-
-Si pacman arroja un error al verificar firmas, re-importá la clave directamente ejecutando:
-
-sudo pacman-key --add https://Nacho-Telmo.github.io/sinergia-repo/x86_64/sinergia.gpg
+```bash
+curl -s https://Nacho-Telmo.github.io/sinergia-repo/x86_64/sinergia.gpg | sudo pacman-key --add -
 sudo pacman-key --lsign-key 4CBFA5A14BB153A7
+```
 
+---
 
-🔗 Enlaces de la Comunidad
+## 🌐 Enlaces de la Comunidad
 
-📺 YouTube: Sinergia Comunidad Linuxera
-
-🐙 GitHub Repository: Nacho-Telmo/sinergia-repo
+* 📺 **Canal de YouTube:** [Sinergia Comunidad Linuxera](https://www.youtube.com/@SinergiaComunidadLinuxera)
+* 🐙 **GitHub Repositorio:** [Nacho-Telmo/sinergia-repo](https://github.com/Nacho-Telmo/sinergia-repo)

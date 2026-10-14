@@ -60,6 +60,7 @@ sudo pacman -Sy
 | `sinergia-appimage-manager` | Gestor e integrador de aplicaciones AppImage | `sudo pacman -S sinergia-appimage-manager` |
 | `sinergia-webapp-manager` | Creador y gestor de aplicaciones web (WebApps) | `sudo pacman -S sinergia-webapp-manager` |
 | `sinergia-dd-burner` | Grabador de imágenes ISO en unidades USB | `sudo pacman -S sinergia-dd-burner` |
+| `sinergia-reflectot-top` | optimizar y actualizar los espejos (mirrors) de Arch Linux utilizando la herramienta Reflector | `sudo pacman -S sinergia-reflectot-top` |
 
 ---
 

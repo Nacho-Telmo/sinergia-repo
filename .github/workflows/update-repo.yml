@@ -45,7 +45,7 @@ jobs:
             exit 1
           fi
 
-      - name: Firmar paquetes no firmados y regenerar la base de datos
+      - name: Firmar paquetes y regenerar la base de datos
         env:
           KEY_ID: ${{ secrets.GPG_KEY_ID }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -59,15 +59,14 @@ jobs:
             exit 0
           fi
 
-          # Firmar individualmente los paquetes sin .sig
+          # Eliminar firmas antiguas y re-firmar todos los paquetes
           for pkg in "${pkgs[@]}"; do
-            if [ ! -f "${pkg}.sig" ]; then
-              echo "Firmando $pkg..."
-              if [ -n "$GPG_PASSPHRASE" ]; then
-                echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --detach-sign --use-agent -u "$KEY_ID" "$pkg"
-              else
-                gpg --batch --yes --pinentry-mode loopback --detach-sign --use-agent -u "$KEY_ID" "$pkg"
-              fi
+            rm -f "${pkg}.sig"
+            echo "Firmando $pkg..."
+            if [ -n "$GPG_PASSPHRASE" ]; then
+              echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --detach-sign --use-agent -u "$KEY_ID" "$pkg"
+            else
+              gpg --batch --yes --pinentry-mode loopback --detach-sign --use-agent -u "$KEY_ID" "$pkg"
             fi
           done
 
@@ -98,7 +97,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No hay cambios en la base de datos."
           else
-            git commit -m "bot: Reindexación con archivos físicos para GitHub Pages"
+            git commit -m "bot: Re-firma forzada de paquetes y reindexación"
             git pull --rebase origin main
             git push origin main
           fi

@@ -33,12 +33,17 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
-          echo "$GPG_PRIVATE_KEY" | gpg --batch --import || echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
-          
           mkdir -p ~/.gnupg
           echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
           echo "pinentry-mode loopback" > ~/.gnupg/gpg.conf
-          gpg-connect-agent reloadagent /bye
+          gpg-connect-agent reloadagent /bye || true
+
+          if [ -n "$GPG_PRIVATE_KEY" ]; then
+            echo "$GPG_PRIVATE_KEY" | gpg --batch --yes --import || echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --yes --import
+          else
+            echo "Error: Secret GPG_PRIVATE_KEY no configurado."
+            exit 1
+          fi
 
       - name: Firmar paquetes no firmados y regenerar la base de datos
         env:
@@ -46,15 +51,22 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           cd x86_64/
+          shopt -s nullglob
+
+          pkgs=(*.pkg.tar.zst)
+          if [ ${#pkgs[@]} -eq 0 ]; then
+            echo "No se encontraron paquetes .pkg.tar.zst en x86_64/"
+            exit 0
+          fi
 
           # Firmar individualmente los paquetes sin .sig
-          for pkg in *.pkg.tar.zst; do
+          for pkg in "${pkgs[@]}"; do
             if [ ! -f "${pkg}.sig" ]; then
               echo "Firmando $pkg..."
               if [ -n "$GPG_PASSPHRASE" ]; then
-                echo "$GPG_PASSPHRASE" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --detach-sign --use-agent -u "$KEY_ID" "$pkg"
+                echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --detach-sign --use-agent -u "$KEY_ID" "$pkg"
               else
-                gpg --batch --pinentry-mode loopback --detach-sign --use-agent -u "$KEY_ID" "$pkg"
+                gpg --batch --yes --pinentry-mode loopback --detach-sign --use-agent -u "$KEY_ID" "$pkg"
               fi
             fi
           done
@@ -76,8 +88,7 @@ jobs:
           git config --global --add safe.directory '*'
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Autenticar git push dentro del contenedor Docker
+
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
           git add .
@@ -85,6 +96,7 @@ jobs:
             echo "No hay cambios en la base de datos."
           else
             git commit -m "bot: Reindexación con archivos físicos para GitHub Pages"
-            git pull --rebase origin main || true
+            git fetch origin main
+            git rebase origin main || git rebase --abort
             git push origin main
           fi

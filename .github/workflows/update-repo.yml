@@ -71,6 +71,7 @@ jobs:
 
       - name: Commitear y subir cambios a GitHub Pages
         run: |
+          git config --global --add safe.directory '*'
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
@@ -79,5 +80,6 @@ jobs:
             echo "No hay cambios en la base de datos."
           else
             git commit -m "bot: Reindexación con archivos físicos para GitHub Pages"
+            git pull --rebase origin main
             git push origin main
           fi

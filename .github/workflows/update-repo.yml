@@ -99,7 +99,6 @@ jobs:
             echo "No hay cambios en la base de datos."
           else
             git commit -m "bot: Reindexación con archivos físicos para GitHub Pages"
-            git fetch origin main
-            git rebase origin main || git rebase --abort
+            git pull --rebase origin main
             git push origin main
           fi

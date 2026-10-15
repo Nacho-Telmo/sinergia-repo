@@ -75,7 +75,10 @@ jobs:
           rm -f sinergia.db* sinergia.files*
           repo-add -s -v -k "$KEY_ID" sinergia.db.tar.gz *.pkg.tar.zst
 
-          # Crear COPIAS FÍSICAS en vez de symlinks para GitHub Pages
+          # Eliminar enlaces simbólicos existentes antes de duplicar
+          rm -f sinergia.db sinergia.db.sig sinergia.files sinergia.files.sig
+
+          # Crear COPIAS FÍSICAS reales para GitHub Pages
           cp -f sinergia.db.tar.gz sinergia.db
           cp -f sinergia.db.tar.gz.sig sinergia.db.sig
           cp -f sinergia.files.tar.gz sinergia.files

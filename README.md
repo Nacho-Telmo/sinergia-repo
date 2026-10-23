@@ -1,6 +1,6 @@
 # 🐧 Repositorio Oficial de Sinergia - Comunidad Linuxera
 
-Repositorio de paquetes precompilados mantenido por **Sinergia Comunidad Linuxera**. Diseñado para **Arch Linux** y cualquier distribución derivada (**EndeavourOS, Manjaro, CachyOS, Garuda, ArcoLinux, etc.**).
+Repositorio de paquetes precompilados mantenido por **Sinergia Comunidad Linuxera**. Diseñado para **Arch Linux** y cualquier distribución derivada (**EndeavourOS, Manjaro, CachyOS, Garuda, etc.**).
 
 Todos los paquetes y la base de datos están firmados criptográficamente con GPG para garantizar descargas seguras e inalteradas.
 

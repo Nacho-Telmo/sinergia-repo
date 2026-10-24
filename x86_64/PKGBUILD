@@ -1,0 +1,66 @@
+# Maintainer: Nacho <sinergia.linuxera@gmail.com>
+pkgname=konvi
+pkgver=1.0.0
+pkgrel=3
+pkgdesc="Interfaz gráfica en PyQt6 / FFmpeg para conversión de archivos multimedia"
+arch=('any')
+url="https://github.com/zebus3d/konvi"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'ffmpeg')
+makedepends=('git')
+source=("git+https://github.com/zebus3d/konvi.git")
+sha256sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/konvi"
+    # Incluimos .pkgrel para forzar nombres de archivo únicos en cada compilación
+    printf "1.0.0.r%s.%s-%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)" "$pkgrel"
+}
+
+package() {
+    cd "$srcdir/konvi"
+
+    # 1. Copiar los archivos del proyecto al directorio de recursos
+    install -dm755 "$pkgdir/usr/share/konvi"
+    cp -r * "$pkgdir/usr/share/konvi/"
+
+    # 2. Crear un lanzador dinámico en /usr/bin/konvi
+    install -dm755 "$pkgdir/usr/bin"
+    cat > "$pkgdir/usr/bin/konvi" << 'EOF'
+#!/bin/sh
+cd /usr/share/konvi
+
+# Localizar el archivo ejecutable de entrada
+ENTRY_POINT=""
+for file in main.py konvi.py app.py __main__.py src/main.py src/konvi.py konvi/main.py konvi/konvi.py; do
+    if [ -f "/usr/share/konvi/$file" ]; then
+        ENTRY_POINT="$file"
+        break
+    fi
+done
+
+if [ -z "$ENTRY_POINT" ]; then
+    ENTRY_POINT=$(find /usr/share/konvi -maxdepth 2 -name "*.py" | head -n1)
+fi
+
+exec python3 "$ENTRY_POINT" "$@"
+EOF
+    chmod +x "$pkgdir/usr/bin/konvi"
+
+    # 3. Instalar o generar el archivo .desktop
+    if [ -f "konvi.desktop" ]; then
+        install -Dm644 "konvi.desktop" "$pkgdir/usr/share/applications/konvi.desktop"
+    else
+        cat > "$srcdir/konvi.desktop" << 'EOF'
+[Desktop Entry]
+Type=Application
+Name=Konvi
+Comment=Convertidor multimedia basado en FFmpeg y PyQt6
+Exec=konvi
+Icon=video-x-generic
+Categories=AudioVideo;Video;Audio;Encoder;
+Terminal=false
+EOF
+        install -Dm644 "$srcdir/konvi.desktop" "$pkgdir/usr/share/applications/konvi.desktop"
+    fi
+}

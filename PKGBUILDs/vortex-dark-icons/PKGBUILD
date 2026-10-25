@@ -1,7 +1,7 @@
 # Maintainer: Nacho <sinergia.comunidad.linuxera@gmail.com>
 pkgname=vortex-dark-icons
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Tema de íconos oscuros Vortex para KDE Plasma"
 arch=('any')
 url="https://store.kde.org/p/1493433"
@@ -11,17 +11,20 @@ source=("Vortex-Dark.tar.xz")
 sha256sums=('SKIP')
 
 package() {
-    # Crear directorio de íconos en el sistema
+    # Crear el directorio destino en el paquete
     mkdir -p "$pkgdir/usr/share/icons/Vortex-Dark"
     
-    # Buscar el directorio descomprimido y copiar el contenido
-    if [ -d "$srcdir/Vortex-Dark" ]; then
-        cp -r "$srcdir/Vortex-Dark"/* "$pkgdir/usr/share/icons/Vortex-Dark/"
-    else
-        cp -r "$srcdir"/* "$pkgdir/usr/share/icons/Vortex-Dark/" 2>/dev/null || true
-    fi
+    # Copiar solo el contenido descomprimido dentro de $srcdir
+    # Evitando copiar el archivo .tar.xz original
+    find "$srcdir" -mindepth 1 -maxdepth 1 ! -name "*.tar.xz" -exec cp -r {} "$pkgdir/usr/share/icons/Vortex-Dark/" \;
     
-    # Permisos de lectura/ejecución apropiados
+    # Si los archivos quedaron dentro de una subcarpeta Vortex-Dark, aplanarla
+    if [ -d "$pkgdir/usr/share/icons/Vortex-Dark/Vortex-Dark" ]; then
+        mv "$pkgdir/usr/share/icons/Vortex-Dark/Vortex-Dark"/* "$pkgdir/usr/share/icons/Vortex-Dark/"
+        rmdir "$pkgdir/usr/share/icons/Vortex-Dark/Vortex-Dark"
+    fi
+
+    # Ajustar permisos adecuados para el sistema
     find "$pkgdir/usr/share/icons/Vortex-Dark" -type f -exec chmod 644 {} +
     find "$pkgdir/usr/share/icons/Vortex-Dark" -type d -exec chmod 755 {} +
 }

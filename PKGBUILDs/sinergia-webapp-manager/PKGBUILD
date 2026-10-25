@@ -1,0 +1,31 @@
+# Maintainer: Nacho Telmo
+
+pkgname=sinergia-webapp-manager
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Gestor gráfico para crear WebApps independientes en Linux"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-webapp-manager"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'python-requests')
+source=("https://raw.githubusercontent.com/Nacho-Telmo/sinergia-webapp-manager/main/sinergia-webapps/main.py"
+        "sinergia-webapp-manager.desktop")
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+    # Crear los directorios en el sistema (virtualmente durante el empaquetado)
+    install -d "$pkgdir/usr/bin"
+    install -d "$pkgdir/usr/share/sinergia-webapp-manager"
+    install -d "$pkgdir/usr/share/applications"
+    
+    # Instalar el código Python
+    install -m755 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-webapp-manager/main.py"
+    
+    # Crear un binario ejecutable en /usr/bin que llame al script
+    echo "#!/bin/bash" > "$pkgdir/usr/bin/sinergia-webapp-manager"
+    echo "python /usr/share/sinergia-webapp-manager/main.py" >> "$pkgdir/usr/bin/sinergia-webapp-manager"
+    chmod +x "$pkgdir/usr/bin/sinergia-webapp-manager"
+    
+    # Instalar el archivo .desktop para que aparezca en el menú
+    install -m644 "$srcdir/sinergia-webapp-manager.desktop" "$pkgdir/usr/share/applications/sinergia-webapp-manager.desktop"
+}

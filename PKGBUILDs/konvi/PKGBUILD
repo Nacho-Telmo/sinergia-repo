@@ -1,0 +1,55 @@
+# Maintainer: Nacho <sinergia.linuxera@gmail.com>
+pkgname=konvi
+epoch=1
+pkgver=1.0.0
+pkgrel=5
+pkgdesc="Interfaz gráfica en PySide6 / FFmpeg para conversión de archivos multimedia"
+arch=('any')
+url="https://github.com/zebus3d/konvi"
+license=('GPL3')
+depends=('python' 'pyside6' 'ffmpeg')
+makedepends=('git')
+source=("git+https://github.com/zebus3d/konvi.git")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/konvi"
+
+    # 1. Copiar los archivos del proyecto al directorio compartido
+    install -dm755 "$pkgdir/usr/share/konvi"
+    cp -r * "$pkgdir/usr/share/konvi/"
+
+    # 2. Instalar el ícono SVG oficial en la ruta hicolor de Arch
+    install -dm755 "$pkgdir/usr/share/icons/hicolor/scalable/apps"
+    install -Dm644 "data/konvi.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/konvi.svg"
+
+    # 3. Lanzador ejecutable con entorno Python configurado
+    install -dm755 "$pkgdir/usr/bin"
+    cat > "$pkgdir/usr/bin/konvi" << 'EOF'
+#!/bin/sh
+export PYTHONPATH="/usr/share/konvi:$PYTHONPATH"
+cd /usr/share/konvi
+
+if [ -d "/usr/share/konvi/konvi" ]; then
+    exec python3 -m konvi "$@"
+elif [ -f "/usr/share/konvi/main.py" ]; then
+    exec python3 /usr/share/konvi/main.py "$@"
+else
+    exec python3 /usr/share/konvi/app.py "$@"
+fi
+EOF
+    chmod +x "$pkgdir/usr/bin/konvi"
+
+    # 4. Generar acceso directo .desktop apuntando al icono 'konvi'
+    install -dm755 "$pkgdir/usr/share/applications"
+    cat > "$pkgdir/usr/share/applications/konvi.desktop" << EOF
+[Desktop Entry]
+Type=Application
+Name=Konvi
+Comment=Convertidor multimedia basado en FFmpeg y PySide6
+Exec=konvi
+Icon=konvi
+Categories=AudioVideo;Video;Audio;Encoder;
+Terminal=false
+EOF
+}

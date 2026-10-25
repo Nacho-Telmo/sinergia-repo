@@ -1,0 +1,27 @@
+# Maintainer: Nacho <sinergia.comunidad.linuxera@gmail.com>
+pkgname=vortex-dark-icons
+pkgver=1.0
+pkgrel=1
+pkgdesc="Tema de íconos oscuros Vortex para KDE Plasma"
+arch=('any')
+url="https://store.kde.org/p/1493433"
+license=('GPL3')
+depends=('hicolor-icon-theme')
+source=("Vortex-Dark.tar.xz")
+sha256sums=('SKIP')
+
+package() {
+    # Crear directorio de íconos en el sistema
+    mkdir -p "$pkgdir/usr/share/icons/Vortex-Dark"
+    
+    # Buscar el directorio descomprimido y copiar el contenido
+    if [ -d "$srcdir/Vortex-Dark" ]; then
+        cp -r "$srcdir/Vortex-Dark"/* "$pkgdir/usr/share/icons/Vortex-Dark/"
+    else
+        cp -r "$srcdir"/* "$pkgdir/usr/share/icons/Vortex-Dark/" 2>/dev/null || true
+    fi
+    
+    # Permisos de lectura/ejecución apropiados
+    find "$pkgdir/usr/share/icons/Vortex-Dark" -type f -exec chmod 644 {} +
+    find "$pkgdir/usr/share/icons/Vortex-Dark" -type d -exec chmod 755 {} +
+}

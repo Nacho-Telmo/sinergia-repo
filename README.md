@@ -53,7 +53,7 @@ sudo pacman -Sy
 
 ---
 
-## 📦 Software Disponible
+## 📦 Software destacado
 
 | Paquete | Descripción | Instalación |
 | :--- | :--- | :--- |

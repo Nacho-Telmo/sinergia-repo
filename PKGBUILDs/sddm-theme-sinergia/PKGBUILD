@@ -1,0 +1,16 @@
+# Mantenedor: Sinergia - Comunidad Linuxera <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sddm-theme-sinergia
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Tema SDDM oficial de Sinergia Comunidad Linuxera"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL-3.0-or-later')
+depends=('sddm')
+source=("sinergia.tar.gz")
+sha256sums=('SKIP')
+
+package() {
+    install -dm755 "${pkgdir}/usr/share/sddm/themes/sinergia"
+    cp -r "${srcdir}/sinergia/"* "${pkgdir}/usr/share/sddm/themes/sinergia/"
+}

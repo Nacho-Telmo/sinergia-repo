@@ -1,0 +1,19 @@
+# Mantenedor: Sinergia - Comunidad Linuxera <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-keyring
+pkgver=2026.10
+pkgrel=1
+pkgdesc="Claves PGP / GPG oficiales de Sinergia Comunidad Linuxera para pacman"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL-3.0-or-later')
+install=sinergia-keyring.install
+source=("sinergia.gpg"
+        "sinergia-trusted")
+sha256sums=('SKIP'
+            'SKIP')
+
+package() {
+    install -dm755 "${pkgdir}/usr/share/pacman/keyrings"
+    install -m644 sinergia.gpg "${pkgdir}/usr/share/pacman/keyrings/"
+    install -m644 sinergia-trusted "${pkgdir}/usr/share/pacman/keyrings/"
+}

@@ -1,0 +1,22 @@
+# Mantenedor: Sinergia - Comunidad Linuxera <sinergia.comunidad.linuxera@gmail.com>
+pkgname=plasma-panel-transparency
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Plasmoid de transparencia de panel para KDE Plasma"
+arch=('any')
+url="https://github.com/zebus3d/kde-themes"
+license=('GPL-3.0-or-later')
+depends=('plasma-workspace')
+makedepends=('git')
+source=("git+https://github.com/zebus3d/kde-themes.git")
+sha256sums=('SKIP')
+
+package() {
+    local _plasmoid_id="org.zebus3d.paneltransparency"
+    
+    # Crear directorio de destino en /usr/share/plasma/plasmoids/
+    install -d "${pkgdir}/usr/share/plasma/plasmoids/${_plasmoid_id}"
+    
+    # Copiar únicamente el contenido de la carpeta del plasmoide
+    cp -r "${srcdir}/kde-themes/plasmoids/${_plasmoid_id}/"* "${pkgdir}/usr/share/plasma/plasmoids/${_plasmoid_id}/"
+}

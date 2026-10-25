@@ -1,29 +1,31 @@
 # Maintainer: Nacho <sinergia.comunidad.linuxera@gmail.com>
 pkgname=vortex-dark-icons
 pkgver=1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Tema de íconos oscuros Vortex para KDE Plasma"
 arch=('any')
 url="https://store.kde.org/p/1493433"
 license=('GPL3')
 depends=('hicolor-icon-theme')
-source=("https://dl.opendesktop.org/api/files/download/id/1612803622/Vortex-Dark.tar.xz")
+source=("Vortex-Dark.tar.xz")
 sha256sums=('SKIP')
 
 package() {
     mkdir -p "$pkgdir/usr/share/icons/Vortex-Dark"
     
-    # Extraer y copiar la estructura del tema
-    if [ -d "$srcdir/Vortex-Dark" ]; then
+    # Mover el contenido de la subcarpeta directamente a la raíz del tema
+    if [ -d "$srcdir/Vortex-Dark-Icons" ]; then
+        cp -r "$srcdir/Vortex-Dark-Icons"/* "$pkgdir/usr/share/icons/Vortex-Dark/"
+    elif [ -d "$srcdir/Vortex-Dark" ]; then
         cp -r "$srcdir/Vortex-Dark"/* "$pkgdir/usr/share/icons/Vortex-Dark/"
     else
         cp -r "$srcdir"/* "$pkgdir/usr/share/icons/Vortex-Dark/"
     fi
     
-    # Limpiar el archivo comprimido si se copió por accidente
+    # Limpiar el comprimido si se copió por accidente
     rm -f "$pkgdir/usr/share/icons/Vortex-Dark/Vortex-Dark.tar.xz"
     
-    # Permisos de lectura/ejecución adecuados
+    # Ajustar permisos adecuados
     find "$pkgdir/usr/share/icons/Vortex-Dark" -type f -exec chmod 644 {} +
     find "$pkgdir/usr/share/icons/Vortex-Dark" -type d -exec chmod 755 {} +
 }

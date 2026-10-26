@@ -59,6 +59,7 @@ sudo pacman -Sy
 | :--- | :--- | :--- |
 | `sinergia-appimage-manager` | Gestor e integrador de aplicaciones AppImage | `sudo pacman -S sinergia-appimage-manager` |
 | `sinergia-webapp-manager` | Creador y gestor de aplicaciones web (WebApps) | `sudo pacman -S sinergia-webapp-manager` |
+| `flextile-git` | Script Flextile de tiling para KWin (KDE Plasma) | `sudo pacman -S flextile-git` |
 | `sinergia-dd-burner` | Grabador de imágenes ISO en unidades USB | `sudo pacman -S sinergia-dd-burner` |
 | `sinergia-reflector-top` | Optimizar y Actualizar los Espejos (Mirrors) de ArchLinux Utilizando la Herramienta Reflector | `sudo pacman -S sinergia-reflector-top` |
 

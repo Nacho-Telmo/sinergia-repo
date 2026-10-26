@@ -1,12 +1,12 @@
 # Maintainer: Nacho <sinergia.comunidad.linuxera@gmail.com>
 pkgname=flextile-git
 pkgver=r4.5a2ebbf
-pkgrel=1
-pkgdesc="Extensión / Script Flextile"
+pkgrel=2
+pkgdesc="Script / Extensión Flextile para KWin (KDE Plasma)"
 arch=('any')
 url="https://github.com/zebus3d/flextile"
 license=('GPL3')
-depends=('git')
+depends=('kwin')
 makedepends=('git')
 provides=('flextile')
 conflicts=('flextile')
@@ -20,6 +20,6 @@ pkgver() {
 
 package() {
     cd "$srcdir/flextile"
-    install -d "$pkgdir/usr/share/flextile"
-    cp -r * "$pkgdir/usr/share/flextile/"
+    install -d "$pkgdir/usr/share/kwin/scripts/flextile"
+    cp -r package/* "$pkgdir/usr/share/kwin/scripts/flextile/"
 }

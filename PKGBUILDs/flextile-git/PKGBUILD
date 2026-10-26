@@ -1,0 +1,25 @@
+# Maintainer: Nacho <sinergia.comunidad.linuxera@gmail.com>
+pkgname=flextile-git
+pkgver=r4.5a2ebbf
+pkgrel=1
+pkgdesc="Extensión / Script Flextile"
+arch=('any')
+url="https://github.com/zebus3d/flextile"
+license=('GPL3')
+depends=('git')
+makedepends=('git')
+provides=('flextile')
+conflicts=('flextile')
+source=("git+https://github.com/zebus3d/flextile.git")
+sha256sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/flextile"
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+package() {
+    cd "$srcdir/flextile"
+    install -d "$pkgdir/usr/share/flextile"
+    cp -r * "$pkgdir/usr/share/flextile/"
+}

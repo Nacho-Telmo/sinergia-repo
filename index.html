@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta name="version" content="1793218498">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinergia Repo - Repositorio de la Comunidad Linuxera</title>
+    <style>
+        :root {
+            --bg-color: #1a1b26;
+            --card-bg: #24283b;
+            --accent: #7aa2f7;
+            --text: #c0caf5;
+            --text-dim: #9aa5ce;
+            --border: #414868;
+            --code-bg: #16161e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+        .logo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        h1 {
+            color: var(--accent);
+            font-size: 2.5rem;
+            margin: 0.5rem 0;
+        }
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            color: #7dcfff;
+            font-size: 0.95rem;
+        }
+        code {
+            font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+            white-space: nowrap;
+        }
+        .community-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .btn-telegram {
+            background-color: #26a5e4;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-telegram:hover {
+            background-color: #1d82b6;
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            color: var(--accent);
+        }
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        footer {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem 0.5rem;
+            }
+            .card {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="logo.jpg" alt="Logo Sinergia Comunidad Linuxera" class="logo">
+        <h1>Sinergia Repo</h1>
+        <p class="subtitle">Repositorio personalizado para Arch Linux y derivados</p>
+    </header>
+
+    <section class="card">
+        <h2>👥 Acerca de la Comunidad</h2>
+        <div class="community-box">
+            <div>
+                <p>Este repositorio es mantenido y organizado colectivamente por la comunidad de <strong>Sinergia Comunidad Linuxera</strong>. Un espacio impulsado por usuarios y entusiastas del software libre coordinados activamente a través de Telegram.</p>
+            </div>
+            <a href="https://t.me/Guias_NovumSinergia" target="_blank" class="btn-telegram">Unirse al Telegram</a>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>🔑 Paso 1: Importación de la Clave GPG</h2>
+        <p>Para que <code>pacman</code> pueda verificar la firma de los paquetes y las bases de datos, importa y firma la clave pública del repositorio ejecutando:</p>
+<pre><code>curl -sS https://Nacho-Telmo.github.io/sinergia-repo/sinergia.gpg | sudo pacman-key --add -
+sudo pacman-key --lsign-key 4CBFA5A14BB153A7</code></pre>
+    </section>
+
+    <section class="card">
+        <h2>🚀 Paso 2: Agregar el repositorio a pacman.conf</h2>
+        <p>Agrega las siguientes líneas al final de tu archivo <code>/etc/pacman.conf</code> y sincroniza la base de datos:</p>
+<pre><code>[sinergia]
+SigLevel = Required DatabaseOptional
+Server = https://Nacho-Telmo.github.io/sinergia-repo/x86_64
+
+sudo pacman -Sy</code></pre>
+    </section>
+
+    <section class="card">
+        <h2>📦 Software Disponible</h2>
+        <p>Listado completo de los 17 paquetes disponibles en el repositorio:</p>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paquete</th>
+                        <th>Descripción</th>
+                        <th>Comando de Instalación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>better-iptv-bin</code></td>
+                        <td>Reproductor IPTV ligero y funcional para Linux.</td>
+                        <td><code>sudo pacman -S better-iptv-bin</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>flextile-git</code></td>
+                        <td>Layout de tiling dinámico flexible para gestores de ventanas en X11/Suckless.</td>
+                        <td><code>sudo pacman -S flextile-git</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>kirigami2</code></td>
+                        <td>Set de componentes de UI basados en QtQuick para aplicaciones KDE.</td>
+                        <td><code>sudo pacman -S kirigami2</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>konvi</code></td>
+                        <td>Herramienta de conversión multimedia ligera.</td>
+                        <td><code>sudo pacman -S konvi</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>plasma-framework5</code></td>
+                        <td>Librerías y componentes de la estructura de Plasma 5.</td>
+                        <td><code>sudo pacman -S plasma-framework5</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>plasma-panel-transparency</code></td>
+                        <td>Widget/Script para ajustar la transparencia del panel de Plasma.</td>
+                        <td><code>sudo pacman -S plasma-panel-transparency</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sddm-theme-sinergia</code></td>
+                        <td>Tema de inicio de sesión SDDM con diseño oficial de Sinergia.</td>
+                        <td><code>sudo pacman -S sddm-theme-sinergia</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-appimage-manager</code></td>
+                        <td>Gestor e integrador de aplicaciones AppImage escrito en Python y PyQt6.</td>
+                        <td><code>sudo pacman -S sinergia-appimage-manager</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-conky</code></td>
+                        <td>Configuración de Conky para monitoreo de sistema de la comunidad.</td>
+                        <td><code>sudo pacman -S sinergia-conky</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-dd-burner</code></td>
+                        <td>Herramienta gráfica ligera para grabar imágenes ISO en pendrives USB mediante <code>dd</code>.</td>
+                        <td><code>sudo pacman -S sinergia-dd-burner</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-keyring</code></td>
+                        <td>Llavero oficial con las claves GPG de validación del repositorio Sinergia.</td>
+                        <td><code>sudo pacman -S sinergia-keyring</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-plasma-full</code></td>
+                        <td>Meta-paquete con la experiencia y personalización completa de Plasma por Sinergia.</td>
+                        <td><code>sudo pacman -S sinergia-plasma-full</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-reflector-top</code></td>
+                        <td>Utilidad GUI para refrescar, probar y seleccionar los mirrors más rápidos de Arch Linux.</td>
+                        <td><code>sudo pacman -S sinergia-reflector-top</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-webapp-manager</code></td>
+                        <td>Administrador e integrador de WebApps en el menú de aplicaciones del sistema.</td>
+                        <td><code>sudo pacman -S sinergia-webapp-manager</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>stacer-bin</code></td>
+                        <td>Optimidador y monitor de rendimiento de sistema con interfaz gráfica.</td>
+                        <td><code>sudo pacman -S stacer-bin</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>vortex-dark-icons</code></td>
+                        <td>Tema de íconos oscuros optimizado para escritorios KDE Plasma/XFCE.</td>
+                        <td><code>sudo pacman -S vortex-dark-icons</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>yaru-colors-icon-theme</code></td>
+                        <td>Tema de íconos Yaru-Colors adaptado con base oficial y fix de herencia para KDE Plasma.</td>
+                        <td><code>sudo pacman -S yaru-colors-icon-theme</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <p>Sinergia Comunidad Linuxera — Repositorio Open Source Mantenido con Pacman y GitHub Pages</p>
+    </footer>
+</div>
+
+</body>
+</html>

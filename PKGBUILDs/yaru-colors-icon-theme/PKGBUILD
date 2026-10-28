@@ -1,7 +1,7 @@
 # Maintainer: Nacho <sinergia.comunidad.linuxera@gmail.com>
 pkgname=yaru-colors-icon-theme
 pkgver=21.04
-pkgrel=2
+pkgrel=3
 pkgdesc="Fork del tema de íconos Yaru de Ubuntu en diferentes colores (Yaru-Colors)"
 arch=('any')
 url="https://github.com/Jannomag/Yaru-Colors"
@@ -10,16 +10,23 @@ depends=('hicolor-icon-theme' 'gtk-update-icon-cache')
 makedepends=('git')
 provides=('yaru-colors-icon-theme')
 conflicts=('yaru-colors-icon-theme')
-source=("git+https://github.com/Jannomag/Yaru-Colors.git")
-sha256sums=('SKIP')
+source=("git+https://github.com/Jannomag/Yaru-Colors.git"
+        "yaru-base::git+https://github.com/ubuntu/yaru.git")
+sha256sums=('SKIP' 'SKIP')
 
 package() {
-    cd "$srcdir/Yaru-Colors"
-    
     install -d "$pkgdir/usr/share/icons"
     
-    # Copiar TODAS las carpetas dentro de Icons (incluye Yaru base + variantes)
-    if [ -d "Icons" ]; then
-        cp -r Icons/* "$pkgdir/usr/share/icons/"
+    # 1. Copiar el tema base Yaru oficial de Ubuntu
+    if [ -d "$srcdir/yaru-base/icons/Yaru" ]; then
+        cp -r "$srcdir/yaru-base/icons/Yaru" "$pkgdir/usr/share/icons/"
     fi
+    
+    # 2. Copiar todas las variantes Yaru-Colors
+    if [ -d "$srcdir/Yaru-Colors/Icons" ]; then
+        cp -r "$srcdir/Yaru-Colors/Icons"/* "$pkgdir/usr/share/icons/"
+    fi
+
+    # 3. Corregir herencia para KDE Plasma y GTK en Arch Linux
+    find "$pkgdir/usr/share/icons" -name "index.theme" -exec sed -i 's/Inherits=.*/Inherits=Yaru,breeze,breeze-dark,Adwaita,hicolor/' {} +
 }

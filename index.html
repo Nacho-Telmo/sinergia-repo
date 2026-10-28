@@ -3,35 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinergia Repo</title>
+    <title>Sinergia Comunidad Linuxera - Repositorio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: system-ui, sans-serif; background: #121212; color: #e0e0e0; padding: 20px; }
-        .card { background: #1e1e1e; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; }
-        pre { background: #000; padding: 15px; border-radius: 5px; overflow-x: auto; color: #00ff66; }
-        code { font-family: monospace; }
-        h1, h2 { color: #fff; }
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --code-bg: #020617;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            color: #38bdf8;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>📦 Repositorio Oficial Sinergia</h1>
-        <p>Repositorio de paquetes para Arch Linux y derivados.</p>
-    </div>
 
-    <div class="card">
-        <h2>🔑 Paso 1: Agregar la llave GPG</h2>
-        <pre><code>curl -sS https://Nacho-Telmo.github.io/sinergia-repo/sinergia.gpg | sudo pacman-key --add -
+    <header>
+        <h1><i class="fa-brands fa-linux"></i> Repositorio Sinergia</h1>
+        <p>Paquetes adicionales y compilaciones optimizadas para Arch Linux y derivados.</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2><i class="fa-solid fa-key" style="color: var(--accent-color);"></i> Paso 1: Agregar la llave GPG</h2>
+            <p>Importa y firma la clave pública del repositorio para verificar la autenticidad de los paquetes:</p>
+            <pre><code>curl -sS https://Nacho-Telmo.github.io/sinergia-repo/sinergia.gpg | sudo pacman-key --add -
 sudo pacman-key --lsign-key 4CBFA5A14BB153A7</code></pre>
-    </div>
+        </section>
 
-    <div class="card">
-        <h2>🚀 Paso 2: Agregar el repositorio a pacman.conf</h2>
-        <p>Agrega las siguientes líneas al final de tu archivo <code>/etc/pacman.conf</code> y sincroniza la base de datos:</p>
-        <pre><code>[sinergia]
+        <section class="card">
+            <h2><i class="fa-solid fa-rocket" style="color: var(--accent-color);"></i> Paso 2: Agregar el repositorio a pacman.conf</h2>
+            <p>Añade las siguientes líneas al final de tu archivo <code>/etc/pacman.conf</code> y actualiza las bases de datos:</p>
+            <pre><code>[sinergia]
 SigLevel = Required DatabaseOptional
 Server = https://Nacho-Telmo.github.io/sinergia-repo/x86_64
 
 sudo pacman -Sy</code></pre>
-    </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Mantenido por <a href="https://github.com/Nacho-Telmo" target="_blank">Nacho Telmo</a> — Sinergia Comunidad Linuxera</p>
+    </footer>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+    </script>
 </body>
 </html>

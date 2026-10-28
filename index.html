@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinergia Repo - Repositorio de la Comunidad Linuxera</title>
+    <style>
+        :root {
+            --bg-color: #1a1b26;
+            --card-bg: #24283b;
+            --accent: #7aa2f7;
+            --text: #c0caf5;
+            --text-dim: #9aa5ce;
+            --border: #414868;
+            --code-bg: #16161e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            color: var(--accent);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            color: #7dcfff;
+            font-size: 0.95rem;
+        }
+        code {
+            font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+        }
+        .community-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .btn-telegram {
+            background-color: #26a5e4;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-telegram:hover {
+            background-color: #1d82b6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            color: var(--accent);
+        }
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        footer {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Sinergia Repo</h1>
+        <p class="subtitle">Repositorio personalizado para Arch Linux y derivados</p>
+    </header>
+
+    <section class="card">
+        <h2>👥 Acerca de la Comunidad</h2>
+        <div class="community-box">
+            <div>
+                <p>Este repositorio es mantenido y organizado colectivamente por la comunidad de <strong>Sinergia Comunidad Linuxera</strong>. Un espacio impulsado por usuarios y entusiastas del software libre coordinados a través de Telegram y YouTube.</p>
+            </div>
+            <a href="https://t.me/SinergiaComunidadLinuxera" target="_blank" class="btn-telegram">Unirse al Telegram</a>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>🚀 Cómo agregar el repositorio</h2>
+        <p>Para añadir <strong>sinergia-repo</strong> a tu sistema Arch Linux o derivados (Manjaro, EndeavourOS, etc.), edita tu archivo <code>/etc/pacman.conf</code> agregando al final las siguientes líneas:</p>
+
+<pre><code>[sinergia]
+SigLevel = Optional TrustAll
+Server = https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64</code></pre>
+
+        <p>Luego, sincroniza la base de datos de paquetes ejecutando:</p>
+<pre><code>sudo pacman -Sy</code></pre>
+    </section>
+
+    <section class="card">
+        <h2>📦 Software Disponible</h2>
+        <p>Listado de paquetes optimizados y mantenidos en el repositorio:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Paquete</th>
+                    <th>Descripción</th>
+                    <th>Instalación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>sinergia-appimage-manager</code></td>
+                    <td>Gestor de aplicaciones AppImage en Python y PyQt6.</td>
+                    <td><code>sudo pacman -S sinergia-appimage-manager</code></td>
+                </tr>
+                <tr>
+                    <td><code>sinergia-reflector-top</code></td>
+                    <td>Utilidad gráfica para refrescar y seleccionar mirrors rápidos de Arch.</td>
+                    <td><code>sudo pacman -S sinergia-reflector-top</code></td>
+                </tr>
+                <tr>
+                    <td><code>sinergia-dd-burner</code></td>
+                    <td>Herramienta GUI sencilla para grabar imágenes ISO en pendrives mediante <code>dd</code>.</td>
+                    <td><code>sudo pacman -S sinergia-dd-burner</code></td>
+                </tr>
+                <tr>
+                    <td><code>sinergia-webapp-manager</code></td>
+                    <td>Administrador e integrador de WebApps en el menú del sistema.</td>
+                    <td><code>sudo pacman -S sinergia-webapp-manager</code></td>
+                </tr>
+                <tr>
+                    <td><code>yaru-colors-icon-theme</code></td>
+                    <td>Tema de íconos Yaru-Colors adaptado con base oficial y fix de herencia para KDE Plasma.</td>
+                    <td><code>sudo pacman -S yaru-colors-icon-theme</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        <p>Sinergia Comunidad Linuxera — Repositorio Open Source Mantenido con Pacman y GitHub Pages</p>
+    </footer>
+</div>
+
+</body>
+</html>

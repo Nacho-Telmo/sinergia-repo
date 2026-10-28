@@ -163,7 +163,7 @@
     <section class="card">
         <h2>🔑 Paso 1: Importación de la Clave GPG</h2>
         <p>Para que <code>pacman</code> pueda verificar la firma de los paquetes y las bases de datos, importa y firma la clave pública del repositorio ejecutando:</p>
-<pre><code>curl -sS https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/sinergia.gpg | sudo pacman-key -a -
+<pre><code>curl -sS https://Nacho-Telmo.github.io/sinergia-repo/sinergia.gpg | sudo pacman-key --add -
 sudo pacman-key --lsign-key 4CBFA5A14BB153A7</code></pre>
     </section>
 
@@ -173,7 +173,7 @@ sudo pacman-key --lsign-key 4CBFA5A14BB153A7</code></pre>
 
 <pre><code>[sinergia]
 SigLevel = Required DatabaseOptional
-Server = https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64</code></pre>
+Server = https://Nacho-Telmo.github.io/sinergia-repo/x86_64</code></pre>
 
         <p>Luego, sincroniza las bases de datos de paquetes ejecutando:</p>
 <pre><code>sudo pacman -Sy</code></pre>

@@ -14,6 +14,7 @@
             --text-secondary: #94a3b8;
             --code-bg: #020617;
             --border-color: #334155;
+            --telegram-color: #229ED9;
         }
 
         * {
@@ -37,6 +38,14 @@
             margin-bottom: 2.5rem;
         }
 
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            border: 3px solid var(--accent-color);
+        }
+
         header h1 {
             font-size: 2.25rem;
             color: var(--accent-color);
@@ -50,6 +59,25 @@
         header p {
             color: var(--text-secondary);
             font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .btn-telegram {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--telegram-color);
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-telegram:hover {
+            opacity: 0.9;
         }
 
         .card {
@@ -58,7 +86,7 @@
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .card h2 {
@@ -81,13 +109,34 @@
             border-radius: 0.5rem;
             padding: 1rem;
             overflow-x: auto;
-            position: relative;
         }
 
         code {
             font-family: 'Fira Code', 'Courier New', Courier, monospace;
             color: #38bdf8;
             font-size: 0.95rem;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .app-item {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .app-item i {
+            color: var(--accent-color);
         }
 
         footer {
@@ -110,8 +159,12 @@
 <body>
 
     <header>
+        <img src="logo.png" alt="Sinergia Logo" class="logo" onerror="this.style.display='none'">
         <h1><i class="fa-brands fa-linux"></i> Repositorio Sinergia</h1>
-        <p>Paquetes adicionales y compilaciones optimizadas para Arch Linux y derivados.</p>
+        <p>Repositorio oficial de paquetes binarios optimizados para Arch Linux y distribuciones derivadas, mantenido por Sinergia Comunidad Linuxera.</p>
+        <a href="https://t.me/sinergia_linux" target="_blank" class="btn-telegram">
+            <i class="fa-brands fa-telegram"></i> Unirse al Telegram
+        </a>
     </header>
 
     <main>
@@ -130,6 +183,30 @@ SigLevel = Required DatabaseOptional
 Server = https://Nacho-Telmo.github.io/sinergia-repo/x86_64
 
 sudo pacman -Sy</code></pre>
+        </section>
+
+        <section class="card">
+            <h2><i class="fa-solid fa-box-open" style="color: var(--accent-color);"></i> Aplicaciones Disponibles (17)</h2>
+            <p>Listado de paquetes y herramientas desarrolladas y empaquetadas en el repositorio:</p>
+            <div class="app-grid">
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-dd-burner</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-reflector-top</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-appimage-manager</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-webapp-manager</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-sddm-theme</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-cleaner</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-welcome</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-mirror-check</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-package-installer</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-plymouth-theme</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-grub-theme</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-system-info</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-network-tools</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-updater</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-font-installer</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-audio-control</div>
+                <div class="app-item"><i class="fa-solid fa-cube"></i> sinergia-tweaks</div>
+            </div>
         </section>
     </main>
 

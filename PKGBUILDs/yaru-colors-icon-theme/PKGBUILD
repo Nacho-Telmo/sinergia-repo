@@ -1,12 +1,12 @@
 # Maintainer: Nacho <sinergia.comunidad.linuxera@gmail.com>
 pkgname=yaru-colors-icon-theme
 pkgver=21.04
-pkgrel=1
+pkgrel=2
 pkgdesc="Fork del tema de íconos Yaru de Ubuntu en diferentes colores (Yaru-Colors)"
 arch=('any')
 url="https://github.com/Jannomag/Yaru-Colors"
 license=('GPL3' 'CCPL')
-depends=('hicolor-icon-theme')
+depends=('hicolor-icon-theme' 'gtk-update-icon-cache')
 makedepends=('git')
 provides=('yaru-colors-icon-theme')
 conflicts=('yaru-colors-icon-theme')
@@ -18,10 +18,8 @@ package() {
     
     install -d "$pkgdir/usr/share/icons"
     
-    # Copiar las variantes de íconos Yaru-Colors
+    # Copiar TODAS las carpetas dentro de Icons (incluye Yaru base + variantes)
     if [ -d "Icons" ]; then
-        cp -r Icons/Yaru-* "$pkgdir/usr/share/icons/"
-    elif [ -d "Themes" ]; then
-        cp -r Themes/Yaru-* "$pkgdir/usr/share/icons/" 2>/dev/null || true
+        cp -r Icons/* "$pkgdir/usr/share/icons/"
     fi
 }

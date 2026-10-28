@@ -73,6 +73,7 @@
         }
         code {
             font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+            white-space: nowrap;
         }
         .community-box {
             display: flex;
@@ -93,10 +94,16 @@
         .btn-telegram:hover {
             background-color: #1d82b6;
         }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 1rem;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1rem;
+            min-width: 600px;
         }
         th, td {
             text-align: left;
@@ -116,6 +123,21 @@
             margin-top: 3rem;
             border-top: 1px solid var(--border);
             padding-top: 1.5rem;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem 0.5rem;
+            }
+            .card {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
         }
     </style>
 </head>
@@ -160,102 +182,104 @@ Server = https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64
     <section class="card">
         <h2>📦 Software Disponible</h2>
         <p>Listado completo de los 17 paquetes disponibles en el repositorio:</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Paquete</th>
-                    <th>Descripción</th>
-                    <th>Comando de Instalación</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><code>better-iptv-bin</code></td>
-                    <td>Reproductor IPTV ligero y funcional para Linux.</td>
-                    <td><code>sudo pacman -S better-iptv-bin</code></td>
-                </tr>
-                <tr>
-                    <td><code>flextile-git</code></td>
-                    <td>Layout de tiling dinámico flexible para gestores de ventanas en X11/Suckless.</td>
-                    <td><code>sudo pacman -S flextile-git</code></td>
-                </tr>
-                <tr>
-                    <td><code>kirigami2</code></td>
-                    <td>Set de componentes de UI basados en QtQuick para aplicaciones KDE.</td>
-                    <td><code>sudo pacman -S kirigami2</code></td>
-                </tr>
-                <tr>
-                    <td><code>konvi</code></td>
-                    <td>Herramienta de conversión multimedia ligera.</td>
-                    <td><code>sudo pacman -S konvi</code></td>
-                </tr>
-                <tr>
-                    <td><code>plasma-framework5</code></td>
-                    <td>Librerías y componentes de la estructura de Plasma 5.</td>
-                    <td><code>sudo pacman -S plasma-framework5</code></td>
-                </tr>
-                <tr>
-                    <td><code>plasma-panel-transparency</code></td>
-                    <td>Widget/Script para ajustar la transparencia del panel de Plasma.</td>
-                    <td><code>sudo pacman -S plasma-panel-transparency</code></td>
-                </tr>
-                <tr>
-                    <td><code>sddm-theme-sinergia</code></td>
-                    <td>Tema de inicio de sesión SDDM con diseño oficial de Sinergia.</td>
-                    <td><code>sudo pacman -S sddm-theme-sinergia</code></td>
-                </tr>
-                <tr>
-                    <td><code>sinergia-appimage-manager</code></td>
-                    <td>Gestor e integrador de aplicaciones AppImage escrito en Python y PyQt6.</td>
-                    <td><code>sudo pacman -S sinergia-appimage-manager</code></td>
-                </tr>
-                <tr>
-                    <td><code>sinergia-conky</code></td>
-                    <td>Configuración de Conky para monitoreo de sistema de la comunidad.</td>
-                    <td><code>sudo pacman -S sinergia-conky</code></td>
-                </tr>
-                <tr>
-                    <td><code>sinergia-dd-burner</code></td>
-                    <td>Herramienta gráfica ligera para grabar imágenes ISO en pendrives USB mediante <code>dd</code>.</td>
-                    <td><code>sudo pacman -S sinergia-dd-burner</code></td>
-                </tr>
-                <tr>
-                    <td><code>sinergia-keyring</code></td>
-                    <td>Llavero oficial con las claves GPG de validación del repositorio Sinergia.</td>
-                    <td><code>sudo pacman -S sinergia-keyring</code></td>
-                </tr>
-                <tr>
-                    <td><code>sinergia-plasma-full</code></td>
-                    <td>Meta-paquete con la experiencia y personalización completa de Plasma por Sinergia.</td>
-                    <td><code>sudo pacman -S sinergia-plasma-full</code></td>
-                </tr>
-                <tr>
-                    <td><code>sinergia-reflector-top</code></td>
-                    <td>Utilidad GUI para refrescar, probar y seleccionar los mirrors más rápidos de Arch Linux.</td>
-                    <td><code>sudo pacman -S sinergia-reflector-top</code></td>
-                </tr>
-                <tr>
-                    <td><code>sinergia-webapp-manager</code></td>
-                    <td>Administrador e integrador de WebApps en el menú de aplicaciones del sistema.</td>
-                    <td><code>sudo pacman -S sinergia-webapp-manager</code></td>
-                </tr>
-                <tr>
-                    <td><code>stacer-bin</code></td>
-                    <td>Optimidador y monitor de rendimiento de sistema con interfaz gráfica.</td>
-                    <td><code>sudo pacman -S stacer-bin</code></td>
-                </tr>
-                <tr>
-                    <td><code>vortex-dark-icons</code></td>
-                    <td>Tema de íconos oscuros optimizado para escritorios KDE Plasma/XFCE.</td>
-                    <td><code>sudo pacman -S vortex-dark-icons</code></td>
-                </tr>
-                <tr>
-                    <td><code>yaru-colors-icon-theme</code></td>
-                    <td>Tema de íconos Yaru-Colors adaptado con base oficial y fix de herencia para KDE Plasma.</td>
-                    <td><code>sudo pacman -S yaru-colors-icon-theme</code></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paquete</th>
+                        <th>Descripción</th>
+                        <th>Comando de Instalación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>better-iptv-bin</code></td>
+                        <td>Reproductor IPTV ligero y funcional para Linux.</td>
+                        <td><code>sudo pacman -S better-iptv-bin</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>flextile-git</code></td>
+                        <td>Layout de tiling dinámico flexible para gestores de ventanas en X11/Suckless.</td>
+                        <td><code>sudo pacman -S flextile-git</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>kirigami2</code></td>
+                        <td>Set de componentes de UI basados en QtQuick para aplicaciones KDE.</td>
+                        <td><code>sudo pacman -S kirigami2</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>konvi</code></td>
+                        <td>Herramienta de conversión multimedia ligera.</td>
+                        <td><code>sudo pacman -S konvi</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>plasma-framework5</code></td>
+                        <td>Librerías y componentes de la estructura de Plasma 5.</td>
+                        <td><code>sudo pacman -S plasma-framework5</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>plasma-panel-transparency</code></td>
+                        <td>Widget/Script para ajustar la transparencia del panel de Plasma.</td>
+                        <td><code>sudo pacman -S plasma-panel-transparency</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sddm-theme-sinergia</code></td>
+                        <td>Tema de inicio de sesión SDDM con diseño oficial de Sinergia.</td>
+                        <td><code>sudo pacman -S sddm-theme-sinergia</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-appimage-manager</code></td>
+                        <td>Gestor e integrador de aplicaciones AppImage escrito en Python y PyQt6.</td>
+                        <td><code>sudo pacman -S sinergia-appimage-manager</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-conky</code></td>
+                        <td>Configuración de Conky para monitoreo de sistema de la comunidad.</td>
+                        <td><code>sudo pacman -S sinergia-conky</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-dd-burner</code></td>
+                        <td>Herramienta gráfica ligera para grabar imágenes ISO en pendrives USB mediante <code>dd</code>.</td>
+                        <td><code>sudo pacman -S sinergia-dd-burner</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-keyring</code></td>
+                        <td>Llavero oficial con las claves GPG de validación del repositorio Sinergia.</td>
+                        <td><code>sudo pacman -S sinergia-keyring</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-plasma-full</code></td>
+                        <td>Meta-paquete con la experiencia y personalización completa de Plasma por Sinergia.</td>
+                        <td><code>sudo pacman -S sinergia-plasma-full</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-reflector-top</code></td>
+                        <td>Utilidad GUI para refrescar, probar y seleccionar los mirrors más rápidos de Arch Linux.</td>
+                        <td><code>sudo pacman -S sinergia-reflector-top</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sinergia-webapp-manager</code></td>
+                        <td>Administrador e integrador de WebApps en el menú de aplicaciones del sistema.</td>
+                        <td><code>sudo pacman -S sinergia-webapp-manager</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>stacer-bin</code></td>
+                        <td>Optimidador y monitor de rendimiento de sistema con interfaz gráfica.</td>
+                        <td><code>sudo pacman -S stacer-bin</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>vortex-dark-icons</code></td>
+                        <td>Tema de íconos oscuros optimizado para escritorios KDE Plasma/XFCE.</td>
+                        <td><code>sudo pacman -S vortex-dark-icons</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>yaru-colors-icon-theme</code></td>
+                        <td>Tema de íconos Yaru-Colors adaptado con base oficial y fix de herencia para KDE Plasma.</td>
+                        <td><code>sudo pacman -S yaru-colors-icon-theme</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <footer>

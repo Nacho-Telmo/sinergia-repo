@@ -139,14 +139,21 @@
     </section>
 
     <section class="card">
-        <h2>🚀 Cómo agregar el repositorio</h2>
-        <p>Para añadir <strong>sinergia-repo</strong> a tu sistema Arch Linux o derivados (Manjaro, EndeavourOS, etc.), edita tu archivo <code>/etc/pacman.conf</code> agregando al final las siguientes líneas:</p>
+        <h2>🔑 Paso 1: Importación de la Clave GPG</h2>
+        <p>Para que <code>pacman</code> pueda verificar la firma de los paquetes y las bases de datos, importa y firma la clave pública del repositorio ejecutando:</p>
+<pre><code>curl -sS https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/sinergia.gpg | sudo pacman-key -a -
+sudo pacman-key --lsign-key 4CBFA5A14BB153A7</code></pre>
+    </section>
+
+    <section class="card">
+        <h2>🚀 Paso 2: Agregar el repositorio a pacman.conf</h2>
+        <p>Edita tu archivo <code>/etc/pacman.conf</code> y agrega al final las siguientes líneas:</p>
 
 <pre><code>[sinergia]
-SigLevel = Optional TrustAll
+SigLevel = Required DatabaseOptional
 Server = https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64</code></pre>
 
-        <p>Luego, sincroniza la base de datos de paquetes ejecutando:</p>
+        <p>Luego, sincroniza las bases de datos de paquetes ejecutando:</p>
 <pre><code>sudo pacman -Sy</code></pre>
     </section>
 

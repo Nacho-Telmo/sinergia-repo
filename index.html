@@ -33,14 +33,23 @@
             padding-bottom: 2rem;
             margin-bottom: 2rem;
         }
+        .logo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
         h1 {
             color: var(--accent);
             font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            margin: 0.5rem 0;
         }
         .subtitle {
             color: var(--text-dim);
             font-size: 1.1rem;
+            margin: 0;
         }
         .card {
             background-color: var(--card-bg);
@@ -114,6 +123,7 @@
 
 <div class="container">
     <header>
+        <img src="logo.jpg" alt="Logo Sinergia Comunidad Linuxera" class="logo">
         <h1>Sinergia Repo</h1>
         <p class="subtitle">Repositorio personalizado para Arch Linux y derivados</p>
     </header>
@@ -122,7 +132,7 @@
         <h2>👥 Acerca de la Comunidad</h2>
         <div class="community-box">
             <div>
-                <p>Este repositorio es mantenido y organizado colectivamente por la comunidad de <strong>Sinergia Comunidad Linuxera</strong>. Un espacio impulsado por usuarios y entusiastas del software libre coordinados a través de Telegram y YouTube.</p>
+                <p>Este repositorio es mantenido y organizado colectivamente por la comunidad de <strong>Sinergia Comunidad Linuxera</strong>. Un espacio impulsado por usuarios y entusiastas del software libre coordinados activamente a través de Telegram.</p>
             </div>
             <a href="https://t.me/SinergiaComunidadLinuxera" target="_blank" class="btn-telegram">Unirse al Telegram</a>
         </div>
@@ -142,40 +152,45 @@ Server = https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64
 
     <section class="card">
         <h2>📦 Software Disponible</h2>
-        <p>Listado de paquetes optimizados y mantenidos en el repositorio:</p>
+        <p>Listado completo de paquetes optimizados y disponibles en el repositorio:</p>
         <table>
             <thead>
                 <tr>
                     <th>Paquete</th>
                     <th>Descripción</th>
-                    <th>Instalación</th>
+                    <th>Comando de Instalación</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><code>sinergia-appimage-manager</code></td>
-                    <td>Gestor de aplicaciones AppImage en Python y PyQt6.</td>
+                    <td>Gestor e integrador de aplicaciones AppImage escrito en Python y PyQt6.</td>
                     <td><code>sudo pacman -S sinergia-appimage-manager</code></td>
                 </tr>
                 <tr>
-                    <td><code>sinergia-reflector-top</code></td>
-                    <td>Utilidad gráfica para refrescar y seleccionar mirrors rápidos de Arch.</td>
-                    <td><code>sudo pacman -S sinergia-reflector-top</code></td>
-                </tr>
-                <tr>
                     <td><code>sinergia-dd-burner</code></td>
-                    <td>Herramienta GUI sencilla para grabar imágenes ISO en pendrives mediante <code>dd</code>.</td>
+                    <td>Herramienta gráfica ligera para grabar imágenes ISO en pendrives USB mediante <code>dd</code>.</td>
                     <td><code>sudo pacman -S sinergia-dd-burner</code></td>
                 </tr>
                 <tr>
+                    <td><code>sinergia-reflector-top</code></td>
+                    <td>Utilidad GUI para refrescar, probar y seleccionar los mirrors más rápidos de Arch Linux.</td>
+                    <td><code>sudo pacman -S sinergia-reflector-top</code></td>
+                </tr>
+                <tr>
                     <td><code>sinergia-webapp-manager</code></td>
-                    <td>Administrador e integrador de WebApps en el menú del sistema.</td>
+                    <td>Administrador e integrador de WebApps en el menú de aplicaciones del sistema.</td>
                     <td><code>sudo pacman -S sinergia-webapp-manager</code></td>
                 </tr>
                 <tr>
                     <td><code>yaru-colors-icon-theme</code></td>
                     <td>Tema de íconos Yaru-Colors adaptado con base oficial y fix de herencia para KDE Plasma.</td>
                     <td><code>sudo pacman -S yaru-colors-icon-theme</code></td>
+                </tr>
+                <tr>
+                    <td><code>flextile-git</code></td>
+                    <td>Layout de tiling dinámico flexible para gestores de ventanas en X11/Suckless.</td>
+                    <td><code>sudo pacman -S flextile-git</code></td>
                 </tr>
             </tbody>
         </table>

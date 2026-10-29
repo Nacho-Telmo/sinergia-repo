@@ -44,6 +44,7 @@
             border-radius: 50%;
             margin-bottom: 1rem;
             border: 3px solid var(--accent-color);
+            object-fit: cover;
         }
 
         header h1 {
@@ -176,13 +177,17 @@ sudo pacman-key --lsign-key 4CBFA5A14BB153A7</code></pre>
         </section>
 
         <section class="card">
-            <h2><i class="fa-solid fa-rocket" style="color: var(--accent-color);"></i> Paso 2: Agregar el repositorio a pacman.conf</h2>
-            <p>Añade las siguientes líneas al final de tu archivo <code>/etc/pacman.conf</code> y actualiza las bases de datos:</p>
+            <h2><i class="fa-solid fa-file-code" style="color: var(--accent-color);"></i> Paso 2: Agregar el repositorio a pacman.conf</h2>
+            <p>Añade las siguientes líneas al final de tu archivo <code>/etc/pacman.conf</code>:</p>
             <pre><code>[sinergia]
 SigLevel = Required DatabaseOptional
-Server = https://Nacho-Telmo.github.io/sinergia-repo/x86_64
+Server = https://Nacho-Telmo.github.io/sinergia-repo/x86_64</code></pre>
+        </section>
 
-sudo pacman -Sy</code></pre>
+        <section class="card">
+            <h2><i class="fa-solid fa-sync" style="color: var(--accent-color);"></i> Paso 3: Sincronizar bases de datos</h2>
+            <p>Fuerza el refresco de las bases de datos de repositorios para reconocer los nuevos paquetes:</p>
+            <pre><code>sudo pacman -Syy</code></pre>
         </section>
 
         <section class="card">

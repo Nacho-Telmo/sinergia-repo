@@ -1,16 +1,25 @@
-# Maintainer: Nacho <nacho@sinergia.com>
+# Maintainer: Sinergia <contacto@sinergia>
 pkgname=sinergia-cleaner
 pkgver=1.0.0
-pkgrel=2
-pkgdesc="Herramienta gráfica en PyQt6 para limpiar caché de pacman y eliminar paquetes huérfanos"
+pkgrel=3
+pkgdesc="Herramienta de limpieza de caché y huérfanos para Sinergia"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
 license=('GPL3')
-depends=('python' 'python-pyqt6' 'pacman')
-source=('main.py' 'sinergia-cleaner.desktop')
-sha256sums=('SKIP' 'SKIP')
+depends=('python' 'python-pyqt6')
+source=('main.py'
+        'sinergia-cleaner.desktop'
+        'sinergia-cleaner')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
 
 package() {
-    install -Dm644 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-cleaner/main.py"
-    install -Dm644 "$srcdir/sinergia-cleaner.desktop" "$pkgdir/usr/share/applications/sinergia-cleaner.desktop"
+    install -d "$pkgdir/usr/share/sinergia-cleaner"
+    install -d "$pkgdir/usr/bin"
+    install -d "$pkgdir/usr/share/applications"
+
+    install -m 644 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-cleaner/"
+    install -m 755 "$srcdir/sinergia-cleaner" "$pkgdir/usr/bin/sinergia-cleaner"
+    install -m 644 "$srcdir/sinergia-cleaner.desktop" "$pkgdir/usr/share/applications/"
 }

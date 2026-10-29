@@ -1,7 +1,7 @@
 # Maintainer: Nacho <sinergia.linux@gmail.com>
 pkgname=sinergia-welcome
 pkgver=1.0.0
-pkgrel=7
+pkgrel=8
 pkgdesc="Centro de bienvenida y control optimizado para Arch Linux por Sinergia"
 arch=('any')
 url="https://nacho-telmo.github.io/sinergia-repo/"

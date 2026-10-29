@@ -17,7 +17,7 @@ fi
 cd "$TARGET_DIR"
 
 # 1. Buscar binario (.zst o .xz) y PKGBUILD
-PKG_FILE=$(ls -t *.pkg.tar.* 2>/dev/null | grep -E '\.(zst|xz)$' | head -n 1)
+PKG_FILE=$(ls -t *.pkg.tar.* 2>/dev/null | grep -E '\.(zst|xz)$' | grep -v '\.part-' | head -n 1)
 
 if [ -z "$PKG_FILE" ] || [ ! -f "PKGBUILD" ]; then
     echo "❌ Error: No se encontró .pkg.tar.zst / .pkg.tar.xz válido o PKGBUILD en $TARGET_DIR"
@@ -54,27 +54,29 @@ echo "📋 Actualizando receta en PKGBUILDs/$PKG_NAME/..."
 mkdir -p "$REPO_DIR/PKGBUILDs/$PKG_NAME"
 cp -f "$TARGET_DIR/PKGBUILD" "$REPO_DIR/PKGBUILDs/$PKG_NAME/PKGBUILD"
 
-# 3. Actualizar la grilla en index.html de forma dinámica
+# 3. Actualizar la grilla en index.html de forma dinámica (sin duplicados)
 cd "$REPO_DIR"
 echo "🌐 Actualizando listado en index.html..."
 
-TOTAL_PKGS=$(ls -1 x86_64/*.pkg.tar.* 2>/dev/null | grep -v '\.sig' | wc -l)
-sed -i "s/Aplicaciones Disponibles ([0-9]*)/Aplicaciones Disponibles ($TOTAL_PKGS)/g" index.html
+PKGS=$(ls -1 x86_64/*.pkg.tar.* 2>/dev/null | grep -v '\.sig' | grep -v '\.part-' | sed 's|x86_64/||g' | sed -E 's/-[0-9].*//g' | sort -u)
+TOTAL=$(echo "$PKGS" | grep -c .)
 
-GRID_CONTENT="            <div class=\"app-grid\">\n"
-for pkg in $(ls -1 x86_64/*.pkg.tar.* 2>/dev/null | grep -v '\.sig' | sed 's|x86_64/||g' | sed -E 's/-[0-9].*//g' | sort -u); do
-    GRID_CONTENT="${GRID_CONTENT}                <div class=\"app-item\"><i class=\"fa-solid fa-cube\"></i> ${pkg}</div>\n"
+sed -i "s/Aplicaciones Disponibles ([0-9]*)/Aplicaciones Disponibles ($TOTAL)/g" index.html
+
+GRID="            <div class=\"app-grid\">"
+for p in $PKGS; do
+  GRID="$GRID\n                <div class=\"app-item\"><i class=\"fa-solid fa-cube\"></i> $p</div>"
 done
-GRID_CONTENT="${GRID_CONTENT}            </div>"
+GRID="$GRID\n            </div>"
 
-sed -i "/<div class=\"app-grid\">/,/<\/div>/c\\${GRID_CONTENT}" index.html
+perl -0777 -i -pe "s|<div class=\"app-grid\">.*?</div>|$GRID|s" index.html
 
 # 4. Git commit y push
 echo "🚀 Sincronizando con GitHub Pages..."
 git add x86_64/ PKGBUILDs/ index.html actualizar.sh
-git commit -m "fix(repo): remove iptvnator-bin and restore standard actualizar.sh"
+git commit -m "fix(web): deduplicate package listing in index.html"
 git push origin main
 
 echo "=========================================================================="
-echo "✅ ¡iptvnator-bin eliminado y repositorio restaurado con éxito!"
+echo "✅ ¡Script y sitio web sincronizados sin duplicados!"
 echo "=========================================================================="

@@ -1,0 +1,37 @@
+# Maintainer: Nacho <sinergia.linux@gmail.com>
+pkgname=sinergia-welcome
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Centro de bienvenida y control optimizado para Arch Linux por Sinergia"
+arch=('any')
+url="https://nacho-telmo.github.io/sinergia-repo/"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'qt6-base' 'libx11')
+optdepends=(
+    'sinergia-reflector-top: para refrescar los espejos de pacman'
+    'fastfetch: para visualizar información del sistema'
+    'konsole: terminal predeterminada para ejecutar scripts'
+    'xfce4-terminal: terminal alternativa'
+)
+source=(
+    "main.py"
+    "sinergia-welcome.desktop"
+)
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+    # 1. Copiar el archivo principal a /usr/lib/sinergia-welcome
+    install -dm755 "${pkgdir}/usr/lib/${pkgname}"
+    install -m755 "${srcdir}/main.py" "${pkgdir}/usr/lib/${pkgname}/main.py"
+
+    # 2. Crear el script ejecutable lanzador en /usr/bin
+    install -dm755 "${pkgdir}/usr/bin"
+    cat << 'LAUNCHER' > "${pkgdir}/usr/bin/${pkgname}"
+#!/bin/sh
+exec python3 /usr/lib/sinergia-welcome/main.py "$@"
+LAUNCHER
+    chmod 755 "${pkgdir}/usr/bin/${pkgname}"
+
+    # 3. Instalación del acceso directo .desktop
+    install -Dm644 "${srcdir}/sinergia-welcome.desktop" "${pkgdir}/usr/share/applications/sinergia-welcome.desktop"
+}

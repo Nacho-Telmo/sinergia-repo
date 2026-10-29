@@ -1,0 +1,16 @@
+# Maintainer: Nacho <nacho@sinergia.com>
+pkgname=sinergia-cleaner
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Herramienta gráfica en PyQt6 para limpiar caché de pacman y eliminar paquetes huérfanos"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'pacman')
+source=('main.py' 'sinergia-cleaner.desktop')
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+    install -Dm644 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-cleaner/main.py"
+    install -Dm644 "$srcdir/sinergia-cleaner.desktop" "$pkgdir/usr/share/applications/sinergia-cleaner.desktop"
+}

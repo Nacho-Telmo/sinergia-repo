@@ -1,7 +1,7 @@
 # Maintainer: Nacho <nacho@sinergia.com>
 pkgname=sinergia-cleaner
 pkgver=1.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Herramienta gráfica en PyQt6 para limpiar caché de pacman y eliminar paquetes huérfanos"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"

@@ -54,29 +54,57 @@ echo "📋 Actualizando receta en PKGBUILDs/$PKG_NAME/..."
 mkdir -p "$REPO_DIR/PKGBUILDs/$PKG_NAME"
 cp -f "$TARGET_DIR/PKGBUILD" "$REPO_DIR/PKGBUILDs/$PKG_NAME/PKGBUILD"
 
-# 3. Actualizar la grilla en index.html de forma dinámica (sin duplicados)
+# 3. Actualizar la grilla en index.html de forma limpia
 cd "$REPO_DIR"
 echo "🌐 Actualizando listado en index.html..."
 
-PKGS=$(ls -1 x86_64/*.pkg.tar.* 2>/dev/null | grep -v '\.sig' | grep -v '\.part-' | sed 's|x86_64/||g' | sed -E 's/-[0-9].*//g' | sort -u)
-TOTAL=$(echo "$PKGS" | grep -c .)
+python3 -c '
+import os, tarfile, re
 
-sed -i "s/Aplicaciones Disponibles ([0-9]*)/Aplicaciones Disponibles ($TOTAL)/g" index.html
+repo_dir = "/home/nacho/sinergia-repo"
+db_path = os.path.join(repo_dir, "x86_64", "sinergia.db.tar.gz")
+html_path = os.path.join(repo_dir, "index.html")
 
-GRID="            <div class=\"app-grid\">"
-for p in $PKGS; do
-  GRID="$GRID\n                <div class=\"app-item\"><i class=\"fa-solid fa-cube\"></i> $p</div>"
-done
-GRID="$GRID\n            </div>"
+names = set()
+if os.path.exists(db_path):
+    with tarfile.open(db_path, "r:gz") as tar:
+        for member in tar.getmembers():
+            if member.name.endswith("/desc"):
+                f = tar.extractfile(member)
+                if f:
+                    lines = [line.decode("utf-8", errors="ignore").strip() for line in f.readlines()]
+                    for i, line in enumerate(lines):
+                        if line == "%NAME%" and i + 1 < len(lines):
+                            names.add(lines[i + 1])
 
-perl -0777 -i -pe "s|<div class=\"app-grid\">.*?</div>|$GRID|s" index.html
+pkgs = sorted(list(names))
+
+with open(html_path, "r", encoding="utf-8") as f:
+    content = f.read()
+
+start_idx = content.find("<div class=\"app-grid\">")
+if start_idx != -1:
+    header_part = content[:start_idx]
+    items_html = "\n".join([f"                <div class=\"app-item\"><i class=\"fa-solid fa-cube\"></i> {p}</div>" for p in pkgs])
+    grid_html = f"<div class=\"app-grid\">\n{items_html}\n            </div>\n"
+    
+    end_part = "\n        </section>\n    </main>\n</body>\n</html>"
+    if "</section>" in content:
+        end_part = content[content.rfind("</section>"):]
+        
+    full_clean_html = header_part + grid_html + "    " + end_part
+    full_clean_html = re.sub(r"Aplicaciones Disponibles \([0-9]+\)", f"Aplicaciones Disponibles ({len(pkgs)})", full_clean_html)
+
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(full_clean_html)
+'
 
 # 4. Git commit y push
 echo "🚀 Sincronizando con GitHub Pages..."
 git add x86_64/ PKGBUILDs/ index.html actualizar.sh
-git commit -m "fix(web): deduplicate package listing in index.html"
+git commit -m "update(repo): add/update $PKG_NAME"
 git push origin main
 
 echo "=========================================================================="
-echo "✅ ¡Script y sitio web sincronizados sin duplicados!"
+echo "✅ ¡Repositorio y sitio web actualizados con éxito!"
 echo "=========================================================================="

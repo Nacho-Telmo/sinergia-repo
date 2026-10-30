@@ -54,16 +54,16 @@ echo "📋 Actualizando receta en PKGBUILDs/$PKG_NAME/..."
 mkdir -p "$REPO_DIR/PKGBUILDs/$PKG_NAME"
 cp -f "$TARGET_DIR/PKGBUILD" "$REPO_DIR/PKGBUILDs/$PKG_NAME/PKGBUILD"
 
-# 3. Actualizar la grilla en index.html de forma limpia
+# 3. Actualizar la grilla en public/index.html de forma limpia
 cd "$REPO_DIR"
-echo "🌐 Actualizando listado en index.html..."
+echo "🌐 Actualizando listado en public/index.html..."
 
 python3 -c '
 import os, tarfile, re
 
 repo_dir = "/home/nacho/sinergia-repo"
 db_path = os.path.join(repo_dir, "x86_64", "sinergia.db.tar.gz")
-html_path = os.path.join(repo_dir, "index.html")
+html_path = os.path.join(repo_dir, "public", "index.html")
 
 names = set()
 if os.path.exists(db_path):
@@ -101,7 +101,7 @@ if start_idx != -1:
 
 # 4. Git commit y push
 echo "🚀 Sincronizando con GitHub Pages..."
-git add x86_64/ PKGBUILDs/ index.html actualizar.sh
+git add x86_64/ PKGBUILDs/ public/index.html actualizar.sh
 git commit -m "update(repo): add/update $PKG_NAME"
 git push origin main
 

@@ -38,16 +38,15 @@
     <main>
         <section class="card">
             <h2><i class="fa-solid fa-key" style="color: var(--accent-color);"></i> Paso 1: Agregar la llave GPG</h2>
-            <p>Importa y firma la clave pública del repositorio para verificar la autenticidad de los paquetes:</p>
-            <div class="code-container"><button class="btn-copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copiar</button><pre><code>curl -sS https://Nacho-Telmo.github.io/sinergia-repo/sinergia.gpg | sudo pacman-key --add -
-sudo pacman-key --lsign-key 4CBFA5A14BB153A7</code></pre></div>
+            <p>Importa y firma la clave pública del repositorio para verificar la autenticidad de los paquetes de forma rápida:</p>
+            <div class="code-container"><button class="btn-copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copiar</button><pre><code>curl -s https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64/sinergia.db.sig | gpg --dearmor - 2>/dev/null | sudo pacman-key --add - && sudo pacman-key --lsign-key 4CBFA5A14BB153A7</code></pre></div>
         </section>
         <section class="card">
             <h2><i class="fa-solid fa-file-code" style="color: var(--accent-color);"></i> Paso 2: Agregar el repositorio a pacman.conf</h2>
             <p>Añade las siguientes líneas al final de tu archivo <code>/etc/pacman.conf</code>:</p>
             <div class="code-container"><button class="btn-copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copiar</button><pre><code>[sinergia]
 SigLevel = Required DatabaseOptional
-Server = https://Nacho-Telmo.github.io/sinergia-repo/x86_64</code></pre></div>
+Server = https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64</code></pre></div>
         </section>
         <section class="card">
             <h2><i class="fa-solid fa-sync" style="color: var(--accent-color);"></i> Paso 3: Sincronizar bases de datos</h2>
@@ -87,4 +86,3 @@ Server = https://Nacho-Telmo.github.io/sinergia-repo/x86_64</code></pre></div>
     <script>if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(r=>{for(let reg of r)reg.unregister()})}</script>
 <script>function copyCode(btn){const text=btn.nextElementSibling.querySelector("code").innerText;navigator.clipboard.writeText(text).then(()=>{btn.innerHTML="<i class='fa-solid fa-check'></i> ¡Copiado!";setTimeout(()=>{btn.innerHTML="<i class='fa-regular fa-copy'></i> Copiar";},2000);});}</script></body>
 </html>
-

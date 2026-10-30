@@ -63,7 +63,7 @@ import os, tarfile, re
 
 repo_dir = "/home/nacho/sinergia-repo"
 db_path = os.path.join(repo_dir, "x86_64", "sinergia.db.tar.gz")
-html_path = os.path.join(repo_dir, "public", "index.html")
+html_path = os.path.join(repo_dir, "index.html")
 
 names = set()
 if os.path.exists(db_path):

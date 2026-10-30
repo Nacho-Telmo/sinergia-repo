@@ -99,3 +99,4 @@ sudo pacman-key --lsign-key 4CBFA5A14BB153A7
 
 * 📺 **Canal de YouTube:** [Sinergia Comunidad Linuxera](https://www.youtube.com/@Sinergia-Comunidad-Linuxera)
 * 🐙 **GitHub Repositorio:** [Nacho-Telmo/sinergia-repo](https://github.com/Nacho-Telmo/sinergia-repo)
+vie 30 oct 2026 11:30:41 -03

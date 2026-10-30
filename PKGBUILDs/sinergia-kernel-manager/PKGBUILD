@@ -1,0 +1,22 @@
+# Maintainer: Nacho Telmo <sinergia@comunidad.linuxera>
+pkgname=sinergia-kernel-manager
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Gestor visual de kernels y hardware para Arch Linux desarrollado por Sinergia"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'pciutils')
+source=("$pkgname.py"
+        "$pkgname.desktop")
+sha256sums=('SKIP'
+            'SKIP')
+
+package() {
+    install -Dm755 "$srcdir/$pkgname.py" "$pkgdir/usr/share/$pkgname/$pkgname.py"
+    install -Dm644 "$srcdir/$pkgname.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
+    
+    # Crear un enlace ejecutable directo en /usr/bin
+    install -dm755 "$pkgdir/usr/bin"
+    ln -s "/usr/share/$pkgname/$pkgname.py" "$pkgdir/usr/bin/$pkgname"
+}

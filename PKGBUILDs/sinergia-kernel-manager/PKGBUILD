@@ -1,7 +1,7 @@
 # Maintainer: Nacho Telmo <sinergia@comunidad.linuxera>
 pkgname=sinergia-kernel-manager
 pkgver=1.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Gestor visual de kernels y hardware para Arch Linux desarrollado por Sinergia"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"

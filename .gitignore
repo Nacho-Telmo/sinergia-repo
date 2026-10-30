@@ -1,1 +1,5 @@
 *.old*
+
+# Ignorar bases de datos temporales y respaldos de pacman
+x86_64/sinergia.db*
+x86_64/sinergia.files*

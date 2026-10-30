@@ -6,7 +6,7 @@
 set -e
 
 REPO_DIR="/home/nacho/sinergia-repo"
-TARGET_DIR="$1"
+TARGET_DIR="$(realpath "$1")"
 GPG_KEY="4CBFA5A14BB153A7"
 
 if [ -z "$TARGET_DIR" ] || [ ! -d "$TARGET_DIR" ]; then

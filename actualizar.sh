@@ -101,7 +101,7 @@ if start_idx != -1:
 
 # 4. Git commit y push
 echo "🚀 Sincronizando con GitHub Pages..."
-git add x86_64/ PKGBUILDs/ public/index.html actualizar.sh
+git add x86_64/ PKGBUILDs/ index.html actualizar.sh
 git commit -m "update(repo): add/update $PKG_NAME"
 git push origin main
 

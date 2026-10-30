@@ -10,11 +10,10 @@ Todos los paquetes y la base de datos están firmados criptográficamente con GP
 
 ### Paso 1: Importar y Validar la Clave GPG Pública
 
-Ejecutá este comando en tu terminal para importar y validar la clave de firma del repositorio en el llavero de tu sistema:
+Ejecutá este comando en tu terminal para importar y validar la clave de firma del repositorio en el llavero de tu sistema de forma rápida y sin interrupciones:
 
 ```bash
-curl -s https://Nacho-Telmo.github.io/sinergia-repo/x86_64/sinergia.gpg | sudo pacman-key --add -
-sudo pacman-key --lsign-key 4CBFA5A14BB153A7
+curl -s https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64/sinergia.db.sig | gpg --dearmor - 2>/dev/null | sudo pacman-key --add - && sudo pacman-key --lsign-key 4CBFA5A14BB153A7
 ```
 
 > **Detalles de la clave:**
@@ -36,7 +35,7 @@ Agregá las siguientes líneas al final del archivo:
 ```ini
 [sinergia]
 SigLevel = Required DatabaseOptional
-Server = https://Nacho-Telmo.github.io/sinergia-repo/$arch
+Server = https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/x86_64
 ```
 
 *(En Nano: guardá con `Ctrl + O`, presioná `Enter` y salí con `Ctrl + X`)*.
@@ -48,7 +47,7 @@ Server = https://Nacho-Telmo.github.io/sinergia-repo/$arch
 Actualizá los índices de tu sistema para reconocer el nuevo repositorio:
 
 ```bash
-sudo pacman -Sy
+sudo pacman -Syy
 ```
 
 ---
@@ -86,11 +85,11 @@ sudo pacman -Sy
 
 ## 🛠️ Solución de Problemas
 
-Si en algún momento el sistema indica un error de firmas (`error: sinergia: key "4CBFA5A14BB153A7" is unknown`), re-importá la clave directamente ejecutando:
+Si en algún momento el sistema indica un error de sincronización o firmas, limpiá la caché local y re-sincronizá:
 
 ```bash
-curl -s https://Nacho-Telmo.github.io/sinergia-repo/x86_64/sinergia.gpg | sudo pacman-key --add -
-sudo pacman-key --lsign-key 4CBFA5A14BB153A7
+sudo rm -rf /var/lib/pacman/sync/sinergia*
+sudo pacman -Syy
 ```
 
 ---

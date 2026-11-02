@@ -1,0 +1,205 @@
+# Maintainer: Nacho <sinergia.linuxera@gmail.com>
+pkgname=sinergia-conky
+pkgver=1.0.0
+pkgrel=9
+pkgdesc="Tema Conky Hybrid adaptativo para Sinergia OS (Escala de grises, multi-escritorio)"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('conky' 'python' 'curl' 'rsync' 'tar' 'util-linux' 'iproute2' 'noto-fonts' 'fontconfig')
+optdepends=('conky-lua-nv: Soporte extendido para GPUs NVIDIA')
+source=("hybrid.tar.gz::https://bitbucket.org/dirn-typo/hybrid/get/master.tar.gz")
+sha256sums=('SKIP')
+
+prepare() {
+    # Localizar el directorio descompreso de Bitbucket
+    SRC_DIR="$(find "$srcdir" -maxdepth 1 -mindepth 1 -type d -name 'dirn-typo-hybrid-*' | head -n1)"
+
+    mkdir -p "$srcdir/theme"
+    rsync -a \
+        --exclude='.git' \
+        --exclude='deploy.sh' \
+        --exclude='install.sh' \
+        --exclude='readme.md' \
+        --exclude='screenshots' \
+        --exclude='bad-experiment' \
+        --exclude='classic' \
+        --exclude='images' \
+        "$SRC_DIR/" "$srcdir/theme/"
+
+    # Renombrar a plantillas para procesamiento dinámico al inicio
+    mv "$srcdir/theme/hybrid.conf" "$srcdir/theme/hybrid.conf.tpl"
+    if [ -f "$srcdir/theme/lua/hybrid-rings.lua" ]; then
+        mv "$srcdir/theme/lua/hybrid-rings.lua" "$srcdir/theme/lua/hybrid-rings.lua.tpl"
+    fi
+    rm -f "$srcdir/theme/startup/hybrid-startup.sh"
+    mkdir -p "$srcdir/theme/startup"
+
+    # Corregir parámetros obsoletos y forzar compatibilidad X11/XWayland
+    sed -i 's/xftalpha/text_alpha/g' "$srcdir/theme/hybrid.conf.tpl"
+    sed -i 's/out_to_wayland = true/out_to_wayland = false/g' "$srcdir/theme/hybrid.conf.tpl"
+    sed -i 's/out_to_x = false/out_to_x = true/g' "$srcdir/theme/hybrid.conf.tpl"
+
+    # 1. Forzar escala de grises en la plantilla principal (hybrid.conf.tpl)
+    sed -i -E "s/color1 = '[^']*'/color1 = '#FFFFFF'/g" "$srcdir/theme/hybrid.conf.tpl"
+    sed -i -E "s/color2 = '[^']*'/color2 = '#DCDCDC'/g" "$srcdir/theme/hybrid.conf.tpl"
+    sed -i -E "s/color3 = '[^']*'/color3 = '#A0A0A0'/g" "$srcdir/theme/hybrid.conf.tpl"
+    sed -i -E "s/color4 = '[^']*'/color4 = '#707070'/g" "$srcdir/theme/hybrid.conf.tpl"
+
+    # 2. Forzar escala de grises en los anillos Lua (hybrid-rings.lua.tpl)
+    if [ -f "$srcdir/theme/lua/hybrid-rings.lua.tpl" ]; then
+        # Reemplazar colores en formato Hexadecimal (0xRRGGBB o "0xRRGGBB") por tonos grises/blancos
+        sed -i -E 's/fg_color=0x[0-9a-fA-F]+/fg_color=0xFFFFFF/g' "$srcdir/theme/lua/hybrid-rings.lua.tpl"
+        sed -i -E 's/bg_color=0x[0-9a-fA-F]+/bg_color=0x404040/g' "$srcdir/theme/lua/hybrid-rings.lua.tpl"
+    fi
+
+    # Generar el script de recorte de CPUs en Python
+    cat > "$srcdir/theme/startup/hybrid-prepare.py" << 'EOF'
+#!/usr/bin/env python3
+import os, re, sys
+
+d = sys.argv[1]
+src = os.path.join(d, "lua", "hybrid-rings.lua.tpl")
+dst = os.path.join(d, "lua", "hybrid-rings.lua")
+
+if not os.path.isfile(src):
+    sys.exit(0)
+
+with open("/proc/stat") as f:
+    nproc = max(sum(1 for l in f if re.match(r"cpu\d+\s", l)), 1)
+
+with open(src, "r", encoding="utf-8") as f:
+    text = f.read()
+
+if "settings_table" not in text:
+    with open(dst, "w", encoding="utf-8") as f:
+        f.write(text)
+    sys.exit(0)
+
+marker = "settings_table = {"
+tbl_start = text.index(marker)
+brace_open = tbl_start + len(marker) - 1
+
+depth = 0
+entries = []
+entry_start = None
+for i in range(brace_open, len(text)):
+    ch = text[i]
+    if ch == "{":
+        depth += 1
+        if depth == 2:
+            entry_start = i
+    elif ch == "}":
+        if depth == 2:
+            entries.append((entry_start, i + 1))
+        depth -= 1
+        if depth == 0:
+            break
+
+to_remove = []
+for s, e in entries:
+    block = text[s:e]
+    if "name='cpu'" in block:
+        m = re.search(r"arg='cpu(\d+)'", block)
+        if m and int(m.group(1)) > nproc:
+            end_ext = e + 1 if e < len(text) and text[e] == "," else e
+            to_remove.append((s, end_ext))
+
+for s, e in sorted(to_remove, key=lambda t: -t[0]):
+    text = text[:s] + text[e:]
+text = re.sub(r"(\n[ \t]*){3,}", "\n\n", text)
+
+with open(dst, "w", encoding="utf-8") as f:
+    f.write(text)
+EOF
+    chmod +x "$srcdir/theme/startup/hybrid-prepare.py"
+
+    # Generar el ejecutable principal del sistema
+    cat > "$srcdir/sinergia-conky-start" << 'EOF'
+#!/bin/sh
+# Lanzador de Sinergia Conky (Adaptativo y Multi-escritorio)
+D="$HOME/.config/conky/hybrid"
+SHARE="/usr/share/sinergia-conky"
+
+# Crear directorio y copiar desde /usr/share si no existe la plantilla local
+mkdir -p "$D"
+if [ ! -f "$D/hybrid.conf.tpl" ]; then
+    if [ -d "$SHARE/theme" ]; then
+        cp -rf "$SHARE/theme/"* "$D/"
+    else
+        cp -rf "$SHARE/"* "$D/"
+    fi
+fi
+
+LOCK="${XDG_RUNTIME_DIR:-/tmp}/sinergia-conky-$(id -u).lock"
+exec 9>"$LOCK"
+flock -n 9 || exit 0
+
+# Detección de interfaces de red reales
+WIRED=""; WIFI=""
+for p in /sys/class/net/*; do
+    i=${p##*/}
+    [ "$i" = "lo" ] && continue
+    case "$(readlink -f "$p")" in */virtual/*) continue ;; esac
+    if [ -d "$p/wireless" ]; then
+        [ -z "$WIFI" ] && WIFI=$i
+    else
+        [ -z "$WIRED" ] && WIRED=$i
+    fi
+done
+WIRED=${WIRED:-none0}
+WIFI=${WIFI:-none1}
+
+sed -e "s/__IFACE_WIRED1__/$WIRED/g" \
+    -e "s/__IFACE_WIFI1__/$WIFI/g" \
+    "$D/hybrid.conf.tpl" > "$D/hybrid.conf"
+
+if command -v python3 >/dev/null 2>&1; then
+    python3 "$D/startup/hybrid-prepare.py" "$D" || \
+        ([ -f "$D/lua/hybrid-rings.lua.tpl" ] && cp "$D/lua/hybrid-rings.lua.tpl" "$D/lua/hybrid-rings.lua")
+else
+    [ -f "$D/lua/hybrid-rings.lua.tpl" ] && cp "$D/lua/hybrid-rings.lua.tpl" "$D/lua/hybrid-rings.lua"
+fi
+
+sleep "${HYBRID_DELAY:-3}"
+
+# Forzar a Conky y a sus subprocesos a ver únicamente el servidor XWayland
+unset WAYLAND_DISPLAY
+export XDG_SESSION_TYPE=x11
+export DISPLAY="${DISPLAY:-:0}"
+
+exec conky -c "$D/hybrid.conf"
+EOF
+    chmod +x "$srcdir/sinergia-conky-start"
+
+    # Generar el autostart XDG
+    cat > "$srcdir/sinergia-conky.desktop" << 'EOF'
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/sinergia-conky-start
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+Name=Sinergia Conky
+Comment=Inicia el tema Conky Hybrid adaptativo de Sinergia OS
+EOF
+}
+
+package() {
+    # 1. Copiar recursos compartidos directamente
+    install -dm755 "$pkgdir/usr/share/sinergia-conky"
+    cp -r "$srcdir/theme/"* "$pkgdir/usr/share/sinergia-conky/"
+
+    # 2. Copiar fuentes del tema al sistema
+    if compgen -G "$srcdir/theme/fonts/*.ttf" > /dev/null; then
+        install -dm755 "$pkgdir/usr/share/fonts/sinergia-conky"
+        install -m644 "$srcdir/theme/fonts/"*.ttf "$pkgdir/usr/share/fonts/sinergia-conky/"
+    fi
+
+    # 3. Copiar ejecutable
+    install -Dm755 "$srcdir/sinergia-conky-start" "$pkgdir/usr/bin/sinergia-conky-start"
+
+    # 4. Copiar Autostart global
+    install -Dm644 "$srcdir/sinergia-conky.desktop" "$pkgdir/etc/xdg/autostart/sinergia-conky.desktop"
+    install -Dm644 "$srcdir/sinergia-conky.desktop" "$pkgdir/etc/skel/.config/autostart/sinergia-conky.desktop"
+}

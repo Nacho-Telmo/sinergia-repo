@@ -1,0 +1,50 @@
+# Maintainer: Ignacio Ezcurra (Nacho-Telmo) <sinergia.linuxera@gmail.com>
+pkgname=sinergia-webapp-manager
+pkgver=1.0.0
+pkgrel=7
+pkgdesc="Gestor de aplicaciones web para Sinergia Linux"
+arch=('any')
+url="https://github.com/Nacho-Telmo/Sinergia"
+license=('GPL3')
+depends=('python' 'python-pyqt6')
+options=('!strip')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/Nacho-Telmo/Sinergia/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir"
+    cd "$(ls -d Sinergia-* | head -n 1)"
+
+    local app_dir=$(find . -type d -name "*webapp-manager*" -o -name "*WebApp*" | head -n 1)
+    [ -z "$app_dir" ] && app_dir="."
+
+    install -d "$pkgdir/usr/share/$pkgname"
+    cp -r "$app_dir"/* "$pkgdir/usr/share/$pkgname/" 2>/dev/null || true
+
+    local main_py=$(find "$pkgdir/usr/share/$pkgname" -maxdepth 2 -name "*.py" ! -name "setup.py" | head -n 1)
+    local rel_py=$(basename "$main_py")
+
+    install -d "$pkgdir/usr/bin"
+    cat <<EOF > "$pkgdir/usr/bin/$pkgname"
+#!/bin/sh
+exec python /usr/share/$pkgname/$rel_py "\$@"
+EOF
+    chmod +x "$pkgdir/usr/bin/$pkgname"
+
+    install -Dm644 /dev/null "$pkgdir/usr/share/applications/$pkgname.desktop"
+    cat <<EOF > "$pkgdir/usr/share/applications/$pkgname.desktop"
+[Desktop Entry]
+Name=Sinergia WebApp Manager
+Comment=Gestor de aplicaciones web para Sinergia Linux
+Exec=sinergia-webapp-manager
+Icon=sinergia-webapp-manager
+Terminal=false
+Type=Application
+Categories=Utility;
+EOF
+
+    install -d "$pkgdir/usr/share/pixmaps"
+    if [ -f "$app_dir"/*.png ]; then
+        cp "$app_dir"/*.png "$pkgdir/usr/share/pixmaps/$pkgname.png"
+    fi
+}

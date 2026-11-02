@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinergia - Repositorio Oficial Arch Linux</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --border: #334155;
+            --badge-bg: #0369a1;
+            --telegram: #0088cc;
+            --telegram-hover: #006699;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .repo-logo {
+            width: 192px;
+            height: 192px;
+            object-fit: contain;
+            border-radius: 16px;
+        }
+        header h1 { font-size: 2.3rem; color: var(--accent); font-weight: 800; }
+        .header-desc {
+            color: var(--muted);
+            font-size: 1.05rem;
+            max-width: 780px;
+            margin: 0.5rem auto 1.25rem;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .btn-telegram {
+            background: var(--telegram);
+            color: #ffffff;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.15s ease;
+        }
+        .btn-telegram:hover { background: var(--telegram-hover); }
+        .btn-secondary {
+            background: #334155;
+            color: #ffffff;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.15s ease;
+        }
+        .btn-secondary:hover { background: #475569; }
+
+        /* Guía en diseño vertical con botón de copiar */
+        .steps-box {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.75rem;
+            margin-bottom: 2.5rem;
+        }
+        .steps-box h2 {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .step-card {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .step-number {
+            display: inline-block;
+            background: var(--badge-bg);
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .step-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            color: #f8fafc;
+        }
+        .step-desc {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+        .code-wrapper {
+            position: relative;
+        }
+        pre {
+            background: #090d16;
+            padding: 0.85rem 3.5rem 0.85rem 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: monospace;
+            color: #38bdf8;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .btn-copy {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #334155;
+            color: #f8fafc;
+            border: none;
+            border-radius: 4px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-copy:hover {
+            background: var(--accent);
+            color: #0f172a;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+        .card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .card-header .icon { font-size: 1.8rem; }
+        .card-header h3 { font-size: 1.15rem; word-break: break-word; }
+        .badge {
+            display: inline-block;
+            background: var(--badge-bg);
+            color: #e0f2fe;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        .desc { color: var(--muted); font-size: 0.92rem; margin-bottom: 1rem; flex-grow: 1; }
+        .meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            border-top: 1px solid var(--border);
+            padding-top: 0.5rem;
+        }
+        .btn-download {
+            display: block;
+            text-align: center;
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: background 0.15s ease;
+        }
+        .btn-download:hover { background: var(--accent-hover); color: #fff; }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="https://raw.githubusercontent.com/Nacho-Telmo/sinergia-repo/main/logo.png" alt="Logo Sinergia" class="repo-logo">
+                <h1>Sinergia Comunidad Linuxera</h1>
+            </div>
+            <p class="header-desc">
+                Repositorio oficial de paquetes binarios para Arch Linux, mantenido de forma colaborativa por los integrantes de la Comunidad de Sinergia. Optimizado para ofrecer herramientas personalizadas, mantenimiento simplificado y máximo rendimiento en el escritorio.
+            </p>
+            <div class="nav-buttons">
+                <a href="https://t.me/Guias_NovumSinergia" target="_blank" class="btn-telegram">
+                    ✈️ Canal de Telegram
+                </a>
+                <a href="https://www.youtube.com/@Sinergia-Comunidad-Linuxera" target="_blank" class="btn-secondary">
+                    📺 Canal de YouTube
+                </a>
+            </div>
+        </header>
+
+        <!-- Sección de 4 Pasos Verticales con Botón Copiar -->
+        <div class="steps-box">
+            <h2>🛠️ 4 Pasos para agregar el repositorio a tu sistema</h2>
+            <div class="steps-list">
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div>
+                            <span class="step-number">PASO 1</span>
+                            <span class="step-title">Importar la clave GPG del repositorio</span>
+                        </div>
+                    </div>
+                    <div class="step-desc">Descarga e importa la clave pública oficial directamente al llavero de tu sistema:</div>
+                    <div class="code-wrapper">
+                        <pre id="code-1">curl -s https://nacho-telmo.github.io/sinergia-repo/x86_64/sinergia-key.asc | sudo pacman-key --add -</pre>
+                        <button class="btn-copy" onclick="copyCode('code-1', this)">Copiar</button>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div>
+                            <span class="step-number">PASO 2</span>
+                            <span class="step-title">Firmar localmente la clave</span>
+                        </div>
+                    </div>
+                    <div class="step-desc">Otorga confianza local a la clave importada para que pacman valide las firmas de forma segura:</div>
+                    <div class="code-wrapper">
+                        <pre id="code-2">sudo pacman-key --lsign-key 33986859CBA9A0329EE9321E1AA165CC95EBE1F1</pre>
+                        <button class="btn-copy" onclick="copyCode('code-2', this)">Copiar</button>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div>
+                            <span class="step-number">PASO 3</span>
+                            <span class="step-title">Agregar el repositorio a tu configuración</span>
+                        </div>
+                    </div>
+                    <div class="step-desc">Abre el archivo de configuración con tu editor de texto favorito y añade las líneas al final:</div>
+                    <div class="code-wrapper">
+                        <pre id="code-3">sudo nano /etc/pacman.conf
+
+[sinergia]
+SigLevel = Required DatabaseOptional
+Server = https://nacho-telmo.github.io/sinergia-repo/x86_64/</pre>
+                        <button class="btn-copy" onclick="copyCode('code-3', this)">Copiar</button>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div>
+                            <span class="step-number">PASO 4</span>
+                            <span class="step-title">Sincronizar las bases de datos</span>
+                        </div>
+                    </div>
+                    <div class="step-desc">Fuerza el refresco de los repositorios para comenzar a utilizar el repositorio de Sinergia:</div>
+                    <div class="code-wrapper">
+                        <pre id="code-4">sudo pacman -Syy</pre>
+                        <button class="btn-copy" onclick="copyCode('code-4', this)">Copiar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="grid">
+            
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🪟</span>
+                <div>
+                    <h3>flextile-git</h3>
+                    <span class="badge">r4.5a2ebbf-2</span>
+                </div>
+            </div>
+            <p class="desc">Gestor de distribución de ventanas flexible</p>
+            <div class="meta">
+                <span>📁 25.4 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/flextile-git-r4.5a2ebbf-2-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">⚙️</span>
+                <div>
+                    <h3>konvi</h3>
+                    <span class="badge">1:1.0.0-5</span>
+                </div>
+            </div>
+            <p class="desc">Utilidad de conversión y herramientas de sistema</p>
+            <div class="meta">
+                <span>📁 487.0 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/konvi-1:1.0.0-5-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🎨</span>
+                <div>
+                    <h3>sddm-theme-sinergia</h3>
+                    <span class="badge">1.0-2</span>
+                </div>
+            </div>
+            <p class="desc">Tema visual Sinergia para el gestor de inicio SDDM</p>
+            <div class="meta">
+                <span>📁 18.0 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sddm-theme-sinergia-1.0-2-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">📦</span>
+                <div>
+                    <h3>sinergia-appimage-manager</h3>
+                    <span class="badge">1.0.1-3</span>
+                </div>
+            </div>
+            <p class="desc">Gestor e integrador de paquetes AppImage</p>
+            <div class="meta">
+                <span>📁 36.0 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-appimage-manager-1.0.1-3-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🛠️</span>
+                <div>
+                    <h3>sinergia-aur-helper</h3>
+                    <span class="badge">1.0.0-2</span>
+                </div>
+            </div>
+            <p class="desc">Asistente de compilación e instalación para AUR</p>
+            <div class="meta">
+                <span>📁 22.1 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-aur-helper-1.0.0-2-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🧹</span>
+                <div>
+                    <h3>sinergia-cleaner</h3>
+                    <span class="badge">1.0.0-3</span>
+                </div>
+            </div>
+            <p class="desc">Limpiador de sistema, caché de pacman y archivos huérfanos</p>
+            <div class="meta">
+                <span>📁 19.7 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-cleaner-1.0.0-3-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">📊</span>
+                <div>
+                    <h3>sinergia-conky</h3>
+                    <span class="badge">1.0.0-9</span>
+                </div>
+            </div>
+            <p class="desc">Widgets y monitoreo de sistema Conky preconfigurados</p>
+            <div class="meta">
+                <span>📁 183.9 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-conky-1.0.0-9-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🔥</span>
+                <div>
+                    <h3>sinergia-dd-burner</h3>
+                    <span class="badge">1.0.0-2</span>
+                </div>
+            </div>
+            <p class="desc">Herramienta gráfica para grabar imágenes ISO en USB</p>
+            <div class="meta">
+                <span>📁 55.8 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-dd-burner-1.0.0-2-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🔑</span>
+                <div>
+                    <h3>sinergia-keyring</h3>
+                    <span class="badge">2026.11-1</span>
+                </div>
+            </div>
+            <p class="desc">Claves GPG oficiales del repositorio Sinergia</p>
+            <div class="meta">
+                <span>📁 20.9 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-keyring-2026.11-1-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">💻</span>
+                <div>
+                    <h3>sinergia-plasma-full</h3>
+                    <span class="badge">1.0.0-3</span>
+                </div>
+            </div>
+            <p class="desc">Meta-paquete de configuración de escritorio KDE Plasma</p>
+            <div class="meta">
+                <span>📁 25.8 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-plasma-full-1.0.0-3-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">⚡</span>
+                <div>
+                    <h3>sinergia-reflector-top</h3>
+                    <span class="badge">1.0.6-2</span>
+                </div>
+            </div>
+            <p class="desc">Optimizador gráfico de mirrors pacman más rápidos</p>
+            <div class="meta">
+                <span>📁 948.6 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-reflector-top-1.0.6-2-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🌐</span>
+                <div>
+                    <h3>sinergia-webapp-manager</h3>
+                    <span class="badge">1.0.0-7</span>
+                </div>
+            </div>
+            <p class="desc">Gestor gráfico de aplicaciones web para el escritorio</p>
+            <div class="meta">
+                <span>📁 291.60 MB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-webapp-manager-1.0.0-7-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🚀</span>
+                <div>
+                    <h3>sinergia-welcome</h3>
+                    <span class="badge">1.0.0-16</span>
+                </div>
+            </div>
+            <p class="desc">Centro de control y bienvenida para Sinergia Linux</p>
+            <div class="meta">
+                <span>📁 21.0 KB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/sinergia-welcome-1.0.0-16-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">📈</span>
+                <div>
+                    <h3>stacer-bin</h3>
+                    <span class="badge">1.8.0-1</span>
+                </div>
+            </div>
+            <p class="desc">Optimizador y monitor de recursos de sistema</p>
+            <div class="meta">
+                <span>📁 774.9 KB</span>
+                <span>🏷️ x86_64</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/stacer-bin-1.8.0-1-x86_64.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">🖼️</span>
+                <div>
+                    <h3>vortex-dark-icons</h3>
+                    <span class="badge">1.0-4</span>
+                </div>
+            </div>
+            <p class="desc">Tema de íconos oscuros Vortex para el escritorio</p>
+            <div class="meta">
+                <span>📁 6.03 MB</span>
+                <span>🏷️ any</span>
+                <span>📅 02/11/2026</span>
+            </div>
+            <a href="x86_64/vortex-dark-icons-1.0-4-any.pkg.tar.zst" class="btn-download" download>Descargar .pkg.tar.zst</a>
+        </div>
+        </div>
+
+        <footer>
+            <p>Catálogo generado automáticamente el 02/11/2026 17:41 • Sinergia Repo (15 paquetes)</p>
+        </footer>
+    </div>
+
+    <script>
+        function copyCode(elementId, btn) {
+            const codeText = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "¡Copiado!";
+                btn.style.background = "#38bdf8";
+                btn.style.color = "#0f172a";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "#334155";
+                    btn.style.color = "#f8fafc";
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+            });
+        }
+    </script>
+</body>
+</html>

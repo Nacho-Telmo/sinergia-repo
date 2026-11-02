@@ -1,0 +1,6 @@
+*.old*
+
+# Ignorar bases de datos temporales y respaldos de pacman
+
+PKGBUILDs/sinergia-webapp-manager/sinergia-webapp-manager-1.0.0.tar.gz
+docs/x86_64/sinergia-webapp-manager-*.pkg.tar.zst*

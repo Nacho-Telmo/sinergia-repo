@@ -1,0 +1,15 @@
+# Mantenedor: Sinergia - Comunidad Linuxera <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-plasma-full
+pkgver=1.0.0
+pkgrel=3
+pkgdesc="Script de post-instalación de entorno Plasma completo para Sinergia Linux"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL-3.0-or-later')
+depends=('bash' 'sinergia-keyring')
+source=("plasma-full.sh")
+sha256sums=('SKIP')
+
+package() {
+    install -Dm755 "${srcdir}/plasma-full.sh" "${pkgdir}/usr/bin/sinergia-plasma-full"
+}

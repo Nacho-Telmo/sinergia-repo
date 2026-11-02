@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Sinergia Cleaner
+Comment=Limpiador de sistema y paquetes huérfanos para Arch Linux
+Exec=python3 /usr/share/sinergia-cleaner/main.py
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=System;Settings;

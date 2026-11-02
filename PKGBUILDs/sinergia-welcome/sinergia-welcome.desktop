@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Welcome
+Comment=Centro de Control y Bienvenida de Sinergia Linux
+Exec=sinergia-welcome
+Icon=sinergia-welcome
+Terminal=false
+Categories=Utility;Settings;

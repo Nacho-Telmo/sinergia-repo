@@ -1,0 +1,35 @@
+# Maintainer: Nacho <sinergia@comunidad.linuxera>
+pkgname=sinergia-aur-helper
+pkgver=1.0.0
+pkgrel=2
+pkgdesc="Asistente gráfico en PyQt6 para buscar, inspeccionar y gestionar paquetes de AUR"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-aur-helper"
+license=('MIT')
+depends=('python' 'python-pyqt6')
+optdepends=('yay: para instalación automática de paquetes AUR'
+            'paru: asistente AUR alternativo')
+source=('main.py'
+        'sinergia-aur-helper.desktop')
+sha256sums=('SKIP'
+            'SKIP')
+
+package() {
+    cd "$srcdir"
+
+    # Crear directorios en el sistema
+    install -dm755 "$pkgdir/usr/bin"
+    install -dm755 "$pkgdir/usr/share/sinergia-aur-helper"
+    install -dm755 "$pkgdir/usr/share/applications"
+
+    # Copiar el script principal de Python
+    install -m644 main.py "$pkgdir/usr/share/sinergia-aur-helper/"
+
+    # Crear el script ejecutable en /usr/bin
+    echo '#!/bin/sh' > "$pkgdir/usr/bin/sinergia-aur-helper"
+    echo 'exec python /usr/share/sinergia-aur-helper/main.py "$@"' >> "$pkgdir/usr/bin/sinergia-aur-helper"
+    chmod +x "$pkgdir/usr/bin/sinergia-aur-helper"
+
+    # Instalar el acceso directo del menú
+    install -m644 sinergia-aur-helper.desktop "$pkgdir/usr/share/applications/"
+}

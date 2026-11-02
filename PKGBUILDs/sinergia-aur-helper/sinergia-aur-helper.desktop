@@ -1,0 +1,18 @@
+[Desktop Entry]
+Categories=System;PackageManager;
+Comment[es_AR]=Asistente gráfico de AUR para Arch Linux
+Comment=Asistente gráfico de AUR para Arch Linux
+Exec=sinergia-aur-helper
+GenericName[es_AR]=
+GenericName=
+Icon=system-software-install
+MimeType=
+Name[es_AR]=Sinergia AUR Helper
+Name=Sinergia AUR Helper
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

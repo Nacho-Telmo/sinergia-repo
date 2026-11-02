@@ -1,0 +1,31 @@
+# Maintainer: Sinergia <contacto@sinergia>
+pkgname=sinergia-welcome
+pkgver=1.0.0
+pkgrel=16
+pkgdesc="Centro de Control y Bienvenida de Sinergia para Arch Linux"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('python' 'python-pyqt6')
+source=('main.py'
+        'sinergia-welcome.desktop'
+        'sinergia-welcome')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    # Crear directorios de destino
+    install -d "$pkgdir/usr/share/sinergia-welcome"
+    install -d "$pkgdir/usr/bin"
+    install -d "$pkgdir/usr/share/applications"
+
+    # Copiar el script principal de Python y recursos
+    install -m 644 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-welcome/"
+
+    # Copiar el script lanzador global a /usr/bin con permisos de ejecución
+    install -m 755 "$srcdir/sinergia-welcome" "$pkgdir/usr/bin/sinergia-welcome"
+
+    # Copiar el archivo .desktop
+    install -m 644 "$srcdir/sinergia-welcome.desktop" "$pkgdir/usr/share/applications/"
+}

@@ -1,7 +1,7 @@
 # Maintainer: Ignacio Ezcurra (Nacho-Telmo) <sinergia.linuxera@gmail.com>
 pkgname=sinergia-webapp-manager
 pkgver=1.0.0
-pkgrel=8
+pkgrel=9
 pkgdesc="Gestor de aplicaciones web para Sinergia Linux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/Sinergia"
@@ -13,12 +13,16 @@ sha256sums=('SKIP')
 package() {
     cd "$srcdir"
     cd "$(ls -d Sinergia-* | head -n 1)"
-
-    # Buscar cualquier archivo .py de manera profunda dentro de la fuente extraída
+    
     local main_py=$(find . -name "*.py" ! -name "setup.py" | head -n 1)
-
-    install -Dm755 "$main_py" "$pkgdir/usr/bin/$pkgname"
-
+    
+    # Crear el directorio e inyectar el shebang de Python3
+    install -dm755 "$pkgdir/usr/bin"
+    echo "#!/usr/bin/env python3" > "$pkgdir/usr/bin/$pkgname"
+    cat "$main_py" >> "$pkgdir/usr/bin/$pkgname"
+    chmod 755 "$pkgdir/usr/bin/$pkgname"
+    
+    # Crear archivo .desktop
     install -Dm644 /dev/null "$pkgdir/usr/share/applications/$pkgname.desktop"
     cat <<EOF > "$pkgdir/usr/share/applications/$pkgname.desktop"
 [Desktop Entry]
@@ -31,6 +35,7 @@ Type=Application
 Categories=Utility;
 EOF
 
+    # Instalar icono si existe
     install -d "$pkgdir/usr/share/pixmaps"
     if [ -f *.png ]; then
         cp *.png "$pkgdir/usr/share/pixmaps/$pkgname.png"

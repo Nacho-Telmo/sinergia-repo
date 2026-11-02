@@ -1,7 +1,7 @@
 # Maintainer: Ignacio Ezcurra (Nacho-Telmo) <sinergia.linuxera@gmail.com>
 pkgname=sinergia-webapp-manager
 pkgver=1.0.0
-pkgrel=11
+pkgrel=12
 pkgdesc="Gestor de aplicaciones web para Sinergia Linux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/Sinergia"
@@ -14,10 +14,7 @@ package() {
     cd "$srcdir"
     cd "$(ls -d Sinergia-* | head -n 1)"
     
-    # Buscar de forma recursiva el archivo .py principal dentro de carpetas de webapp o cualquier script ejecutable
     local main_py=$(find . -type f -name "*.py" ! -path "*/env_linux/*" ! -name "setup.py" | grep -i "web" | head -n 1)
-    
-    # Si no encuentra uno con "web", toma el primer .py válido que encuentre en el proyecto
     if [ -z "$main_py" ]; then
         main_py=$(find . -type f -name "*.py" ! -path "*/env_linux/*" ! -name "setup.py" | head -n 1)
     fi
@@ -28,12 +25,14 @@ package() {
     fi
     
     install -dm755 "$pkgdir/usr/bin"
-    echo "#!/usr/bin/env python3" > "$pkgdir/usr/bin/$pkgname"
-    cat "$main_py" >> "$pkgdir/usr/bin/$pkgname"
+    {
+        echo "#!/usr/bin/env python3"
+        cat "$main_py"
+    } > "$pkgdir/usr/bin/$pkgname"
     chmod 755 "$pkgdir/usr/bin/$pkgname"
     
     install -Dm644 /dev/null "$pkgdir/usr/share/applications/$pkgname.desktop"
-    cat <<EOF > "$pkgdir/usr/share/applications/$pkgname.desktop"
+    cat <<EOF_DESKTOP > "$pkgdir/usr/share/applications/$pkgname.desktop"
 [Desktop Entry]
 Name=Sinergia WebApp Manager
 Comment=Gestor de aplicaciones web para Sinergia Linux
@@ -42,7 +41,7 @@ Icon=sinergia-webapp-manager
 Terminal=false
 Type=Application
 Categories=Utility;
-EOF
+EOF_DESKTOP
 
     install -d "$pkgdir/usr/share/pixmaps"
     if compgen -G "*.png" > /dev/null; then

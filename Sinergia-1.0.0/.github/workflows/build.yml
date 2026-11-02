@@ -1,0 +1,37 @@
+name: Build DEB
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Package
+        run: |
+          # Crear la estructura necesaria para el paquete .deb
+          mkdir -p package/DEBIAN package/usr/bin package/usr/share/sinergia-dd-burner
+
+          # Copiar el archivo desde la ubicación real encontrada en tu repo
+          cp sinergia-dd-burner_1.0.0/usr/share/sinergia-dd-burner/app.py package/usr/share/sinergia-dd-burner/
+
+          # Crear el script ejecutable
+          echo -e '#!/bin/bash\npython3 /usr/share/sinergia-dd-burner/app.py "$@"' > package/usr/bin/sinergia-dd-burner
+          chmod 755 package/usr/bin/sinergia-dd-burner
+
+          # Crear el archivo de control necesario para dpkg
+          echo -e "Package: sinergia-dd-burner\nVersion: 1.0.0\nArchitecture: all\nDepends: python3, python3-pyqt6\nMaintainer: Nacho\nDescription: Sinergia DD Burner" > package/DEBIAN/control
+
+          # Construir el paquete .deb
+          dpkg-deb --build package sinergia-dd-burner_1.0.0.deb
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: sinergia-dd-burner_1.0.0.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

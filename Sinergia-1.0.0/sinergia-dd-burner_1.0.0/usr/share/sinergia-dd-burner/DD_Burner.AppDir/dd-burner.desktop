@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Sinergia DD Burner
+Exec=app
+Icon=dd-burner
+Type=Application
+Categories=Utility;
+Comment=Escribe ISOs a unidades USB de forma segura

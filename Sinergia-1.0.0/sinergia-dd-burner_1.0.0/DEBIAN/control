@@ -1,0 +1,8 @@
+Package: sinergia-dd-burner
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: python3-pyqt6
+Maintainer: Nacho-Telmo sinergia.comunidad.linuxera@gmail.com
+Description: Herramienta para quemar imágenes ISO en dispositivos DD.

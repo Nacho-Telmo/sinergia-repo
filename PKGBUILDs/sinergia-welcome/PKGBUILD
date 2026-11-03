@@ -1,12 +1,12 @@
 # Maintainer: Sinergia <contacto@sinergia>
 pkgname=sinergia-welcome
 pkgver=1.0.0
-pkgrel=17
+pkgrel=18
 pkgdesc="Centro de Control y Bienvenida de Sinergia para Arch Linux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
 license=('GPL3')
-depends=('python' 'python-pyqt6' 'sinergia-reflector-top' 'sinergia-cleaner' 'sinergia-dd-burner')
+depends=('python' 'python-pyqt6' 'sinergia-reflector-top' 'sinergia-cleaner' 'sinergia-dd-burner' 'alacritty')
 
 source=('main.py'
         'sinergia-welcome.desktop'

@@ -167,22 +167,19 @@ class SinergiaWelcome(QMainWindow):
     def open_repo(self):
         QDesktopServices.openUrl(QUrl("https://nacho-telmo.github.io/sinergia-repo/"))
 
-    # --- Ejecución desacoplada de subprocesos ---
+    # --- Ejecución desacoplada de subprocesos usando Alacritty ---
     def run_in_terminal(self, command_str):
-        term = shutil.which("konsole") or shutil.which("gnome-terminal") or shutil.which("xfce4-terminal") or shutil.which("kitty") or shutil.which("xterm")
+        term = shutil.which("alacritty")
         if not term:
-            print("❌ No se encontró una terminal disponible.")
+            QMessageBox.warning(
+                self,
+                "Terminal no encontrada",
+                "El emulador de terminal 'alacritty' no está instalado en el sistema."
+            )
             return
 
-        term_name = os.path.basename(term)
-        if term_name == "konsole":
-            args = [term, "--noclose", "-e", "bash", "-c", command_str]
-        elif term_name == "gnome-terminal":
-            args = [term, "--", "bash", "-c", command_str + "; read"]
-        elif term_name == "xfce4-terminal":
-            args = [term, "--hold", "-e", command_str]
-        else:
-            args = [term, "-e", "bash", "-c", command_str + "; read"]
+        # Alacritty utiliza -e para ejecutar comandos, manteniendo la ventana abierta con '; read'
+        args = [term, "-e", "bash", "-c", command_str + "; read"]
 
         try:
             subprocess.Popen(args, start_new_session=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

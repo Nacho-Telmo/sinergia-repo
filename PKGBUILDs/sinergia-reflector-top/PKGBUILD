@@ -1,12 +1,12 @@
 # Maintainer: Ignacio Ezcurra (Nacho-Telmo) <sinergia.linuxera@gmail.com>
 pkgname=sinergia-reflector-top
 pkgver=1.0.6
-pkgrel=2
+pkgrel=3
 pkgdesc="Interfaz gráfica para Reflector para optimizar espejos de Arch Linux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/Sinergia"
 license=('GPL3')
-depends=('python' 'python-pyqt6' 'reflector')
+depends=('python' 'python-pyqt6' 'reflector' 'tk')
 source=('reflector_gui.py'
         'sinergia-reflector-top.desktop'
         'sinergia-reflector-top.png'

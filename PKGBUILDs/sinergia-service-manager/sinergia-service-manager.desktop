@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Service Manager
+Exec=sinergia-service-manager
+Icon=system-run
+Terminal=false
+Categories=System;Settings;

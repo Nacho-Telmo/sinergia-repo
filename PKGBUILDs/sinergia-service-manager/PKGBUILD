@@ -1,0 +1,31 @@
+# Maintainer: Sinergia <contacto@sinergia>
+pkgname=sinergia-service-manager
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Gestor gráfico de servicios de systemd para Sinergia Linux"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('python' 'python-pyqt6')
+source=('main.py'
+        'sinergia-service-manager.desktop'
+        'sinergia-service-manager')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    # Crear directorios de destino
+    install -d "$pkgdir/usr/share/sinergia-service-manager"
+    install -d "$pkgdir/usr/bin"
+    install -d "$pkgdir/usr/share/applications"
+
+    # Copiar el script principal de Python
+    install -m 644 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-service-manager/"
+
+    # Copiar el lanzador global a /usr/bin con permisos de ejecución
+    install -m 755 "$srcdir/sinergia-service-manager" "$pkgdir/usr/bin/sinergia-service-manager"
+
+    # Copiar el archivo .desktop
+    install -m 644 "$srcdir/sinergia-service-manager.desktop" "$pkgdir/usr/share/applications/"
+}

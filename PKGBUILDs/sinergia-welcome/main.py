@@ -21,7 +21,7 @@ class SinergiaWelcome(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sinergia Welcome - Centro de Control")
-        self.setFixedSize(520, 660)
+        self.setFixedSize(520, 680)
         self.init_ui()
 
     def init_ui(self):
@@ -87,17 +87,22 @@ class SinergiaWelcome(QMainWindow):
         btn_net.clicked.connect(self.on_net_clicked)
         grid.addWidget(btn_net, 5, 1)
 
-        btn_burner = QPushButton("🔥 Grabar Imagen ISO (DD Burner)")
+        btn_burner = QPushButton("🔥 Grabar ISO (DD Burner)")
         btn_burner.setFixedHeight(36)
         btn_burner.clicked.connect(self.on_burner_clicked)
-        grid.addWidget(btn_burner, 6, 0, 1, 2)
+        grid.addWidget(btn_burner, 6, 0)
+
+        btn_services = QPushButton("⚙️ Gestor de Servicios")
+        btn_services.setFixedHeight(36)
+        btn_services.clicked.connect(self.on_services_clicked)
+        grid.addWidget(btn_services, 6, 1)
 
         btn_aur = QPushButton("📦 Gestor AUR Helper")
         btn_aur.setFixedHeight(36)
         btn_aur.clicked.connect(self.on_aur_clicked)
         grid.addWidget(btn_aur, 7, 0)
 
-        btn_logs = QPushButton("📋 Ver Registro de Errores (Logs)")
+        btn_logs = QPushButton("📋 Ver Logs de Errores")
         btn_logs.setFixedHeight(36)
         btn_logs.clicked.connect(self.on_logs_clicked)
         grid.addWidget(btn_logs, 7, 1)
@@ -158,6 +163,10 @@ class SinergiaWelcome(QMainWindow):
         self.run_app("sinergia-dd-burner")
 
     @pyqtSlot()
+    def on_services_clicked(self):
+        self.run_app("sinergia-service-manager")
+
+    @pyqtSlot()
     def on_aur_clicked(self):
         self.run_app("sinergia-aur-helper")
 
@@ -186,19 +195,13 @@ class SinergiaWelcome(QMainWindow):
     def open_repo(self):
         QDesktopServices.openUrl(QUrl("https://nacho-telmo.github.io/sinergia-repo/"))
 
-    # --- Ejecución desacoplada de subprocesos usando Alacritty ---
     def run_in_terminal(self, command_str):
         term = shutil.which("alacritty")
         if not term:
-            QMessageBox.warning(
-                self,
-                "Terminal no encontrada",
-                "El emulador de terminal 'alacritty' no está instalado en el sistema."
-            )
+            QMessageBox.warning(self, "Terminal no encontrada", "El emulador 'alacritty' no está instalado.")
             return
 
         args = [term, "-e", "bash", "-c", command_str + "; read"]
-
         try:
             subprocess.Popen(args, start_new_session=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except Exception as e:
@@ -209,9 +212,7 @@ class SinergiaWelcome(QMainWindow):
             QMessageBox.warning(
                 self,
                 "Herramienta no encontrada",
-                f"El ejecutable '{app_name}' no está instalado en el sistema.\n\n"
-                f"Podés instalarlo desde la terminal ejecutando:\n"
-                f"sudo pacman -S {app_name}"
+                f"El ejecutable '{app_name}' no está instalado en el sistema."
             )
             return
 

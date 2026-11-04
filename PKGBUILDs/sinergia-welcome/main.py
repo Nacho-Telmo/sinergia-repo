@@ -21,7 +21,7 @@ class SinergiaWelcome(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sinergia Welcome - Centro de Control")
-        self.setFixedSize(520, 610)
+        self.setFixedSize(520, 660)
         self.init_ui()
 
     def init_ui(self):
@@ -50,7 +50,7 @@ class SinergiaWelcome(QMainWindow):
 
         # Grilla de Accesos Directos
         grid = QGridLayout()
-        grid.setSpacing(12)
+        grid.setSpacing.setSpacing(12) if hasattr(grid, 'setSpacing') else grid.setSpacing(12)
 
         # Sección: Mantenimiento y Sistema
         lbl_sys = QLabel("🛠️ Mantenimiento y Sistema")
@@ -92,10 +92,15 @@ class SinergiaWelcome(QMainWindow):
         btn_burner.clicked.connect(self.on_burner_clicked)
         grid.addWidget(btn_burner, 6, 0, 1, 2)
 
+        btn_aur = QPushButton("📦 Gestor AUR Helper")
+        btn_aur.setFixedHeight(36)
+        btn_aur.clicked.connect(self.on_aur_clicked)
+        grid.addWidget(btn_aur, 7, 0)
+
         btn_logs = QPushButton("📋 Ver Registro de Errores (Logs)")
         btn_logs.setFixedHeight(36)
         btn_logs.clicked.connect(self.on_logs_clicked)
-        grid.addWidget(btn_logs, 7, 0, 1, 2)
+        grid.addWidget(btn_logs, 7, 1)
 
         main_layout.addLayout(grid)
 
@@ -110,15 +115,21 @@ class SinergiaWelcome(QMainWindow):
         main_layout.addWidget(lbl_com)
 
         com_layout = QHBoxLayout()
-        btn_yt = QPushButton("📺 Canal de YouTube")
+        btn_yt = QPushButton("📺 YouTube")
         btn_yt.setFixedHeight(36)
         btn_yt.clicked.connect(self.open_yt)
         com_layout.addWidget(btn_yt)
 
-        btn_repo = QPushButton("💻 Sinergia Repo Web")
+        btn_tg = QPushButton("💬 Telegram")
+        btn_tg.setFixedHeight(36)
+        btn_tg.clicked.connect(self.open_tg)
+        com_layout.addWidget(btn_tg)
+
+        btn_repo = QPushButton("💻 Repo Web")
         btn_repo.setFixedHeight(36)
         btn_repo.clicked.connect(self.open_repo)
         com_layout.addWidget(btn_repo)
+
         main_layout.addLayout(com_layout)
 
         main_layout.addStretch()
@@ -147,6 +158,10 @@ class SinergiaWelcome(QMainWindow):
         self.run_app("sinergia-dd-burner")
 
     @pyqtSlot()
+    def on_aur_clicked(self):
+        self.run_app("sinergia-aur-helper")
+
+    @pyqtSlot()
     def on_info_clicked(self):
         fetch_cmd = "fastfetch" if shutil.which("fastfetch") else ("neofetch" if shutil.which("neofetch") else "uname -a && lscpu")
         self.run_in_terminal(fetch_cmd)
@@ -164,6 +179,10 @@ class SinergiaWelcome(QMainWindow):
         QDesktopServices.openUrl(QUrl("https://www.youtube.com/@Sinergia-Comunidad-Linuxera"))
 
     @pyqtSlot()
+    def open_tg(self):
+        QDesktopServices.openUrl(QUrl("https://t.me/Guias_NovumSinergia"))
+
+    @pyqtSlot()
     def open_repo(self):
         QDesktopServices.openUrl(QUrl("https://nacho-telmo.github.io/sinergia-repo/"))
 
@@ -178,7 +197,6 @@ class SinergiaWelcome(QMainWindow):
             )
             return
 
-        # Alacritty utiliza -e para ejecutar comandos, manteniendo la ventana abierta con '; read'
         args = [term, "-e", "bash", "-c", command_str + "; read"]
 
         try:

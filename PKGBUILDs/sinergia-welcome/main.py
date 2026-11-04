@@ -21,7 +21,7 @@ class SinergiaWelcome(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sinergia Welcome - Centro de Control")
-        self.setFixedSize(520, 680)
+        self.setFixedSize(520, 730)
         self.init_ui()
 
     def init_ui(self):
@@ -50,7 +50,7 @@ class SinergiaWelcome(QMainWindow):
 
         # Grilla de Accesos Directos
         grid = QGridLayout()
-        grid.setSpacing(12)
+        grid.setSpacing(10)
 
         # Sección: Mantenimiento y Sistema
         lbl_sys = QLabel("🛠️ Mantenimiento y Sistema")
@@ -58,54 +58,59 @@ class SinergiaWelcome(QMainWindow):
         grid.addWidget(lbl_sys, 0, 0, 1, 2)
 
         btn_update = QPushButton("🔄 Actualizar Sistema")
-        btn_update.setFixedHeight(38)
+        btn_update.setFixedHeight(36)
         btn_update.clicked.connect(self.on_update_clicked)
         grid.addWidget(btn_update, 1, 0, 1, 2)
 
+        btn_store = QPushButton("🛍️ Sinergia Store (Tienda de Apps)")
+        btn_store.setFixedHeight(36)
+        btn_store.clicked.connect(self.on_store_clicked)
+        grid.addWidget(btn_store, 2, 0, 1, 2)
+
         btn_mirrors = QPushButton("⚡ Refrescar Mirrors")
-        btn_mirrors.setFixedHeight(38)
+        btn_mirrors.setFixedHeight(36)
         btn_mirrors.clicked.connect(self.on_mirrors_clicked)
-        grid.addWidget(btn_mirrors, 2, 0, 1, 2)
+        grid.addWidget(btn_mirrors, 3, 0, 1, 2)
 
         btn_clean = QPushButton("🧹 Limpiar Caché / Huérfanos")
-        btn_clean.setFixedHeight(38)
+        btn_clean.setFixedHeight(36)
         btn_clean.clicked.connect(self.on_clean_clicked)
-        grid.addWidget(btn_clean, 3, 0, 1, 2)
+        grid.addWidget(btn_clean, 4, 0, 1, 2)
 
         # Sección: Diagnóstico y Herramientas Novato
         lbl_diag = QLabel("🔍 Diagnóstico y Herramientas")
         lbl_diag.setFont(QFont("Sans", 11, QFont.Weight.Bold))
-        grid.addWidget(lbl_diag, 4, 0, 1, 2)
+        grid.addWidget(lbl_diag, 5, 0, 1, 2)
 
         btn_info = QPushButton("💻 Información del Sistema")
-        btn_info.setFixedHeight(36)
+        btn_info.setFixedHeight(34)
         btn_info.clicked.connect(self.on_info_clicked)
-        grid.addWidget(btn_info, 5, 0)
+        grid.addWidget(btn_info, 6, 0)
 
         btn_net = QPushButton("🌐 Probar Conexión Red")
-        btn_net.setFixedHeight(36)
+        btn_net.setFixedHeight(34)
         btn_net.clicked.connect(self.on_net_clicked)
-        grid.addWidget(btn_net, 5, 1)
+        grid.addWidget(btn_net, 6, 1)
 
         btn_burner = QPushButton("🔥 Grabar ISO (DD Burner)")
-        btn_burner.setFixedHeight(36)
+        btn_burner.setFixedHeight(34)
         btn_burner.clicked.connect(self.on_burner_clicked)
-        grid.addWidget(btn_burner, 6, 0)
+        grid.addWidget(btn_burner, 7, 0)
 
         btn_services = QPushButton("⚙️ Gestor de Servicios")
-        btn_services.setFixedHeight(36)
+        btn_services.setFixedHeight(34)
         btn_services.clicked.connect(self.on_services_clicked)
-        grid.addWidget(btn_services, 6, 1)
+        grid.addWidget(btn_services, 7, 1)
 
         btn_aur = QPushButton("📦 Gestor AUR Helper")
-        btn_aur.setFixedHeight(36)
+        btn_aur.setFixedHeight(34)
         btn_aur.clicked.connect(self.on_aur_clicked)
-        grid.addWidget(btn_aur, 7, 0)
+        grid.addWidget(btn_aur, 8, 0)
 
         btn_logs = QPushButton("📋 Ver Logs de Errores")
-        btn_logs.setFixedHeight(36)
+        btn_logs.setFixedHeight(34)
         btn_logs.clicked.connect(self.on_logs_clicked)
-        grid.addWidget(btn_logs, 7, 1)
+        grid.addWidget(btn_logs, 8, 1)
 
         main_layout.addLayout(grid)
 
@@ -121,17 +126,17 @@ class SinergiaWelcome(QMainWindow):
 
         com_layout = QHBoxLayout()
         btn_yt = QPushButton("📺 YouTube")
-        btn_yt.setFixedHeight(36)
+        btn_yt.setFixedHeight(34)
         btn_yt.clicked.connect(self.open_yt)
         com_layout.addWidget(btn_yt)
 
         btn_tg = QPushButton("💬 Telegram")
-        btn_tg.setFixedHeight(36)
+        btn_tg.setFixedHeight(34)
         btn_tg.clicked.connect(self.open_tg)
         com_layout.addWidget(btn_tg)
 
         btn_repo = QPushButton("💻 Repo Web")
-        btn_repo.setFixedHeight(36)
+        btn_repo.setFixedHeight(34)
         btn_repo.clicked.connect(self.open_repo)
         com_layout.addWidget(btn_repo)
 
@@ -149,6 +154,10 @@ class SinergiaWelcome(QMainWindow):
     def on_update_clicked(self):
         comando = "sudo pacman -Syu --noconfirm && yay -Syu --noconfirm; echo ''; echo '¡Actualización completada con éxito!'; sleep 8"
         self.run_in_terminal(comando)
+
+    @pyqtSlot()
+    def on_store_clicked(self):
+        self.run_app("sinergia-store")
 
     @pyqtSlot()
     def on_mirrors_clicked(self):

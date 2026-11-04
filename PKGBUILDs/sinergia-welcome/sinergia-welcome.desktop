@@ -1,8 +1,15 @@
 [Desktop Entry]
 Type=Application
 Name=Sinergia Welcome
-Comment=Centro de Control y Bienvenida de Sinergia Linux
+GenericName=Centro de Control y Bienvenida
+GenericName[es]=Centro de Control y Bienvenida
+Comment=Bienvenido a tu entorno optimizado para Arch Linux por Sinergia
+Comment[es]=Bienvenido a tu entorno optimizado para Arch Linux por Sinergia
 Exec=sinergia-welcome
 Icon=sinergia-welcome
 Terminal=false
-Categories=Utility;Settings;
+Categories=System;Settings;Utility;
+Keywords=sinergia;welcome;arch;pacman;control;
+StartupNotify=true
+StartupWMClass=sinergia-welcome
+X-KDE-StartupNotify=true

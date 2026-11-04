@@ -1,2 +1,3 @@
 #!/bin/bash
-exec python3 /usr/share/sinergia-welcome/main.py "$@"
+cd /usr/share/sinergia-welcome
+exec python3 main.py "$@"

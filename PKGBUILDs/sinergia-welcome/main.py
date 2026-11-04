@@ -50,7 +50,7 @@ class SinergiaWelcome(QMainWindow):
 
         # Grilla de Accesos Directos
         grid = QGridLayout()
-        grid.setSpacing.setSpacing(12) if hasattr(grid, 'setSpacing') else grid.setSpacing(12)
+        grid.setSpacing(12)
 
         # Sección: Mantenimiento y Sistema
         lbl_sys = QLabel("🛠️ Mantenimiento y Sistema")

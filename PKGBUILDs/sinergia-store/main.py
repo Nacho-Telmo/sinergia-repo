@@ -57,7 +57,7 @@ class SinergiaStore(QMainWindow):
         grid = QGridLayout(scroll_content)
         grid.setSpacing(15)
 
-           # Lista de aplicaciones curadas (Nombre, Descripción, Paquete real, Comando Instalar, Comando Desinstalar)
+        # Lista de aplicaciones curadas (Nombre, Descripción, Paquete real, Comando Instalar, Comando Desinstalar)
         self.apps = [
             ("🌐 Firefox", "Navegador web libre y privado", "firefox", "sudo pacman -S --noconfirm firefox", "sudo pacman -Rns --noconfirm firefox"),
             ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin"),
@@ -73,10 +73,9 @@ class SinergiaStore(QMainWindow):
             ("⚡ Stacer", "Optimizador y monitor de sistema", "stacer-bin", "sudo pacman -S --noconfirm stacer-bin", "sudo pacman -Rns --noconfirm stacer-bin")
         ]
 
-
         row = 0
         col = 0
-        for name, desc, pkg_name, install_cmd, remove_cmd in apps:
+        for name, desc, pkg_name, install_cmd, remove_cmd in self.apps:
             card_info = self.create_app_card(name, desc, pkg_name, install_cmd, remove_cmd)
             grid.addWidget(card_info['card'], row, col)
             self.app_cards.append(card_info)

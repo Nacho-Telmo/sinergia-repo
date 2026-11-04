@@ -1,0 +1,25 @@
+# Maintainer: Ignacio Ezcurra (Nacho-Telmo) <contacto@sinergia>
+pkgname=sinergia-store
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Tienda de aplicaciones esenciales de Sinergia para Arch Linux"
+arch=('any')
+url="https://github.com/Nacho-Telmo/Sinergia"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'alacritty' 'yay')
+source=('main.py'
+        'sinergia-store.desktop'
+        'sinergia-store')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    install -d "$pkgdir/usr/share/sinergia-store"
+    install -d "$pkgdir/usr/bin"
+    install -d "$pkgdir/usr/share/applications"
+
+    install -m 644 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-store/"
+    install -m 755 "$srcdir/sinergia-store" "$pkgdir/usr/bin/sinergia-store"
+    install -m 644 "$srcdir/sinergia-store.desktop" "$pkgdir/usr/share/applications/"
+}

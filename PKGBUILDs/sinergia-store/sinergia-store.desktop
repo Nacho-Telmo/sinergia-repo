@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Store
+Exec=sinergia-store
+Icon=system-software-install
+Terminal=false
+Categories=System;PackageManager;

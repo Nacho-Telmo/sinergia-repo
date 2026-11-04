@@ -57,10 +57,10 @@ class SinergiaStore(QMainWindow):
         grid = QGridLayout(scroll_content)
         grid.setSpacing(15)
 
-        # Lista de aplicaciones curadas (Nombre, Descripción, Paquete real, Comando Instalar, Comando Desinstalar)
-        apps = [
+           # Lista de aplicaciones curadas (Nombre, Descripción, Paquete real, Comando Instalar, Comando Desinstalar)
+        self.apps = [
             ("🌐 Firefox", "Navegador web libre y privado", "firefox", "sudo pacman -S --noconfirm firefox", "sudo pacman -Rns --noconfirm firefox"),
-            ("🌐 Google Chrome", "Navegador web de Google", "google-chrome", "yay -S --noconfirm google-chrome", "yay -R --noconfirm google-chrome"),
+            ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin"),
             ("💬 Telegram", "Mensajería instantánea y canales", "telegram-desktop", "sudo pacman -S --noconfirm telegram-desktop", "sudo pacman -Rns --noconfirm telegram-desktop"),
             ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord"),
             ("🎵 Spotify", "Música y streaming en línea", "spotify", "yay -S --noconfirm spotify", "yay -R --noconfirm spotify"),
@@ -70,8 +70,9 @@ class SinergiaStore(QMainWindow):
             ("📥 qBitTorrent", "Cliente de torrents rápido y liviano", "qbittorrent", "sudo pacman -S --noconfirm qbittorrent", "sudo pacman -Rns --noconfirm qbittorrent"),
             ("🎨 GIMP", "Editor y manipulador de imágenes", "gimp", "sudo pacman -S --noconfirm gimp", "sudo pacman -Rns --noconfirm gimp"),
             ("🎮 Steam", "Plataforma de videojuegos", "steam", "sudo pacman -S --noconfirm steam", "sudo pacman -Rns --noconfirm steam"),
-            ("🐳 Docker", "Contenedores y entornos de desarrollo", "docker", "sudo pacman -S --noconfirm docker docker-compose", "sudo pacman -Rns --noconfirm docker docker-compose")
+            ("⚡ Stacer", "Optimizador y monitor de sistema", "stacer-bin", "sudo pacman -S --noconfirm stacer-bin", "sudo pacman -Rns --noconfirm stacer-bin")
         ]
+
 
         row = 0
         col = 0

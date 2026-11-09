@@ -9,7 +9,7 @@ os.environ["QT_QPA_PLATFORM"] = "xcb"
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout,
-    QLabel, QPushButton, QScrollArea, QGridLayout,
+    QHBoxLayout, QLabel, QPushButton, QScrollArea, QGridLayout,
     QMessageBox, QFrame
 )
 from PyQt6.QtCore import Qt, QEvent
@@ -19,16 +19,17 @@ class SinergiaStore(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sinergia Store - Aplicaciones Esenciales")
-        self.setFixedSize(800, 720)
+        self.setFixedSize(840, 760)
 
         self.app_cards = []  # Lista para guardar referencias a las tarjetas
+        self.current_category = "Todas"
         self.init_ui()
 
     def init_ui(self):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setContentsMargins(25, 20, 25, 20)
+        main_layout.setContentsMargins(20, 15, 20, 15)
 
         # Encabezado
         title = QLabel("🛍️ Sinergia Store")
@@ -48,58 +49,122 @@ class SinergiaStore(QMainWindow):
         line.setFrameShadow(QFrame.Shadow.Sunken)
         main_layout.addWidget(line)
 
+        # Barra de Categorías / Filtros
+        cat_layout = QHBoxLayout()
+        cat_layout.setSpacing(8)
+
+        self.categories = ["Todas", "Internet", "Multimedia", "Oficina / Dev", "Sistema"]
+        self.cat_buttons = {}
+
+        for cat in self.categories:
+            btn = QPushButton(cat)
+            btn.setCheckable(True)
+            btn.setFixedHeight(30)
+            if cat == "Todas":
+                btn.setChecked(True)
+
+            btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #2d2d2d;
+                    color: #b0b0b0;
+                    border-radius: 4px;
+                    font-weight: bold;
+                    padding: 4px 10px;
+                    border: none;
+                }
+                QPushButton:checked {
+                    background-color: #00acc1;
+                    color: white;
+                }
+                QPushButton:hover {
+                    background-color: #3d3d3d;
+                }
+            """)
+            btn.clicked.connect(lambda checked, c=cat: self.filter_category(c))
+            cat_layout.addWidget(btn)
+            self.cat_buttons[cat] = btn
+
+        main_layout.addLayout(cat_layout)
+
         # Área desplazable para las tarjetas de aplicaciones
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QFrame.Shape.NoFrame)
 
-        scroll_content = QWidget()
-        grid = QGridLayout(scroll_content)
-        grid.setSpacing(15)
+        self.scroll_content = QWidget()
+        self.grid = QGridLayout(self.scroll_content)
+        self.grid.setSpacing(15)
 
-        # Lista de aplicaciones curadas (Nombre, Descripción, Paquete real, Comando Instalar, Comando Desinstalar)
+        # Lista de aplicaciones curadas:
+        # (Nombre, Descripción, Paquete, Cmd Instalar, Cmd Desinstalar, Categoría, Origen/Repo)
         self.apps = [
-            ("🌐 Vivaldi", "Navegador web avanzado y altamente personalizable", "vivaldi", "sudo pacman -S --noconfirm vivaldi", "sudo pacman -Rns --noconfirm vivaldi"),
-            ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin"),
-            ("🔒 Signal", "Mensajería privada rápida y segura", "signal-desktop", "sudo pacman -S --noconfirm signal-desktop", "sudo pacman -Rns --noconfirm signal-desktop"),
-            ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord"),
-            ("🎵 Spotify", "Música y streaming en línea", "spotify", "yay -S --noconfirm spotify", "yay -R --noconfirm spotify"),
-            ("🎬 Haruna", "Reproductor multimedia moderno basado en mpv", "haruna", "sudo pacman -S --noconfirm haruna", "sudo pacman -Rns --noconfirm haruna"),
-            ("📝 Visual Studio Code", "Editor de código y extensiones", "visual-studio-code-bin", "yay -S --noconfirm visual-studio-code-bin", "yay -R --noconfirm visual-studio-code-bin"),
-            ("📊 OnlyOffice", "Suite de oficina compatible con documentos Office", "onlyoffice-bin", "sudo pacman -S --noconfirm onlyoffice-bin", "sudo pacman -Rns --noconfirm onlyoffice-bin"),
-            ("📥 qBitTorrent", "Cliente de torrents rápido y liviano", "qbittorrent", "sudo pacman -S --noconfirm qbittorrent", "sudo pacman -Rns --noconfirm qbittorrent"),
-            ("🎨 GIMP", "Editor y manipulador de imágenes", "gimp", "sudo pacman -S --noconfirm gimp", "sudo pacman -Rns --noconfirm gimp"),
-            ("🎮 Steam", "Plataforma de videojuegos", "steam", "sudo pacman -S --noconfirm steam", "sudo pacman -Rns --noconfirm steam"),
-            ("⚡ Stacer", "Optimizador y monitor de sistema", "stacer-bin", "sudo pacman -S --noconfirm stacer-bin", "sudo pacman -Rns --noconfirm stacer-bin")
+            ("🌐 Vivaldi", "Navegador web avanzado y personalizable", "vivaldi", "sudo pacman -S --noconfirm vivaldi", "sudo pacman -Rns --noconfirm vivaldi", "Internet", "Arch Extra"),
+            ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin", "Internet", "Chaotic-AUR"),
+            ("🔒 Signal", "Mensajería privada rápida y segura", "signal-desktop", "sudo pacman -S --noconfirm signal-desktop", "sudo pacman -Rns --noconfirm signal-desktop", "Internet", "Arch Extra"),
+            ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord", "Internet", "Arch Extra"),
+            ("🎵 Spotify", "Música y streaming en línea", "spotify", "yay -S --noconfirm spotify", "yay -R --noconfirm spotify", "Multimedia", "Chaotic-AUR"),
+            ("🎬 Haruna", "Reproductor multimedia basado en mpv", "haruna", "sudo pacman -S --noconfirm haruna", "sudo pacman -Rns --noconfirm haruna", "Multimedia", "Arch Extra"),
+            ("📝 Visual Studio Code", "Editor de código y extensiones", "visual-studio-code-bin", "yay -S --noconfirm visual-studio-code-bin", "yay -R --noconfirm visual-studio-code-bin", "Oficina / Dev", "Chaotic-AUR"),
+            ("📊 OnlyOffice", "Suite de oficina compatible con Office", "onlyoffice-bin", "sudo pacman -S --noconfirm onlyoffice-bin", "sudo pacman -Rns --noconfirm onlyoffice-bin", "Oficina / Dev", "Chaotic-AUR"),
+            ("📥 qBitTorrent", "Cliente de torrents rápido y liviano", "qbittorrent", "sudo pacman -S --noconfirm qbittorrent", "sudo pacman -Rns --noconfirm qbittorrent", "Internet", "Arch Extra"),
+            ("🎨 GIMP", "Editor y manipulador de imágenes", "gimp", "sudo pacman -S --noconfirm gimp", "sudo pacman -Rns --noconfirm gimp", "Multimedia", "Arch Extra"),
+            ("🎮 Steam", "Plataforma de videojuegos", "steam", "sudo pacman -S --noconfirm steam", "sudo pacman -Rns --noconfirm steam", "Multimedia", "Arch Extra"),
+            ("⚡ Stacer", "Optimizador y monitor de sistema", "stacer-bin", "sudo pacman -S --noconfirm stacer-bin", "sudo pacman -Rns --noconfirm stacer-bin", "Sistema", "Sinergia Repo")
         ]
+
+        # Crear todas las tarjetas de forma estática una sola vez
+        for name, desc, pkg_name, install_cmd, remove_cmd, category, origin in self.apps:
+            card_info = self.create_app_card(name, desc, pkg_name, install_cmd, remove_cmd, category, origin)
+            self.app_cards.append(card_info)
+
+        # Rellenar la grilla inicialmente
+        self.populate_grid("Todas")
+
+        scroll.setWidget(self.scroll_content)
+        main_layout.addWidget(scroll)
+
+    def filter_category(self, category):
+        self.current_category = category
+        # Actualizar estados visuales de los botones de categoría
+        for cat, btn in self.cat_buttons.items():
+            btn.setChecked(cat == category)
+        self.populate_grid(category)
+
+    def populate_grid(self, category):
+        # Limpiar grilla actual sin destruir los widgets
+        for i in reversed(range(self.grid.count())):
+            widget = self.grid.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
 
         row = 0
         col = 0
-        for name, desc, pkg_name, install_cmd, remove_cmd in self.apps:
-            card_info = self.create_app_card(name, desc, pkg_name, install_cmd, remove_cmd)
-            grid.addWidget(card_info['card'], row, col)
-            self.app_cards.append(card_info)
-            col += 1
-            if col > 1:
-                col = 0
-                row += 1
+        for info in self.app_cards:
+            if category == "Todas" or info['category'] == category:
+                self.grid.addWidget(info['card'], row, col)
+                info['card'].show()
+                col += 1
+                if col > 1:
+                    col = 0
+                    row += 1
+            else:
+                info['card'].hide()
 
-        # Estado inicial de los botones y colores
         self.update_card_states()
 
-        scroll.setWidget(scroll_content)
-        main_layout.addWidget(scroll)
-
     def changeEvent(self, event):
-        """Detecta cuando la ventana recupera el foco (ej: al cerrar alacritty) y actualiza estados."""
+        """Detecta cuando la ventana recupera el foco y actualiza estados."""
         if event.type() == QEvent.Type.ActivationChange:
             if self.isActiveWindow():
                 self.update_card_states()
         super().changeEvent(event)
 
     def update_card_states(self):
-        """Actualiza el diseño y los comandos de cada tarjeta en el lugar sin perder el scroll."""
+        """Actualiza el diseño y los comandos de cada tarjeta visible."""
         for info in self.app_cards:
+            if info['card'].isHidden():
+                continue
+
             is_installed = self.check_if_installed(info['pkg_name'])
 
             bg_color = "#253329" if is_installed else "#2d2d2d"
@@ -133,7 +198,6 @@ class SinergiaStore(QMainWindow):
 
             info['btn'].setText(btn_text)
 
-            # Desconectar señales anteriores para evitar acumulación de eventos
             try:
                 info['btn'].clicked.disconnect()
             except TypeError:
@@ -148,27 +212,55 @@ class SinergiaStore(QMainWindow):
         except Exception:
             return False
 
-    def create_app_card(self, name, description, pkg_name, install_cmd, remove_cmd):
+    def create_app_card(self, name, description, pkg_name, install_cmd, remove_cmd, category, origin):
         card = QFrame()
         card.setFrameShape(QFrame.Shape.StyledPanel)
 
         layout = QVBoxLayout(card)
 
+        # Cabecera de la tarjeta: Nombre + Etiqueta de Origen
+        top_layout = QHBoxLayout()
+
         lbl_name = QLabel(name)
         lbl_name.setFont(QFont("Sans", 11, QFont.Weight.Bold))
-        layout.addWidget(lbl_name)
+        top_layout.addWidget(lbl_name)
 
+        top_layout.addStretch()
+
+        # Color distintivo según el repositorio origen
+        origin_colors = {
+            "Arch Extra": "background-color: #1976d2; color: white;",
+            "Chaotic-AUR": "background-color: #7b1fa2; color: white;",
+            "Sinergia Repo": "background-color: #388e3c; color: white;"
+        }
+        badge_style = origin_colors.get(origin, "background-color: #555; color: white;")
+
+        lbl_origin = QLabel(f" {origin} ")
+        lbl_origin.setFont(QFont("Sans", 8, QFont.Weight.Bold))
+        lbl_origin.setStyleSheet(f"""
+            QLabel {{
+                {badge_style}
+                border-radius: 4px;
+                padding: 2px 6px;
+            }}
+        """)
+        top_layout.addWidget(lbl_origin)
+        layout.addLayout(top_layout)
+
+        # Descripción
         lbl_desc = QLabel(description)
         lbl_desc.setFont(QFont("Sans", 9))
         lbl_desc.setStyleSheet("color: #b0b0b0;")
         lbl_desc.setWordWrap(True)
         layout.addWidget(lbl_desc)
 
+        # Botón de acción
         btn_action = QPushButton("...")
         layout.addWidget(btn_action)
 
         return {
             'pkg_name': pkg_name,
+            'category': category,
             'card': card,
             'btn': btn_action,
             'install_cmd': install_cmd,

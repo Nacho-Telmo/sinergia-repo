@@ -10,10 +10,72 @@ os.environ["QT_QPA_PLATFORM"] = "xcb"
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout,
     QHBoxLayout, QLabel, QPushButton, QScrollArea, QGridLayout,
-    QMessageBox, QFrame
+    QMessageBox, QFrame, QDialog
 )
 from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QFont
+
+class AppDetailDialog(QDialog):
+    def __init__(self, name, description, pkg_name, origin, category, install_cmd, remove_cmd, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"Detalles - {name}")
+        self.setFixedSize(440, 340)
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #1e1e1e;
+                color: #ffffff;
+            }
+            QLabel {
+                color: #ffffff;
+            }
+        """)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(12)
+
+        # Título
+        lbl_title = QLabel(name)
+        lbl_title.setFont(QFont("Sans", 14, QFont.Weight.Bold))
+        layout.addWidget(lbl_title)
+
+        # Categoría y Origen
+        lbl_meta = QLabel(f"Categoría: <b>{category}</b> | Origen: <b>{origin}</b>")
+        lbl_meta.setFont(QFont("Sans", 9))
+        lbl_meta.setStyleSheet("color: #00acc1;")
+        layout.addWidget(lbl_meta)
+
+        # Descripción completa
+        lbl_desc = QLabel(description)
+        lbl_desc.setFont(QFont("Sans", 10))
+        lbl_desc.setStyleSheet("color: #cccccc;")
+        lbl_desc.setWordWrap(True)
+        layout.addWidget(lbl_desc)
+
+        # Info técnica (Paquete)
+        lbl_pkg = QLabel(f"Paquete Arch: <span style='color: #81c784;'>{pkg_name}</span>")
+        lbl_pkg.setFont(QFont("Sans", 9))
+        layout.addWidget(lbl_pkg)
+
+        layout.addStretch()
+
+        # Botón de cerrar
+        btn_close = QPushButton("Cerrar")
+        btn_close.setFixedHeight(34)
+        btn_close.setStyleSheet("""
+            QPushButton {
+                background-color: #3d3d3d;
+                color: white;
+                border-radius: 4px;
+                font-weight: bold;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #4d4d4d;
+            }
+        """)
+        btn_close.clicked.connect(self.close)
+        layout.addWidget(btn_close)
 
 class SinergiaStore(QMainWindow):
     def __init__(self):
@@ -52,7 +114,7 @@ class SinergiaStore(QMainWindow):
         # Barra de Categorías / Filtros
         cat_layout = QHBoxLayout()
         cat_layout.setSpacing(8)
-
+        
         self.categories = ["Todas", "Internet", "Multimedia", "Oficina / Dev", "Sistema"]
         self.cat_buttons = {}
 
@@ -62,7 +124,7 @@ class SinergiaStore(QMainWindow):
             btn.setFixedHeight(30)
             if cat == "Todas":
                 btn.setChecked(True)
-
+            
             btn.setStyleSheet("""
                 QPushButton {
                     background-color: #2d2d2d;
@@ -125,13 +187,11 @@ class SinergiaStore(QMainWindow):
 
     def filter_category(self, category):
         self.current_category = category
-        # Actualizar estados visuales de los botones de categoría
         for cat, btn in self.cat_buttons.items():
             btn.setChecked(cat == category)
         self.populate_grid(category)
 
     def populate_grid(self, category):
-        # Limpiar grilla actual sin destruir los widgets
         for i in reversed(range(self.grid.count())):
             widget = self.grid.itemAt(i).widget()
             if widget:
@@ -153,20 +213,18 @@ class SinergiaStore(QMainWindow):
         self.update_card_states()
 
     def changeEvent(self, event):
-        """Detecta cuando la ventana recupera el foco y actualiza estados."""
         if event.type() == QEvent.Type.ActivationChange:
             if self.isActiveWindow():
                 self.update_card_states()
         super().changeEvent(event)
 
     def update_card_states(self):
-        """Actualiza el diseño y los comandos de cada tarjeta visible."""
         for info in self.app_cards:
             if info['card'].isHidden():
                 continue
 
             is_installed = self.check_if_installed(info['pkg_name'])
-
+            
             bg_color = "#253329" if is_installed else "#2d2d2d"
             btn_color = "#d32f2f" if is_installed else "#00acc1"
             btn_hover = "#c62828" if is_installed else "#00838f"
@@ -195,14 +253,14 @@ class SinergiaStore(QMainWindow):
                     background-color: {btn_hover};
                 }}
             """)
-
+            
             info['btn'].setText(btn_text)
-
+            
             try:
                 info['btn'].clicked.disconnect()
             except TypeError:
                 pass
-
+            
             info['btn'].clicked.connect(lambda _, c=target_cmd: self.run_action(c))
 
     def check_if_installed(self, pkg_name):
@@ -215,16 +273,34 @@ class SinergiaStore(QMainWindow):
     def create_app_card(self, name, description, pkg_name, install_cmd, remove_cmd, category, origin):
         card = QFrame()
         card.setFrameShape(QFrame.Shape.StyledPanel)
-
+        
         layout = QVBoxLayout(card)
-
-        # Cabecera de la tarjeta: Nombre + Etiqueta de Origen
+        
+        # Cabecera de la tarjeta: Nombre + Botón de Detalles + Etiqueta de Origen
         top_layout = QHBoxLayout()
-
+        
         lbl_name = QLabel(name)
         lbl_name.setFont(QFont("Sans", 11, QFont.Weight.Bold))
         top_layout.addWidget(lbl_name)
 
+        # Botón de detalles (ℹ️)
+        btn_info = QPushButton("ℹ️")
+        btn_info.setFixedSize(28, 26)
+        btn_info.setStyleSheet("""
+            QPushButton {
+                background-color: #3d3d3d;
+                color: white;
+                border-radius: 4px;
+                font-weight: bold;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #555555;
+            }
+        """)
+        btn_info.clicked.connect(lambda: self.show_details(name, description, pkg_name, origin, category, install_cmd, remove_cmd))
+        top_layout.addWidget(btn_info)
+        
         top_layout.addStretch()
 
         # Color distintivo según el repositorio origen
@@ -254,7 +330,7 @@ class SinergiaStore(QMainWindow):
         lbl_desc.setWordWrap(True)
         layout.addWidget(lbl_desc)
 
-        # Botón de acción
+        # Botón de acción principal
         btn_action = QPushButton("...")
         layout.addWidget(btn_action)
 
@@ -267,6 +343,10 @@ class SinergiaStore(QMainWindow):
             'remove_cmd': remove_cmd
         }
 
+    def show_details(self, name, description, pkg_name, origin, category, install_cmd, remove_cmd):
+        dialog = AppDetailDialog(name, description, pkg_name, origin, category, install_cmd, remove_cmd, self)
+        dialog.exec()
+
     def run_action(self, command_str):
         term = shutil.which("alacritty")
         if not term:
@@ -275,7 +355,7 @@ class SinergiaStore(QMainWindow):
 
         full_cmd = f"{command_str}; echo ''; echo '¡Operación finalizada! Cerrando terminal en 3 segundos...'; sleep 3"
         args = [term, "-e", "bash", "-c", full_cmd]
-
+        
         try:
             subprocess.Popen(args, start_new_session=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except Exception as e:

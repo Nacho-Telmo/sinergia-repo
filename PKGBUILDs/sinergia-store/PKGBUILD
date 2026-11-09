@@ -1,6 +1,6 @@
 # Maintainer: Ignacio Ezcurra (Nacho-Telmo) <contacto@sinergia>
 pkgname=sinergia-store
-pkgver=1.3.0
+pkgver=1.4.0
 pkgrel=1
 pkgdesc="Tienda de aplicaciones esenciales de Sinergia para Arch Linux"
 arch=('any')

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Sinergia Conky Manager
+Comment=Gestor de widgets de escritorio minimalistas
+Exec=sinergia-conky-manager
+Icon=utilities-system-monitor
+Terminal=false
+Type=Application
+Categories=System;Monitor;

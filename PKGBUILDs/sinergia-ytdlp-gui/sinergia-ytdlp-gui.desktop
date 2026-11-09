@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Sinergia YT-DLP Manager
+Comment=Interfaz gráfica avanzada para yt-dlp
+Exec=sinergia-ytdlp-gui
+Icon=multimedia-video-player
+Terminal=false
+Type=Application
+Categories=AudioVideo;Network;Qt;

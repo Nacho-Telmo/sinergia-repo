@@ -1,0 +1,19 @@
+# Maintainer: Nacho-Telmo <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-ytdlp-gui
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Interfaz gráfica en PyQt6 para yt-dlp desarrollada para Sinergia Comunidad Linuxera"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'yt-dlp')
+optdepends=('ffmpeg: necesario para conversión y mezcla de formatos de audio/video')
+source=('main.py'
+        'sinergia-ytdlp-gui.desktop')
+sha256sums=('SKIP'
+            'SKIP')
+
+package() {
+    install -Dm755 "${srcdir}/main.py" "${pkgdir}/usr/bin/sinergia-ytdlp-gui"
+    install -Dm644 "${srcdir}/sinergia-ytdlp-gui.desktop" "${pkgdir}/usr/share/applications/sinergia-ytdlp-gui.desktop"
+}

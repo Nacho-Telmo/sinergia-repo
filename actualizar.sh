@@ -58,10 +58,13 @@ echo "⚙️  Actualizando base de datos pacman en docs/x86_64..."
 echo "--------------------------------------------------"
 cd "$DOCS_DIR"
 
-# Regenerar y firmar sinergia.db.tar.gz
+# Limpiar bases de datos previas para evitar entradas huérfanas o obsoletas
+rm -f sinergia.db* sinergia.files*
+
+# Regenerar y firmar sinergia.db.tar.gz desde cero
 repo-add -s --key "$KEY_ID" sinergia.db.tar.gz *.pkg.tar.zst
 
-echo "✅ Base de datos re-generada y firmada."
+echo "✅ Base de datos re-generada y firmada en limpio."
 
 # 5. Actualizar la web / catálogo de aplicaciones público
 echo ""
@@ -90,7 +93,7 @@ if [[ "$CONFIRM" =~ ^[Ss]$ ]]; then
     git add .
     read -p "Mensaje del commit (Enter para valor por defecto): " MSG
     if [ -z "$MSG" ]; then
-        MSG="chore(repo): actualizar paquetes binarios, base de datos y catálogo web"
+        MSG="chore(repo): actualizar paquetes binarios, base de datos limpia y catálogo web"
     fi
     git commit -m "$MSG"
     git push origin main

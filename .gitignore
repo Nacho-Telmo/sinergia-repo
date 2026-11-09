@@ -5,3 +5,7 @@
 #PKGBUILDs/sinergia-webapp-manager/sinergia-webapp-manager-1.0.0.tar.gz
 #docs/x86_64/sinergia-webapp-manager-*.pkg.tar.zst*
 PKGBUILDs/sinergia-webapp-manager/*.tar.gz
+
+# Ignorar carpetas temporales de makepkg (src y pkg en cualquier PKGBUILD)
+PKGBUILDs/*/src/
+PKGBUILDs/*/pkg/

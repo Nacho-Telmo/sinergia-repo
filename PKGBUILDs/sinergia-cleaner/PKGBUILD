@@ -1,7 +1,7 @@
 # Maintainer: Sinergia <contacto@sinergia>
 pkgname=sinergia-cleaner
 pkgver=1.1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Herramienta de limpieza de caché y huérfanos para Sinergia"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"

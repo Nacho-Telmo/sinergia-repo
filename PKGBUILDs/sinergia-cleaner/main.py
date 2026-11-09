@@ -142,10 +142,8 @@ class SinergiaCleanerApp(QMainWindow):
       self.process.start("bash", ["-c", script_str])
 
   def clean_cache(self):
-    # Automatiza las confirmaciones S/N de pacman -Scc enviando respuestas afirmativas
-    self.run_shell_script(
-        "printf 'y\\ny\\n' | pacman -Scc --noconfirm", as_root=True
-    )
+    # Automatiza las confirmaciones de pacman -Scc usando yes
+    self.run_shell_script("yes | pacman -Scc --noconfirm", as_root=True)
 
   def clean_orphans(self):
     script = (
@@ -158,7 +156,7 @@ class SinergiaCleanerApp(QMainWindow):
   def clean_user_cache(self):
     # Limpia archivos temporales en ~/.cache sin borrar directorios estructurales críticos
     script = (
-        "find ~/.cache/ -mindepth 1 -maxdepth 1 ! -name 'thumbnails' -exec rm -rf"
+        "find ~/.cache/ -mindepth 1 ! -name 'thumbnails' -exec rm -rf"
         " {} + 2>/dev/null; echo '¡Caché de usuario limpiada correctamente!'"
     )
     self.run_shell_script(script, as_root=False)

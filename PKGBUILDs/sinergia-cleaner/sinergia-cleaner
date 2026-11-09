@@ -1,2 +1,3 @@
-#!/bin/sh
-exec python /usr/share/sinergia-cleaner/main.py "$@"
+#!/bin/bash
+cd /usr/share/sinergia-cleaner
+exec python3 main.py "$@"

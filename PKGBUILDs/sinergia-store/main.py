@@ -59,14 +59,14 @@ class SinergiaStore(QMainWindow):
 
         # Lista de aplicaciones curadas (Nombre, Descripción, Paquete real, Comando Instalar, Comando Desinstalar)
         self.apps = [
-            ("🌐 Firefox", "Navegador web libre y privado", "firefox", "sudo pacman -S --noconfirm firefox", "sudo pacman -Rns --noconfirm firefox"),
+            ("🌐 Vivaldi", "Navegador web avanzado y altamente personalizable", "vivaldi", "sudo pacman -S --noconfirm vivaldi", "sudo pacman -Rns --noconfirm vivaldi"),
             ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin"),
-            ("💬 Telegram", "Mensajería instantánea y canales", "telegram-desktop", "sudo pacman -S --noconfirm telegram-desktop", "sudo pacman -Rns --noconfirm telegram-desktop"),
+            ("🔒 Signal", "Mensajería privada rápida y segura", "signal-desktop", "sudo pacman -S --noconfirm signal-desktop", "sudo pacman -Rns --noconfirm signal-desktop"),
             ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord"),
             ("🎵 Spotify", "Música y streaming en línea", "spotify", "yay -S --noconfirm spotify", "yay -R --noconfirm spotify"),
-            ("🎥 VLC Media Player", "Reproductor multimedia universal", "vlc", "sudo pacman -S --noconfirm vlc", "sudo pacman -Rns --noconfirm vlc"),
+            ("🎬 Haruna", "Reproductor multimedia moderno basado en mpv", "haruna", "sudo pacman -S --noconfirm haruna", "sudo pacman -Rns --noconfirm haruna"),
             ("📝 Visual Studio Code", "Editor de código y extensiones", "visual-studio-code-bin", "yay -S --noconfirm visual-studio-code-bin", "yay -R --noconfirm visual-studio-code-bin"),
-            ("🗂️ LibreOffice", "Suite de oficina completa", "libreoffice-fresh", "sudo pacman -S --noconfirm libreoffice-fresh", "sudo pacman -Rns --noconfirm libreoffice-fresh"),
+            ("📊 OnlyOffice", "Suite de oficina compatible con documentos Office", "onlyoffice-bin", "sudo pacman -S --noconfirm onlyoffice-bin", "sudo pacman -Rns --noconfirm onlyoffice-bin"),
             ("📥 qBitTorrent", "Cliente de torrents rápido y liviano", "qbittorrent", "sudo pacman -S --noconfirm qbittorrent", "sudo pacman -Rns --noconfirm qbittorrent"),
             ("🎨 GIMP", "Editor y manipulador de imágenes", "gimp", "sudo pacman -S --noconfirm gimp", "sudo pacman -Rns --noconfirm gimp"),
             ("🎮 Steam", "Plataforma de videojuegos", "steam", "sudo pacman -S --noconfirm steam", "sudo pacman -Rns --noconfirm steam"),

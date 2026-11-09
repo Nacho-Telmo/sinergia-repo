@@ -21,122 +21,165 @@ class SinergiaWelcome(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sinergia Welcome - Centro de Control")
-        self.setFixedSize(520, 730)
+        self.setFixedSize(540, 750)
         self.init_ui()
 
     def init_ui(self):
+        # Estética global unificada del ecosistema Sinergia
+        self.setStyleSheet("""
+            QMainWindow {
+                background-color: #121212;
+                color: #ffffff;
+            }
+            QLabel {
+                color: #ffffff;
+            }
+            QCheckBox {
+                color: #dddddd;
+                font-size: 10pt;
+            }
+            QCheckBox::indicator {
+                width: 16px;
+                height: 16px;
+            }
+            QFrame#separator {
+                background-color: #333333;
+                border: none;
+                max-height: 2px;
+            }
+        """)
+
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
         main_layout.setContentsMargins(25, 20, 25, 20)
+        main_layout.setSpacing(12)
 
         # Encabezado
         title = QLabel("🚀 Sinergia Comunidad Linuxera")
-        title.setFont(QFont("Sans", 16, QFont.Weight.Bold))
+        title.setFont(QFont("Sans Serif", 15, QFont.Weight.Bold))
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet("color: #ffffff; margin-top: 5px;")
         main_layout.addWidget(title)
 
         subtitle = QLabel("Bienvenido a tu entorno optimizado para Arch Linux")
-        subtitle.setFont(QFont("Sans", 10))
-        subtitle.setStyleSheet("color: #888;")
+        subtitle.setFont(QFont("Sans Serif", 10))
+        subtitle.setStyleSheet("color: #00acc1; margin-bottom: 5px;")
         subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(subtitle)
 
-        # Separador visual
+        # Separador visual 1
         line = QFrame()
+        line.setObjectName("separator")
         line.setFrameShape(QFrame.Shape.HLine)
-        line.setFrameShadow(QFrame.Shadow.Sunken)
         main_layout.addWidget(line)
 
         # Grilla de Accesos Directos
         grid = QGridLayout()
-        grid.setSpacing(10)
+        grid.setSpacing(8)
 
-        # Sección: Mantenimiento y Sistema
+        # Sección: Mantenimiento y Sistema (Botones compactos y texto centrado)
         lbl_sys = QLabel("🛠️ Mantenimiento y Sistema")
-        lbl_sys.setFont(QFont("Sans", 11, QFont.Weight.Bold))
+        lbl_sys.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
+        lbl_sys.setStyleSheet("color: #00acc1; margin-top: 2px;")
         grid.addWidget(lbl_sys, 0, 0, 1, 2)
 
         btn_update = QPushButton("🔄 Actualizar Sistema")
-        btn_update.setFixedHeight(36)
+        btn_update.setFixedHeight(30)
+        btn_update.setStyleSheet(self.get_top_button_style("#1e1e1e", "#2d2d2d", "#00acc1"))
         btn_update.clicked.connect(self.on_update_clicked)
         grid.addWidget(btn_update, 1, 0, 1, 2)
 
         btn_store = QPushButton("🛍️ Sinergia Store (Tienda de Apps)")
-        btn_store.setFixedHeight(36)
+        btn_store.setFixedHeight(30)
+        btn_store.setStyleSheet(self.get_top_button_style("#1e1e1e", "#2d2d2d", "#00acc1"))
         btn_store.clicked.connect(self.on_store_clicked)
         grid.addWidget(btn_store, 2, 0, 1, 2)
 
         btn_mirrors = QPushButton("⚡ Refrescar Mirrors")
-        btn_mirrors.setFixedHeight(36)
+        btn_mirrors.setFixedHeight(30)
+        btn_mirrors.setStyleSheet(self.get_top_button_style("#1e1e1e", "#2d2d2d", "#00acc1"))
         btn_mirrors.clicked.connect(self.on_mirrors_clicked)
         grid.addWidget(btn_mirrors, 3, 0, 1, 2)
 
         btn_clean = QPushButton("🧹 Limpiar Caché / Huérfanos")
-        btn_clean.setFixedHeight(36)
+        btn_clean.setFixedHeight(30)
+        btn_clean.setStyleSheet(self.get_top_button_style("#1e1e1e", "#2d2d2d", "#00acc1"))
         btn_clean.clicked.connect(self.on_clean_clicked)
         grid.addWidget(btn_clean, 4, 0, 1, 2)
 
         # Sección: Diagnóstico y Herramientas Novato
         lbl_diag = QLabel("🔍 Diagnóstico y Herramientas")
-        lbl_diag.setFont(QFont("Sans", 11, QFont.Weight.Bold))
+        lbl_diag.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
+        lbl_diag.setStyleSheet("color: #7e57c2; margin-top: 6px;")
         grid.addWidget(lbl_diag, 5, 0, 1, 2)
 
         btn_info = QPushButton("💻 Información del Sistema")
         btn_info.setFixedHeight(34)
+        btn_info.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#7e57c2"))
         btn_info.clicked.connect(self.on_info_clicked)
         grid.addWidget(btn_info, 6, 0)
 
         btn_net = QPushButton("🌐 Probar Conexión Red")
         btn_net.setFixedHeight(34)
+        btn_net.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#7e57c2"))
         btn_net.clicked.connect(self.on_net_clicked)
         grid.addWidget(btn_net, 6, 1)
 
         btn_burner = QPushButton("🔥 Grabar ISO (DD Burner)")
         btn_burner.setFixedHeight(34)
+        btn_burner.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#7e57c2"))
         btn_burner.clicked.connect(self.on_burner_clicked)
         grid.addWidget(btn_burner, 7, 0)
 
         btn_services = QPushButton("⚙️ Gestor de Servicios")
         btn_services.setFixedHeight(34)
+        btn_services.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#7e57c2"))
         btn_services.clicked.connect(self.on_services_clicked)
         grid.addWidget(btn_services, 7, 1)
 
         btn_aur = QPushButton("📦 Gestor AUR Helper")
         btn_aur.setFixedHeight(34)
+        btn_aur.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#7e57c2"))
         btn_aur.clicked.connect(self.on_aur_clicked)
         grid.addWidget(btn_aur, 8, 0)
 
         btn_logs = QPushButton("📋 Ver Logs de Errores")
         btn_logs.setFixedHeight(34)
+        btn_logs.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#7e57c2"))
         btn_logs.clicked.connect(self.on_logs_clicked)
         grid.addWidget(btn_logs, 8, 1)
 
         main_layout.addLayout(grid)
 
-        # Separador inferior
+        # Separador visual 2
         line2 = QFrame()
+        line2.setObjectName("separator")
         line2.setFrameShape(QFrame.Shape.HLine)
         main_layout.addWidget(line2)
 
         # Comunidad
         lbl_com = QLabel("🌐 Comunidad")
-        lbl_com.setFont(QFont("Sans", 11, QFont.Weight.Bold))
+        lbl_com.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
+        lbl_com.setStyleSheet("color: #ffb74d;")
         main_layout.addWidget(lbl_com)
 
         com_layout = QHBoxLayout()
         btn_yt = QPushButton("📺 YouTube")
         btn_yt.setFixedHeight(34)
+        btn_yt.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#ffb74d"))
         btn_yt.clicked.connect(self.open_yt)
         com_layout.addWidget(btn_yt)
 
         btn_tg = QPushButton("💬 Telegram")
         btn_tg.setFixedHeight(34)
+        btn_tg.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#ffb74d"))
         btn_tg.clicked.connect(self.open_tg)
         com_layout.addWidget(btn_tg)
 
         btn_repo = QPushButton("💻 Repo Web")
         btn_repo.setFixedHeight(34)
+        btn_repo.setStyleSheet(self.get_button_style("#1e1e1e", "#2d2d2d", "#ffb74d"))
         btn_repo.clicked.connect(self.open_repo)
         com_layout.addWidget(btn_repo)
 
@@ -149,6 +192,41 @@ class SinergiaWelcome(QMainWindow):
         self.chk_autostart.setChecked(os.path.exists(AUTOSTART_PATH))
         self.chk_autostart.toggled.connect(self.toggle_autostart)
         main_layout.addWidget(self.chk_autostart)
+
+    def get_top_button_style(self, bg_color, hover_color, border_color):
+        return f"""
+            QPushButton {{
+                background-color: {bg_color};
+                color: #ffffff;
+                border: 1px solid {border_color};
+                border-radius: 6px;
+                font-weight: bold;
+                font-size: 9pt;
+                text-align: center;
+            }}
+            QPushButton:hover {{
+                background-color: {hover_color};
+                border: 1px solid #ffffff;
+            }}
+        """
+
+    def get_button_style(self, bg_color, hover_color, border_color):
+        return f"""
+            QPushButton {{
+                background-color: {bg_color};
+                color: #ffffff;
+                border: 1px solid {border_color};
+                border-radius: 6px;
+                font-weight: bold;
+                font-size: 9pt;
+                text-align: left;
+                padding-left: 10px;
+            }}
+            QPushButton:hover {{
+                background-color: {hover_color};
+                border: 1px solid #ffffff;
+            }}
+        """
 
     @pyqtSlot()
     def on_update_clicked(self):

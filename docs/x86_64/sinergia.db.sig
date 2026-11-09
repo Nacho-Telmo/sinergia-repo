@@ -1,1 +1,1 @@
-sinergia.db.tar.zst.sig
+sinergia.db.tar.gz.sig

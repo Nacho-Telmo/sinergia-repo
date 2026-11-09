@@ -142,7 +142,8 @@ class SinergiaCleanerApp(QMainWindow):
       self.process.start("bash", ["-c", script_str])
 
   def clean_cache(self):
-    self.run_shell_script("pacman -Sc --noconfirm", as_root=True)
+    # Uso de -Scc para limpieza completa y desatendida de la caché de pacman
+    self.run_shell_script("pacman -Scc --noconfirm", as_root=True)
 
   def clean_orphans(self):
     script = (

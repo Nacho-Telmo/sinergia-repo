@@ -142,8 +142,10 @@ class SinergiaCleanerApp(QMainWindow):
       self.process.start("bash", ["-c", script_str])
 
   def clean_cache(self):
-    # Automatiza las confirmaciones de pacman -Scc usando yes
-    self.run_shell_script("yes | pacman -Scc --noconfirm", as_root=True)
+    # Enviar respuestas exactas 's' para los prompts [S/N] en español de pacman -Scc
+    self.run_shell_script(
+        "printf 's\\ns\\n' | pacman -Scc --noconfirm", as_root=True
+    )
 
   def clean_orphans(self):
     script = (

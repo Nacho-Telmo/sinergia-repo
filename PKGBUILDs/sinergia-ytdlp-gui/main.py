@@ -28,7 +28,7 @@ class SinergiaYTDLPWindow(QWidget):
 
   def initUI(self):
     self.setWindowTitle("Sinergia YT-DLP Manager")
-    self.resize(750, 630)
+    self.resize(750, 680)
 
     # Layout principal
     main_layout = QVBoxLayout()
@@ -44,17 +44,36 @@ class SinergiaYTDLPWindow(QWidget):
     url_layout.addWidget(self.url_input)
     main_layout.addLayout(url_layout)
 
-    # 2. Selector de formato y Directorio de salida
-    options_layout = QHBoxLayout()
+    # 2. Selector de formato, Calidad de video y Directorio de salida
+    options_layout = QVBoxLayout()
 
+    row1_layout = QHBoxLayout()
     format_label = QLabel("Formato:")
     self.format_combo = QComboBox()
     self.format_combo.addItems([
-        "Video MP4 (Mejor calidad)",
+        "Video MP4",
         "Solo Audio MP3",
         "Solo Audio FLAC (Alta calidad)",
     ])
+    # Conectamos para habilitar/deshabilitar el combo de calidad según el formato
+    self.format_combo.currentIndexChanged.connect(self.toggle_quality_selector)
 
+    quality_label = QLabel("Calidad de video:")
+    self.quality_combo = QComboBox()
+    self.quality_combo.addItems([
+        "Mejor calidad disponible (Automática)",
+        "Forzar Máximo 1080p (FHD)",
+        "Forzar Máximo 720p (HD)",
+        "Forzar Máximo 480p (SD)",
+    ])
+
+    row1_layout.addWidget(format_label)
+    row1_layout.addWidget(self.format_combo)
+    row1_layout.addWidget(quality_label)
+    row1_layout.addWidget(self.quality_combo)
+    options_layout.addLayout(row1_layout)
+
+    row2_layout = QHBoxLayout()
     dir_label = QLabel("Guardar en:")
     self.dir_input = QLineEdit()
     self.dir_input.setText(QDir.homePath() + "/Descargas")
@@ -66,12 +85,12 @@ class SinergiaYTDLPWindow(QWidget):
     self.open_dir_btn.setToolTip("Abrir carpeta de descargas")
     self.open_dir_btn.clicked.connect(self.open_output_dir)
 
-    options_layout.addWidget(format_label)
-    options_layout.addWidget(self.format_combo)
-    options_layout.addWidget(dir_label)
-    options_layout.addWidget(self.dir_input)
-    options_layout.addWidget(self.browse_btn)
-    options_layout.addWidget(self.open_dir_btn)
+    row2_layout.addWidget(dir_label)
+    row2_layout.addWidget(self.dir_input)
+    row2_layout.addWidget(self.browse_btn)
+    row2_layout.addWidget(self.open_dir_btn)
+    options_layout.addLayout(row2_layout)
+
     main_layout.addLayout(options_layout)
 
     # 3. Opciones adicionales (Miniaturas y Organización)
@@ -126,6 +145,13 @@ class SinergiaYTDLPWindow(QWidget):
 
     self.setLayout(main_layout)
 
+  def toggle_quality_selector(self, index):
+    # Si selecciona Audio (índice 1 o 2), deshabilitamos el selector de resolución de video
+    if index > 0:
+      self.quality_combo.setEnabled(False)
+    else:
+      self.quality_combo.setEnabled(True)
+
   def select_output_dir(self):
     dir_path = QFileDialog.getExistingDirectory(
         self, "Seleccionar carpeta de destino"
@@ -157,20 +183,39 @@ class SinergiaYTDLPWindow(QWidget):
 
     self.progress_bar.setValue(0)
 
-    # Construir comando yt-dlp base
+    # Construir comando yt-dlp base según formato y calidad de video
     cmd_args = []
     selected_format = self.format_combo.currentIndex()
+    selected_quality = self.quality_combo.currentIndex()
 
     if selected_format == 0:  # Video MP4
+      if selected_quality == 0:  # Mejor calidad automática
+        format_selector = "bv*+ba/b"
+      elif selected_quality == 1:  # Máximo 1080p
+        format_selector = (
+            "bv*[height<=1080]+ba/b[height<=1080] / bv*+ba/b"
+        )
+      elif selected_quality == 2:  # Máximo 720p
+        format_selector = (
+            "bv*[height<=720]+ba/b[height<=720] / bv*+ba/b"
+        )
+      elif selected_quality == 3:  # Máximo 480p
+        format_selector = (
+            "bv*[height<=480]+ba/b[height<=480] / bv*+ba/b"
+        )
+      else:
+        format_selector = "bv*+ba/b"
+
       cmd_args = [
           "-f",
-          "bv*+ba/b",
+          format_selector,
           "--merge-output-format",
           "mp4",
           "-P",
           output_dir,
           url,
       ]
+
     elif selected_format == 1:  # Audio MP3
       cmd_args = [
           "-x",

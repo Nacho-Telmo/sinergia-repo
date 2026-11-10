@@ -1,7 +1,7 @@
 # Maintainer: Nacho-Telmo <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sinergia-ytdlp-gui
 pkgver=1.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Interfaz gráfica en PyQt6 para yt-dlp desarrollada para Sinergia Comunidad Linuxera"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"

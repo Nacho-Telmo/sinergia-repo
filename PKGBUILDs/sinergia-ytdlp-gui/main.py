@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
+import re
 import sys
 from PyQt6.QtCore import QDir, QProcess, QUrl
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWidgets import (
     QApplication,
+    QCheckBox,
     QComboBox,
     QFileDialog,
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QProgressBar,
     QPushButton,
     QTextEdit,
     QVBoxLayout,
@@ -25,7 +28,7 @@ class SinergiaYTDLPWindow(QWidget):
 
   def initUI(self):
     self.setWindowTitle("Sinergia YT-DLP Manager")
-    self.resize(750, 520)
+    self.resize(750, 600)
 
     # Layout principal
     main_layout = QVBoxLayout()
@@ -59,7 +62,6 @@ class SinergiaYTDLPWindow(QWidget):
     self.browse_btn = QPushButton("Explorar...")
     self.browse_btn.clicked.connect(self.select_output_dir)
 
-    # Nuevo botón para abrir la carpeta de destino
     self.open_dir_btn = QPushButton("📂 Abrir")
     self.open_dir_btn.setToolTip("Abrir carpeta de descargas")
     self.open_dir_btn.clicked.connect(self.open_output_dir)
@@ -72,16 +74,39 @@ class SinergiaYTDLPWindow(QWidget):
     options_layout.addWidget(self.open_dir_btn)
     main_layout.addLayout(options_layout)
 
-    # 3. Botón de descarga
+    # 3. Opciones adicionales (Miniaturas)
+    thumb_layout = QHBoxLayout()
+    self.chk_thumb = QCheckBox("Descargar miniatura")
+    self.chk_embed_thumb = QCheckBox(
+        "Incrustar miniatura en el archivo (Carátula)"
+    )
+    self.chk_embed_thumb.setChecked(True)
+
+    thumb_layout.addWidget(self.chk_thumb)
+    thumb_layout.addWidget(self.chk_embed_thumb)
+    thumb_layout.addStretch()
+    main_layout.addLayout(thumb_layout)
+
+    # 4. Barra de progreso visual
+    self.progress_bar = QProgressBar()
+    self.progress_bar.setValue(0)
+    self.progress_bar.setStyleSheet(
+        "QProgressBar { border: 2px solid #444; border-radius: 5px; text-align:"
+        " center; background: #222; color: white; }"
+        "QProgressBar::chunk { background-color: #2e7d32; }"
+    )
+    main_layout.addWidget(self.progress_bar)
+
+    # 5. Botón de descarga
     self.download_btn = QPushButton("Iniciar Descarga")
     self.download_btn.setStyleSheet(
         "background-color: #2e7d32; color: white; font-weight: bold; padding:"
-        " 8px;"
+        " 10px;"
     )
     self.download_btn.clicked.connect(self.start_download)
     main_layout.addWidget(self.download_btn)
 
-    # 4. Consola de registro en tiempo real (Output de yt-dlp)
+    # 6. Consola de registro en tiempo real
     self.console = QTextEdit()
     self.console.setReadOnly(True)
     self.console.setStyleSheet(
@@ -120,7 +145,9 @@ class SinergiaYTDLPWindow(QWidget):
       self.console.append("⚠️ Ya hay una descarga en curso.\n")
       return
 
-    # Construir comando yt-dlp
+    self.progress_bar.setValue(0)
+
+    # Construir comando yt-dlp base
     cmd_args = []
     selected_format = self.format_combo.currentIndex()
 
@@ -155,6 +182,12 @@ class SinergiaYTDLPWindow(QWidget):
           url,
       ]
 
+    # Añadir opciones de miniaturas si están marcadas
+    if self.chk_thumb.isChecked():
+      cmd_args.append("--write-thumbnail")
+    if self.chk_embed_thumb.isChecked():
+      cmd_args.append("--embed-thumbnail")
+
     self.console.append(
         f"🚀 Ejecutando: yt-dlp {' '.join(cmd_args)}\n"
     )
@@ -178,7 +211,18 @@ class SinergiaYTDLPWindow(QWidget):
         self.console.verticalScrollBar().maximum()
     )
 
+    # Buscar el porcentaje en el texto para mover la QProgressBar
+    # yt-dlp emite líneas como: [download]  45.5% of ~12.35MiB
+    match = re.search(r"\[download\]\s+([\d\.]+)%", output)
+    if match:
+      try:
+        percentage = float(match.group(1))
+        self.progress_bar.setValue(int(percentage))
+      except ValueError:
+        pass
+
   def download_finished(self):
+    self.progress_bar.setValue(100)
     self.console.append("\n✅ ¡Proceso de descarga finalizado!\n")
     self.download_btn.setEnabled(True)
 

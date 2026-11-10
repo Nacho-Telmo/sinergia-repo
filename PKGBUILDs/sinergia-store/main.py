@@ -104,22 +104,26 @@ class SinergiaStore(QMainWindow):
             }
         """)
 
-        # Lista de aplicaciones actualizada con Heroic Games Launcher
+        # Lista de aplicaciones actualizada con Thunderbird, OBS Studio, Obsidian y KeePassXC
         self.apps = [
             ("🌐 Vivaldi", "Navegador web avanzado y personalizable", "vivaldi", "sudo pacman -S --noconfirm vivaldi", "sudo pacman -Rns --noconfirm vivaldi", "Internet", "Arch Extra"),
             ("🌐 Chromium", "Navegador web rápido y de código abierto basado en Blink", "chromium", "sudo pacman -S --noconfirm chromium", "sudo pacman -Rns --noconfirm chromium", "Internet", "Arch Extra"),
             ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin", "Internet", "Chaotic-AUR"),
+            ("📧 Thunderbird", "Cliente de correo electrónico libre y robusto", "thunderbird", "sudo pacman -S --noconfirm thunderbird", "sudo pacman -Rns --noconfirm thunderbird", "Internet", "Arch Extra"),
             ("🔒 Signal", "Mensajería privada rápida y segura", "signal-desktop", "sudo pacman -S --noconfirm signal-desktop", "sudo pacman -Rns --noconfirm signal-desktop", "Internet", "Arch Extra"),
             ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord", "Gamer", "Arch Extra"),
             ("🎮 Heroic Launcher", "Lanzador de juegos de Epic, GOG y Amazon", "heroic-games-launcher-bin", "yay -S --noconfirm heroic-games-launcher-bin", "yay -R --noconfirm heroic-games-launcher-bin", "Gamer", "AUR"),
             ("🎵 Spotify", "Música y streaming en línea", "spotify", "yay -S --noconfirm spotify", "yay -R --noconfirm spotify", "Multimedia", "Chaotic-AUR"),
             ("🎬 Haruna", "Reproductor multimedia basado en mpv", "haruna", "sudo pacman -S --noconfirm haruna", "sudo pacman -Rns --noconfirm haruna", "Multimedia", "Arch Extra"),
+            ("📹 OBS Studio", "Grabador de pantalla y estudio de streaming", "obs-studio", "sudo pacman -S --noconfirm obs-studio", "sudo pacman -Rns --noconfirm obs-studio", "Multimedia", "Arch Extra"),
             ("📥 Sinergia YT-DLP", "Interfaz gráfica en PyQt6 para yt-dlp", "sinergia-ytdlp-gui", "sudo pacman -S --noconfirm sinergia-ytdlp-gui", "sudo pacman -Rns --noconfirm sinergia-ytdlp-gui", "Multimedia", "Sinergia Repo"),
             ("📝 Visual Studio Code", "Editor de código y extensiones", "visual-studio-code-bin", "yay -S --noconfirm visual-studio-code-bin", "yay -R --noconfirm visual-studio-code-bin", "Desarrollo", "Chaotic-AUR"),
+            ("📓 Obsidian", "Gestor de notas y bases de conocimiento Markdown", "obsidian", "sudo pacman -S --noconfirm obsidian", "sudo pacman -Rns --noconfirm obsidian", "Desarrollo", "Arch Extra"),
             ("📊 OnlyOffice", "Suite de oficina compatible con Office", "onlyoffice-bin", "sudo pacman -S --noconfirm onlyoffice-bin", "sudo pacman -Rns --noconfirm onlyoffice-bin", "Oficina", "Chaotic-AUR"),
             ("📥 qBitTorrent", "Cliente de torrents rápido y liviano", "qbittorrent", "sudo pacman -S --noconfirm qbittorrent", "sudo pacman -Rns --noconfirm qbittorrent", "Internet", "Arch Extra"),
             ("🎨 GIMP", "Editor y manipulador de imágenes", "gimp", "sudo pacman -S --noconfirm gimp", "sudo pacman -Rns --noconfirm gimp", "Multimedia", "Arch Extra"),
             ("🎮 Steam", "Plataforma de videojuegos", "steam", "sudo pacman -S --noconfirm steam", "sudo pacman -Rns --noconfirm steam", "Gamer", "Arch Extra"),
+            ("🔑 KeePassXC", "Gestor de contraseñas local, seguro y privado", "keepassxc", "sudo pacman -S --noconfirm keepassxc", "sudo pacman -Rns --noconfirm keepassxc", "Sistema", "Arch Extra"),
             ("⚡ Stacer", "Optimizador y monitor de sistema", "stacer-bin", "sudo pacman -S --noconfirm stacer-bin", "sudo pacman -Rns --noconfirm stacer-bin", "Sistema", "Sinergia Repo")
         ]
 

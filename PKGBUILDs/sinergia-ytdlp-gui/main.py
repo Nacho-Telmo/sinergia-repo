@@ -28,7 +28,7 @@ class SinergiaYTDLPWindow(QWidget):
 
   def initUI(self):
     self.setWindowTitle("Sinergia YT-DLP Manager")
-    self.resize(750, 600)
+    self.resize(750, 630)
 
     # Layout principal
     main_layout = QVBoxLayout()
@@ -74,18 +74,28 @@ class SinergiaYTDLPWindow(QWidget):
     options_layout.addWidget(self.open_dir_btn)
     main_layout.addLayout(options_layout)
 
-    # 3. Opciones adicionales (Miniaturas)
+    # 3. Opciones adicionales (Miniaturas y Organización)
+    options_extra_layout = QVBoxLayout()
+
     thumb_layout = QHBoxLayout()
     self.chk_thumb = QCheckBox("Descargar miniatura")
     self.chk_embed_thumb = QCheckBox(
         "Incrustar miniatura en el archivo (Carátula)"
     )
     self.chk_embed_thumb.setChecked(True)
-
     thumb_layout.addWidget(self.chk_thumb)
     thumb_layout.addWidget(self.chk_embed_thumb)
     thumb_layout.addStretch()
-    main_layout.addLayout(thumb_layout)
+
+    org_layout = QHBoxLayout()
+    self.chk_organize = QCheckBox("Organizar en carpetas (Artista / Álbum)")
+    self.chk_organize.setChecked(True)
+    org_layout.addWidget(self.chk_organize)
+    org_layout.addStretch()
+
+    options_extra_layout.addLayout(thumb_layout)
+    options_extra_layout.addLayout(org_layout)
+    main_layout.addLayout(options_extra_layout)
 
     # 4. Barra de progreso visual
     self.progress_bar = QProgressBar()
@@ -182,6 +192,13 @@ class SinergiaYTDLPWindow(QWidget):
           url,
       ]
 
+    # Añadir opciones de organización por carpetas (Artista / Álbum)
+    if self.chk_organize.isChecked():
+      cmd_args.extend([
+          "-o",
+          "%(artist|uploader)s/%(album|playlist_title)s/%(title)s.%(ext)s",
+      ])
+
     # Añadir opciones de miniaturas si están marcadas
     if self.chk_thumb.isChecked():
       cmd_args.append("--write-thumbnail")
@@ -212,7 +229,6 @@ class SinergiaYTDLPWindow(QWidget):
     )
 
     # Buscar el porcentaje en el texto para mover la QProgressBar
-    # yt-dlp emite líneas como: [download]  45.5% of ~12.35MiB
     match = re.search(r"\[download\]\s+([\d\.]+)%", output)
     if match:
       try:

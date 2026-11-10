@@ -88,7 +88,7 @@ class SinergiaStore(QMainWindow):
             QTabBar::tab {
                 background: #1e1e1e;
                 color: #aaaaaa;
-                padding: 10px 18px;
+                padding: 10px 14px;
                 margin-right: 4px;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
@@ -104,20 +104,21 @@ class SinergiaStore(QMainWindow):
             }
         """)
 
-        # Lista exacta y curada de aplicaciones (con Chromium incorporado)
+        # Lista de aplicaciones actualizada con sinergia-ytdlp-gui y nuevas categorías
         self.apps = [
             ("🌐 Vivaldi", "Navegador web avanzado y personalizable", "vivaldi", "sudo pacman -S --noconfirm vivaldi", "sudo pacman -Rns --noconfirm vivaldi", "Internet", "Arch Extra"),
             ("🌐 Chromium", "Navegador web rápido y de código abierto basado en Blink", "chromium", "sudo pacman -S --noconfirm chromium", "sudo pacman -Rns --noconfirm chromium", "Internet", "Arch Extra"),
             ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin", "Internet", "Chaotic-AUR"),
             ("🔒 Signal", "Mensajería privada rápida y segura", "signal-desktop", "sudo pacman -S --noconfirm signal-desktop", "sudo pacman -Rns --noconfirm signal-desktop", "Internet", "Arch Extra"),
-            ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord", "Internet", "Arch Extra"),
+            ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord", "Gamer", "Arch Extra"),
             ("🎵 Spotify", "Música y streaming en línea", "spotify", "yay -S --noconfirm spotify", "yay -R --noconfirm spotify", "Multimedia", "Chaotic-AUR"),
             ("🎬 Haruna", "Reproductor multimedia basado en mpv", "haruna", "sudo pacman -S --noconfirm haruna", "sudo pacman -Rns --noconfirm haruna", "Multimedia", "Arch Extra"),
-            ("📝 Visual Studio Code", "Editor de código y extensiones", "visual-studio-code-bin", "yay -S --noconfirm visual-studio-code-bin", "yay -R --noconfirm visual-studio-code-bin", "Oficina / Dev", "Chaotic-AUR"),
-            ("📊 OnlyOffice", "Suite de oficina compatible con Office", "onlyoffice-bin", "sudo pacman -S --noconfirm onlyoffice-bin", "sudo pacman -Rns --noconfirm onlyoffice-bin", "Oficina / Dev", "Chaotic-AUR"),
+            ("📥 Sinergia YT-DLP", "Interfaz gráfica en PyQt6 para yt-dlp", "sinergia-ytdlp-gui", "sudo pacman -S --noconfirm sinergia-ytdlp-gui", "sudo pacman -Rns --noconfirm sinergia-ytdlp-gui", "Multimedia", "Sinergia Repo"),
+            ("📝 Visual Studio Code", "Editor de código y extensiones", "visual-studio-code-bin", "yay -S --noconfirm visual-studio-code-bin", "yay -R --noconfirm visual-studio-code-bin", "Desarrollo", "Chaotic-AUR"),
+            ("📊 OnlyOffice", "Suite de oficina compatible con Office", "onlyoffice-bin", "sudo pacman -S --noconfirm onlyoffice-bin", "sudo pacman -Rns --noconfirm onlyoffice-bin", "Oficina", "Chaotic-AUR"),
             ("📥 qBitTorrent", "Cliente de torrents rápido y liviano", "qbittorrent", "sudo pacman -S --noconfirm qbittorrent", "sudo pacman -Rns --noconfirm qbittorrent", "Internet", "Arch Extra"),
             ("🎨 GIMP", "Editor y manipulador de imágenes", "gimp", "sudo pacman -S --noconfirm gimp", "sudo pacman -Rns --noconfirm gimp", "Multimedia", "Arch Extra"),
-            ("🎮 Steam", "Plataforma de videojuegos", "steam", "sudo pacman -S --noconfirm steam", "sudo pacman -Rns --noconfirm steam", "Multimedia", "Arch Extra"),
+            ("🎮 Steam", "Plataforma de videojuegos", "steam", "sudo pacman -S --noconfirm steam", "sudo pacman -Rns --noconfirm steam", "Gamer", "Arch Extra"),
             ("⚡ Stacer", "Optimizador y monitor de sistema", "stacer-bin", "sudo pacman -S --noconfirm stacer-bin", "sudo pacman -Rns --noconfirm stacer-bin", "Sistema", "Sinergia Repo")
         ]
 
@@ -140,9 +141,9 @@ class SinergiaStore(QMainWindow):
         header_layout.addStretch()
         main_layout.addLayout(header_layout)
 
-        # Pestañas de Categorías
+        # Pestañas de Categorías (Actualizadas con Gamer y Desarrollo)
         self.tabs = QTabWidget()
-        categories = ["Todas", "Internet", "Multimedia", "Oficina / Dev", "Sistema"]
+        categories = ["Todas", "Internet", "Multimedia", "Gamer", "Desarrollo", "Oficina", "Sistema"]
         for cat in categories:
             tab = QWidget()
             self.tabs.addTab(tab, cat)

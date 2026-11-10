@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/init/env python3
 import sys
 import subprocess
 import shutil
@@ -104,13 +104,14 @@ class SinergiaStore(QMainWindow):
             }
         """)
 
-        # Lista de aplicaciones actualizada con sinergia-ytdlp-gui y nuevas categorías
+        # Lista de aplicaciones actualizada con Heroic Games Launcher
         self.apps = [
             ("🌐 Vivaldi", "Navegador web avanzado y personalizable", "vivaldi", "sudo pacman -S --noconfirm vivaldi", "sudo pacman -Rns --noconfirm vivaldi", "Internet", "Arch Extra"),
             ("🌐 Chromium", "Navegador web rápido y de código abierto basado en Blink", "chromium", "sudo pacman -S --noconfirm chromium", "sudo pacman -Rns --noconfirm chromium", "Internet", "Arch Extra"),
             ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin", "Internet", "Chaotic-AUR"),
             ("🔒 Signal", "Mensajería privada rápida y segura", "signal-desktop", "sudo pacman -S --noconfirm signal-desktop", "sudo pacman -Rns --noconfirm signal-desktop", "Internet", "Arch Extra"),
             ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord", "Gamer", "Arch Extra"),
+            ("🎮 Heroic Launcher", "Lanzador de juegos de Epic, GOG y Amazon", "heroic-games-launcher-bin", "yay -S --noconfirm heroic-games-launcher-bin", "yay -R --noconfirm heroic-games-launcher-bin", "Gamer", "AUR"),
             ("🎵 Spotify", "Música y streaming en línea", "spotify", "yay -S --noconfirm spotify", "yay -R --noconfirm spotify", "Multimedia", "Chaotic-AUR"),
             ("🎬 Haruna", "Reproductor multimedia basado en mpv", "haruna", "sudo pacman -S --noconfirm haruna", "sudo pacman -Rns --noconfirm haruna", "Multimedia", "Arch Extra"),
             ("📥 Sinergia YT-DLP", "Interfaz gráfica en PyQt6 para yt-dlp", "sinergia-ytdlp-gui", "sudo pacman -S --noconfirm sinergia-ytdlp-gui", "sudo pacman -Rns --noconfirm sinergia-ytdlp-gui", "Multimedia", "Sinergia Repo"),
@@ -141,7 +142,7 @@ class SinergiaStore(QMainWindow):
         header_layout.addStretch()
         main_layout.addLayout(header_layout)
 
-        # Pestañas de Categorías (Actualizadas con Gamer y Desarrollo)
+        # Pestañas de Categorías
         self.tabs = QTabWidget()
         categories = ["Todas", "Internet", "Multimedia", "Gamer", "Desarrollo", "Oficina", "Sistema"]
         for cat in categories:

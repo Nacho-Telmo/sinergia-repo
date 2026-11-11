@@ -17,7 +17,7 @@ fi
 
 echo "[+] Configurando repositorios para Sinergia..."
 
-# 2. Configurar Chaotic-AUR (Instalando los paquetes primero para que el archivo mirrorlist exista)
+# 2. Configurar Chaotic-AUR de forma directa mediante paquetes oficiales (sin servidores de llaves)
 echo "[+] Añadiendo Chaotic-AUR (Keyring y Mirrorlist)..."
 pacman-key --init
 

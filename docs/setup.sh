@@ -17,12 +17,12 @@ fi
 
 echo "[+] Configurando repositorios para Sinergia..."
 
-# 2. Configurar Chaotic-AUR de forma directa mediante paquetes oficiales (sin servidores de llaves)
+# 2. Configurar Chaotic-AUR (Requisito para yay y dependencias AUR)
 echo "[+] Añadiendo Chaotic-AUR (Keyring y Mirrorlist)..."
-pacman-key --init
-
-pacman -U --noconfirm --needed 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
-pacman -U --noconfirm --needed 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key 3056513887B78AEB
+pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 
 if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
   echo "" >> /etc/pacman.conf
@@ -53,7 +53,7 @@ fi
 echo "[+] Sincronizando bases de datos con pacman -Syy..."
 pacman -Syy --noconfirm
 
-echo "[+] Instalando yay, sinergia-keyring y sinergia-welcome..."
-pacman -S --noconfirm yay sinergia-keyring sinergia-welcome
+echo "[+] Instalando yay, sinergia-keyring y sinergia-store..."
+pacman -S --noconfirm yay sinergia-keyring sinergia-store
 
-echo "¡Listo! El sistema ya cuenta con Chaotic-AUR, Sinergia Repo y la Sinergia Welcome operativa. 🐧🚀"
+echo "¡Listo! El sistema ya cuenta con Chaotic-AUR, Sinergia Repo y la Sinergia Store operativa. 🐧🚀"

@@ -43,9 +43,10 @@ echo "[sinergia]" >> /etc/pacman.conf
 echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf
 echo "Server = https://Nacho-Telmo.github.io/sinergia-repo/\$arch" >> /etc/pacman.conf
 
-echo "[+] Configurando confianza para la clave GPG de Sinergia..."
-pacman-key --recv-keys 33986859CBA9A0329EE9321E1AA165CC95EBE1F1 2>/dev/null || true
-pacman-key --lsign-key 33986859CBA9A0329EE9321E1AA165CC95EBE1F1 2>/dev/null || true
+echo "[+] Importando y firmando la clave GPG de Sinergia desde el repositorio..."
+# Descargar e importar tu clave .asc directamente desde GitHub Pages de forma local
+curl -s https://nacho-telmo.github.io/sinergia-repo/x86_64/sinergia-key.asc | pacman-key --add -
+pacman-key --lsign-key 33986859CBA9A0329EE9321E1AA165CC95EBE1F1
 
 echo "[+] Sincronizando bases de datos (con reintentos por estabilidad)..."
 retries=5

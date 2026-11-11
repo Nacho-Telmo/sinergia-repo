@@ -7,6 +7,7 @@ fi
 
 echo "[+] Limpiando cualquier rastro previo de Chaotic y Sinergia en pacman.conf..."
 sed -i '/\[chaotic-aur\]/,+1d' /etc/pacman.conf
+sed -i '/\[sinergia\]/,+3d' /etc/pacman.conf
 sed -i '/\[sinergia-repo\]/,+3d' /etc/pacman.conf
 sed -i '/chaotic-mirrorlist/d' /etc/pacman.conf
 
@@ -38,7 +39,7 @@ if [ -f /etc/pacman.d/chaotic-mirrorlist ]; then
 fi
 
 echo "" >> /etc/pacman.conf
-echo "[sinergia-repo]" >> /etc/pacman.conf
+echo "[sinergia]" >> /etc/pacman.conf
 echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf
 echo "Server = https://Nacho-Telmo.github.io/sinergia-repo/\$arch" >> /etc/pacman.conf
 
@@ -53,7 +54,7 @@ while [ $retries -gt 0 ]; do
   echo "[-] Sincronización falló. Reintentando en 5 segundos... ($retries intentos restantes)"
   sleep 5
   retries=$((retries - 1))
-done
+fi
 
 if [ $success -eq 0 ]; then
   echo "[-] Error crítico: No se pudieron sincronizar las bases de datos tras varios intentos."

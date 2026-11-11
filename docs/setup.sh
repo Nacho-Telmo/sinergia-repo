@@ -54,6 +54,6 @@ echo "[+] Sincronizando bases de datos con pacman -Syy..."
 pacman -Syy --noconfirm
 
 echo "[+] Instalando yay, sinergia-keyring y sinergia-store..."
-pacman -S --noconfirm yay sinergia-keyring sinergia-store
+pacman -S --noconfirm yay sinergia-keyring sinergia-welcome
 
 echo "¡Listo! El sistema ya cuenta con Chaotic-AUR, Sinergia Repo y la Sinergia Store operativa. 🐧🚀"

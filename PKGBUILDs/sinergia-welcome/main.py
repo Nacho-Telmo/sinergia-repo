@@ -156,9 +156,19 @@ class SinergiaWelcome(QMainWindow):
         main_layout.addLayout(com_layout)
         main_layout.addStretch()
 
-        # Checkbox autostart
+        # Checkbox autostart (Activado por defecto si no existe archivo de configuración previa)
+        autostart_exists = os.path.exists(AUTOSTART_PATH)
+        # Si el directorio padre no existe, asumimos primera ejecución y lo activamos por defecto creando el archivo
+        if not os.path.exists(os.path.dirname(AUTOSTART_PATH)) and not autostart_exists:
+            try:
+                os.makedirs(os.path.dirname(AUTOSTART_PATH), exist_ok=True)
+                self.crear_archivo_autostart()
+                autostart_exists = True
+            except Exception as e:
+                print(f"No se pudo crear el autostart por defecto: {e}")
+
         self.chk_autostart = QCheckBox("Mostrar esta ventana al iniciar el sistema")
-        self.chk_autostart.setChecked(os.path.exists(AUTOSTART_PATH))
+        self.chk_autostart.setChecked(autostart_exists)
         self.chk_autostart.toggled.connect(self.toggle_autostart)
         main_layout.addWidget(self.chk_autostart)
 
@@ -359,11 +369,8 @@ class SinergiaWelcome(QMainWindow):
         except Exception as e:
             print(f"Error al lanzar app: {e}")
 
-    @pyqtSlot(bool)
-    def toggle_autostart(self, checked):
-        if checked:
-            os.makedirs(os.path.dirname(AUTOSTART_PATH), exist_ok=True)
-            content = """[Desktop Entry]
+    def crear_archivo_autostart(self):
+        content = """[Desktop Entry]
 Type=Application
 Name=Sinergia Welcome
 Exec=sinergia-welcome
@@ -371,8 +378,14 @@ Icon=sinergia-welcome
 Terminal=false
 Categories=Utility;
 """
-            with open(AUTOSTART_PATH, "w", encoding="utf-8") as f:
-                f.write(content)
+        with open(AUTOSTART_PATH, "w", encoding="utf-8") as f:
+            f.write(content)
+
+    @pyqtSlot(bool)
+    def toggle_autostart(self, checked):
+        if checked:
+            os.makedirs(os.path.dirname(AUTOSTART_PATH), exist_ok=True)
+            self.crear_archivo_autostart()
         else:
             if os.path.exists(AUTOSTART_PATH):
                 os.remove(AUTOSTART_PATH)

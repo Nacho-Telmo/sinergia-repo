@@ -54,7 +54,7 @@ while [ $retries -gt 0 ]; do
   echo "[-] Sincronización falló. Reintentando en 5 segundos... ($retries intentos restantes)"
   sleep 5
   retries=$((retries - 1))
-fi
+done
 
 if [ $success -eq 0 ]; then
   echo "[-] Error crítico: No se pudieron sincronizar las bases de datos tras varios intentos."

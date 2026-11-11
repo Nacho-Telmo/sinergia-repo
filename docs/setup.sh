@@ -6,9 +6,8 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 echo "[+] Limpiando cualquier rastro previo de Chaotic y Sinergia en pacman.conf..."
-# Eliminar bloques enteros duplicados o previos para evitar choques
 sed -i '/\[chaotic-aur\]/,+1d' /etc/pacman.conf
-sed -i '/\[sinergia-repo\]/,+2d' /etc/pacman.conf
+sed -i '/\[sinergia-repo\]/,+3d' /etc/pacman.conf
 sed -i '/chaotic-mirrorlist/d' /etc/pacman.conf
 
 echo "[+] Inicializando llaveros de Pacman..."
@@ -32,14 +31,12 @@ rm -f "$TEMP_CONF"
 
 pacman-key --populate chaotic
 
-# Añadir chaotic-aur una sola vez de forma limpia
 if [ -f /etc/pacman.d/chaotic-mirrorlist ]; then
   echo "" >> /etc/pacman.conf
   echo "[chaotic-aur]" >> /etc/pacman.conf
   echo "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
 fi
 
-# Añadir sinergia-repo una sola vez de forma limpia
 echo "" >> /etc/pacman.conf
 echo "[sinergia-repo]" >> /etc/pacman.conf
 echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf
@@ -56,7 +53,7 @@ while [ $retries -gt 0 ]; do
   echo "[-] Sincronización falló. Reintentando en 5 segundos... ($retries intentos restantes)"
   sleep 5
   retries=$((retries - 1))
-fi
+done
 
 if [ $success -eq 0 ]; then
   echo "[-] Error crítico: No se pudieron sincronizar las bases de datos tras varios intentos."

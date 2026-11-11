@@ -44,26 +44,15 @@ fi
 echo "[+] Sincronizando bases de datos..."
 pacman -Syu --noconfirm
 
-# Instalar componentes de Sinergia y utilidades base
-echo "[+] Instalando componentes de Sinergia y utilidades base..."
+# Instalar componentes de Sinergia, yay-bin y utilidades base directamente desde repositorios
+echo "[+] Instalando componentes de Sinergia, yay y utilidades base..."
 pacman -S --noconfirm --needed \
   base-devel \
   git \
   wget \
   curl \
+  yay-bin \
   sinergia-keyring \
   sinergia-welcome
-
-# Instalar yay (AUR Helper) de forma automatizada
-if ! command -v yay &> /dev/null; then
-  echo "[+] Instalando yay desde AUR..."
-  TEMP_DIR=$(mktemp -d)
-  cd "$TEMP_DIR"
-  sudo -u ${SUDO_USER:-$(whoami)} git clone https://aur.archlinux.org/yay-bin.git
-  cd yay-bin
-  sudo -u ${SUDO_USER:-$(whoami)} makepkg -si --noconfirm
-  cd ~
-  rm -rf "$TEMP_DIR"
-fi
 
 echo "[+] ¡Instalación y configuración completa de Sinergia finalizada con éxito! 🐧🚀"

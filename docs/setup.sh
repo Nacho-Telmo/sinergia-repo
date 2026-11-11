@@ -17,11 +17,23 @@ fi
 
 echo "[+] Configurando repositorios para Sinergia..."
 
-# 2. Configurar Chaotic-AUR de forma 100% desatendida y directa
+# 2. Configurar Chaotic-AUR de forma 100% desatendida (sin prompts de claves)
 echo "[+] Añadiendo Chaotic-AUR (Keyring y Mirrorlist)..."
 pacman-key --init
 
-pacman -U --noconfirm --needed 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+# Crear un archivo de configuración temporal para pacman sin verificación de firmas en este paso
+TEMP_CONF=$(mktemp)
+grep -v '^SigLevel' /etc/pacman.conf > "$TEMP_CONF"
+echo "SigLevel = Never" >> "$TEMP_CONF"
+
+# Instalar keyring y mirrorlist de Chaotic sin fricción ni preguntas
+pacman -U --config "$TEMP_CONF" --noconfirm --needed \
+  'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
+  'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+rm -f "$TEMP_CONF"
+
+# Poblar la clave de Chaotic recién instalada en el llavero local de pacman
+pacman-key --populate chaotic
 
 if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
   echo "" >> /etc/pacman.conf

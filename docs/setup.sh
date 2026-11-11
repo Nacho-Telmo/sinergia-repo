@@ -56,4 +56,4 @@ pacman -Syy --noconfirm
 echo "[+] Instalando yay, sinergia-keyring y sinergia-store..."
 pacman -S --noconfirm yay sinergia-keyring sinergia-welcome
 
-echo "¡Listo! El sistema ya cuenta con Chaotic-AUR, Sinergia Repo y la Sinergia Store operativa. 🐧🚀"
+echo "¡Listo! El sistema ya cuenta con Chaotic-AUR, Sinergia Repo y la Sinergia Welcome operativa. 🐧🚀"

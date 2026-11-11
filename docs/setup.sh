@@ -17,15 +17,10 @@ fi
 
 echo "[+] Configurando repositorios para Sinergia..."
 
-# 2. Configurar Chaotic-AUR de forma 100% desatendida
+# 2. Configurar Chaotic-AUR de forma 100% desatendida y directa
 echo "[+] Añadiendo Chaotic-AUR (Keyring y Mirrorlist)..."
 pacman-key --init
 
-# Importar y firmar la clave maestra de Chaotic-AUR para evitar prompts interactivos
-pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-pacman-key --lsign-key 3056513887B78AEB
-
-# Instalar los paquetes oficiales de Chaotic sin fricción
 pacman -U --noconfirm --needed 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 
 if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then

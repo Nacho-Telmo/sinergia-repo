@@ -31,6 +31,7 @@
     "ntp": true,
     "packages": [
         "konsole",
+        "kscreen",
         "plasma-nm",
         "plasma-pa",
         "sddm-kcm"

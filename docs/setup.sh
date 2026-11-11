@@ -1,4 +1,4 @@
-#!/bin/bash
+##!/bin/bash
 
 # ==========================================
 # CONFIGURACIÓN DE REPOSITORIOS (SINERGIA + CHAOTIC-AUR)
@@ -17,15 +17,17 @@ fi
 
 echo "[+] Configurando repositorios para Sinergia..."
 
-# 2. Configurar Chaotic-AUR de forma 100% desatendida
+# 2. Configurar Chaotic-AUR de forma ligera, sin populate y 100% desatendida
 echo "[+] Añadiendo Chaotic-AUR (Keyring y Mirrorlist)..."
 pacman-key --init
-pacman-key --populate archlinux
 
-# Pre-importar y firmar la clave de Chaotic antes de instalar el paquete para evitar [S/n]
-pacman-key --recv-key 3056513887B78AEB --keyserver hkps://keyserver.ubuntu.com:443 || \
-pacman-key --recv-key 3056513887B78AEB --keyserver hkp://keyserver.ubuntu.com || \
-pacman-key --recv-key 3056513887B78AEB --keyserver pgp.mit.edu
+for server in hkps://keyserver.ubuntu.com:443 hkp://keyserver.ubuntu.com pgp.mit.edu; do
+  if timeout 8 pacman-key --recv-key 3056513887B78AEB --keyserver "$server"; then
+    break
+  fi
+  echo "[!] Servidor $server agotó el tiempo, probando el siguiente..."
+done
+
 pacman-key --lsign-key 3056513887B78AEB
 
 pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'

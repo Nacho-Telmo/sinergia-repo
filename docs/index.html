@@ -88,7 +88,7 @@
         }
         .btn-secondary:hover { background: #475569; }
 
-        /* Guía en diseño vertical con botón de copiar */
+        /* Guía de instalación */
         .steps-box {
             background: #1e293b;
             border: 1px solid var(--border);
@@ -97,12 +97,24 @@
             margin-bottom: 2.5rem;
         }
         .steps-box h2 {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             color: var(--accent);
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+        .steps-box h3 {
+            font-size: 1.1rem;
+            color: #f8fafc;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .steps-box h3:first-of-type {
+            margin-top: 0;
         }
         .steps-list {
             display: flex;
@@ -261,9 +273,28 @@
             </div>
         </header>
 
-        <!-- Sección de 4 Pasos Verticales con Botón Copiar -->
+        <!-- Sección de Guía de Instalación -->
         <div class="steps-box">
-            <h2>🛠️ 4 Pasos para agregar el repositorio a tu sistema</h2>
+            <h2>🚀 Guía de Instalación</h2>
+
+            <h3>⚡ Método Recomendado: Instalación Automática</h3>
+            <div class="steps-list" style="margin-bottom: 1.75rem;">
+                <div class="step-card">
+                    <div class="step-header">
+                        <div>
+                            <span class="step-number">INSTALACIÓN RÁPIDA</span>
+                            <span class="step-title">Configuración automática del sistema</span>
+                        </div>
+                    </div>
+                    <div class="step-desc">Para una experiencia rápida y sin fricciones, utiliza nuestro script de configuración automática. Este script configura Chaotic-AUR, instala yay, añade el repositorio de Sinergia con sus llaves GPG y deja instalado sinergia-welcome en un solo paso:</div>
+                    <div class="code-wrapper">
+                        <pre id="code-auto">curl -sL https://nacho-telmo.github.io/sinergia-repo/setup.sh | sudo bash</pre>
+                        <button class="btn-copy" onclick="copyCode('code-auto', this)">Copiar</button>
+                    </div>
+                </div>
+            </div>
+
+            <h3>🛠️ Método Manual (Paso a Paso)</h3>
             <div class="steps-list">
 
                 <div class="step-card">
@@ -606,7 +637,7 @@ Server = https://nacho-telmo.github.io/sinergia-repo/x86_64/</pre>
         </div>
 
         <footer>
-            <p>Catálogo generado automáticamente el 11/11/2026 05:39 • Sinergia Repo (17 paquetes)</p>
+            <p>Catálogo generado automáticamente el 11/11/2026 05:48 • Sinergia Repo (17 paquetes)</p>
         </footer>
     </div>
 

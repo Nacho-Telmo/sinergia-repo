@@ -170,7 +170,7 @@ def build_catalog():
         }}
         .btn-secondary:hover {{ background: #475569; }}
 
-        /* Guía en diseño vertical con botón de copiar */
+        /* Guía de instalación */
         .steps-box {{
             background: #1e293b;
             border: 1px solid var(--border);
@@ -179,12 +179,24 @@ def build_catalog():
             margin-bottom: 2.5rem;
         }}
         .steps-box h2 {{
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             color: var(--accent);
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }}
+        .steps-box h3 {{
+            font-size: 1.1rem;
+            color: #f8fafc;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }}
+        .steps-box h3:first-of-type {{
+            margin-top: 0;
         }}
         .steps-list {{
             display: flex;
@@ -343,9 +355,28 @@ def build_catalog():
             </div>
         </header>
 
-        <!-- Sección de 4 Pasos Verticales con Botón Copiar -->
+        <!-- Sección de Guía de Instalación -->
         <div class="steps-box">
-            <h2>🛠️ 4 Pasos para agregar el repositorio a tu sistema</h2>
+            <h2>🚀 Guía de Instalación</h2>
+
+            <h3>⚡ Método Recomendado: Instalación Automática</h3>
+            <div class="steps-list" style="margin-bottom: 1.75rem;">
+                <div class="step-card">
+                    <div class="step-header">
+                        <div>
+                            <span class="step-number">INSTALACIÓN RÁPIDA</span>
+                            <span class="step-title">Configuración automática del sistema</span>
+                        </div>
+                    </div>
+                    <div class="step-desc">Para una experiencia rápida y sin fricciones, utiliza nuestro script de configuración automática. Este script configura Chaotic-AUR, instala yay, añade el repositorio de Sinergia con sus llaves GPG y deja instalado sinergia-welcome en un solo paso:</div>
+                    <div class="code-wrapper">
+                        <pre id="code-auto">curl -sL https://nacho-telmo.github.io/sinergia-repo/setup.sh | sudo bash</pre>
+                        <button class="btn-copy" onclick="copyCode('code-auto', this)">Copiar</button>
+                    </div>
+                </div>
+            </div>
+
+            <h3>🛠️ Método Manual (Paso a Paso)</h3>
             <div class="steps-list">
 
                 <div class="step-card">
@@ -443,9 +474,6 @@ Server = https://nacho-telmo.github.io/sinergia-repo/x86_64/</pre>
 """
 
     with open(os.path.join(DOCS_DIR, "index.html"), "w", encoding="utf-8") as f:
-        f.write(html_content)
-
-    with open(os.path.join(PUBLIC_DIR, "index.html"), "w", encoding="utf-8") as f:
         f.write(html_content)
 
     print(f"✅ Catálogo web generado exitosamente ({len(packages)} paquetes procesados).")

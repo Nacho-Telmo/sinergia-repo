@@ -73,7 +73,7 @@ pacman -S --noconfirm --needed \
   git \
   wget \
   curl \
-  yay-bin \
+  yay \
   sinergia-keyring \
   sinergia-welcome
 

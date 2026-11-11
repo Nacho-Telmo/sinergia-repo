@@ -5,8 +5,10 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-echo "[+] Limpiando configuraciones previas de Chaotic en pacman.conf..."
-sed -i '/\[chaotic-aur\]/{N;N;d}' /etc/pacman.conf
+echo "[+] Limpiando cualquier rastro previo de Chaotic y Sinergia en pacman.conf..."
+# Eliminar bloques enteros duplicados o previos para evitar choques
+sed -i '/\[chaotic-aur\]/,+1d' /etc/pacman.conf
+sed -i '/\[sinergia-repo\]/,+2d' /etc/pacman.conf
 sed -i '/chaotic-mirrorlist/d' /etc/pacman.conf
 
 echo "[+] Inicializando llaveros de Pacman..."
@@ -30,24 +32,20 @@ rm -f "$TEMP_CONF"
 
 pacman-key --populate chaotic
 
+# Añadir chaotic-aur una sola vez de forma limpia
 if [ -f /etc/pacman.d/chaotic-mirrorlist ]; then
   echo "" >> /etc/pacman.conf
   echo "[chaotic-aur]" >> /etc/pacman.conf
   echo "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
 fi
 
-echo "[+] Añadiendo repositorio personalizado de Sinergia..."
-if ! grep -q "\[sinergia-repo\]" /etc/pacman.conf; then
-  cat << 'EOF' >> /etc/pacman.conf
-
-[sinergia-repo]
-SigLevel = Optional TrustAll
-Server = https://Nacho-Telmo.github.io/sinergia-repo/\$arch
-EOF
-fi
+# Añadir sinergia-repo una sola vez de forma limpia
+echo "" >> /etc/pacman.conf
+echo "[sinergia-repo]" >> /etc/pacman.conf
+echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf
+echo "Server = https://Nacho-Telmo.github.io/sinergia-repo/\$arch" >> /etc/pacman.conf
 
 echo "[+] Sincronizando bases de datos (con reintentos por estabilidad)..."
-# Bucle de reintento en caso de error 503 temporal de GitHub Pages
 retries=5
 success=0
 while [ $retries -gt 0 ]; do
@@ -55,10 +53,10 @@ while [ $retries -gt 0 ]; do
     success=1
     break
   fi
-  echo "[-] Sincronización falló (posible 503 de GitHub). Reintentando en 5 segundos... ($retries intentos restantes)"
+  echo "[-] Sincronización falló. Reintentando en 5 segundos... ($retries intentos restantes)"
   sleep 5
   retries=$((retries - 1))
-done
+fi
 
 if [ $success -eq 0 ]; then
   echo "[-] Error crítico: No se pudieron sincronizar las bases de datos tras varios intentos."

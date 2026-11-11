@@ -1,4 +1,4 @@
-#!/bin/bash
+##!/bin/bash
 
 if [ "$EUID" -ne 0 ]; then
   echo "[-] Este script debe ejecutarse como root (sudo)."
@@ -13,18 +13,23 @@ pacman-key --populate archlinux
 pacman -S --noconfirm --needed archlinux-keyring
 
 echo "[+] Configurando Chaotic-AUR..."
+# Crear un archivo de configuración temporal limpio exclusivamente para instalar los paquetes de Chaotic
 TEMP_CONF=$(mktemp)
-grep -v '^SigLevel' /etc/pacman.conf > "$TEMP_CONF"
-echo "SigLevel = Never" >> "$TEMP_CONF"
+echo "SigLevel = Never" > "$TEMP_CONF"
+echo "DBPath = /var/lib/pacman/" >> "$TEMP_CONF"
+echo "CacheDir = /var/cache/pacman/pkg/" >> "$TEMP_CONF"
 
+# Instalar keyring y mirrorlist sin tocar el pacman.conf principal todavía
 pacman -U --config "$TEMP_CONF" --noconfirm --needed \
   'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
   'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 rm -f "$TEMP_CONF"
 
+# Poblar la clave de Chaotic
 pacman-key --populate chaotic
 
-if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
+# Añadir el repositorio a pacman.conf SOLAMENTE si el mirrorlist ya existe en el sistema
+if [ -f /etc/pacman.d/chaotic-mirrorlist ] && ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
   echo "" >> /etc/pacman.conf
   echo "[chaotic-aur]" >> /etc/pacman.conf
   echo "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
@@ -44,7 +49,7 @@ fi
 echo "[+] Sincronizando bases de datos..."
 pacman -Syu --noconfirm
 
-# Instalar componentes de Sinergia, yay-bin y utilidades base directamente desde repositorios
+# Instalar componentes de Sinergia, yay-bin y utilidades base
 echo "[+] Instalando componentes de Sinergia, yay y utilidades base..."
 pacman -S --noconfirm --needed \
   base-devel \

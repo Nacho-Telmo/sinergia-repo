@@ -17,10 +17,17 @@ fi
 
 echo "[+] Configurando repositorios para Sinergia..."
 
-# 2. Configurar Chaotic-AUR mediante paquete directo (sin servidores de llaves externos)
+# 2. Configurar Chaotic-AUR de forma 100% desatendida
 echo "[+] Añadiendo Chaotic-AUR (Keyring y Mirrorlist)..."
 pacman-key --init
 pacman-key --populate archlinux
+
+# Pre-importar y firmar la clave de Chaotic antes de instalar el paquete para evitar [S/n]
+pacman-key --recv-key 3056513887B78AEB --keyserver hkps://keyserver.ubuntu.com:443 || \
+pacman-key --recv-key 3056513887B78AEB --keyserver hkp://keyserver.ubuntu.com || \
+pacman-key --recv-key 3056513887B78AEB --keyserver pgp.mit.edu
+pacman-key --lsign-key 3056513887B78AEB
+
 pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 

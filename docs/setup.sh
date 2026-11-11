@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==========================================
-# CONFIGURACIÓN DEL REPOSITORIO SINERGIA
+# CONFIGURACIÓN DE REPOSITORIOS (SINERGIA + CHAOTIC-AUR)
 # ==========================================
 REPO_URL="https://nacho-telmo.github.io/sinergia-repo/x86_64"
 KEY_URL="https://nacho-telmo.github.io/sinergia-repo/x86_64/sinergia-key.asc"
@@ -15,31 +15,45 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-echo "[+] Configurando el repositorio $REPO_NAME..."
+echo "[+] Configurando repositorios para Sinergia..."
 
-# 2. Importar y firmar la clave GPG oficial del repositorio
-echo "[+] Descargando e importando la clave GPG..."
+# 2. Configurar Chaotic-AUR (Requisito para yay y dependencias AUR)
+echo "[+] Añadiendo Chaotic-AUR (Keyring y Mirrorlist)..."
+pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key 3056513887B78AEB
+pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+
+if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
+  echo "" >> /etc/pacman.conf
+  echo "[chaotic-aur]" >> /etc/pacman.conf
+  echo "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
+  echo "[+] Chaotic-AUR añadido a /etc/pacman.conf"
+fi
+
+# 3. Importar y firmar la clave GPG oficial del repositorio Sinergia
+echo "[+] Descargando e importando la clave GPG de Sinergia..."
 curl -s "$KEY_URL" | pacman-key --add -
 
 echo "[+] Otorgando confianza local a la clave ($KEY_ID)..."
 pacman-key --lsign-key "$KEY_ID"
 
-# 3. Añadir el repositorio a /etc/pacman.conf si no está presente
+# 4. Añadir el repositorio Sinergia a /etc/pacman.conf si no está presente
 if ! grep -q "\[$REPO_NAME\]" /etc/pacman.conf; then
   echo "" >> /etc/pacman.conf
   echo "[$REPO_NAME]" >> /etc/pacman.conf
   echo "SigLevel = Required DatabaseOptional" >> /etc/pacman.conf
   echo "Server = $REPO_URL/" >> /etc/pacman.conf
-  echo "[+] Repositorio añadido correctamente a /etc/pacman.conf"
+  echo "[+] Repositorio Sinergia añadido correctamente a /etc/pacman.conf"
 else
-  echo "[i] El repositorio ya estaba configurado en /etc/pacman.conf"
+  echo "[i] El repositorio Sinergia ya estaba configurado en /etc/pacman.conf"
 fi
 
-# 4. Sincronizar bases de datos e instalar el keyring y la tienda
+# 5. Sincronizar bases de datos e instalar yay, keyring y la tienda
 echo "[+] Sincronizando bases de datos con pacman -Syy..."
 pacman -Syy --noconfirm
 
-echo "[+] Instalando sinergia-keyring y sinergia-store..."
-pacman -S --noconfirm sinergia-keyring sinergia-store
+echo "[+] Instalando yay, sinergia-keyring y sinergia-store..."
+pacman -S --noconfirm yay sinergia-keyring sinergia-store
 
-echo "¡Listo! El repositorio de Sinergia ya está activo y operativo en tu sistema. 🐧🚀"
+echo "¡Listo! El sistema ya cuenta con Chaotic-AUR, Sinergia Repo y la Sinergia Store operativa. 🐧🚀"

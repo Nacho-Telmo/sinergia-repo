@@ -17,16 +17,10 @@ fi
 
 echo "[+] Configurando repositorios para Sinergia..."
 
-# 2. Configurar Chaotic-AUR con reintentos y timeout de 10 segundos por servidor
+# 2. Configurar Chaotic-AUR mediante paquete directo (sin servidores de llaves externos)
 echo "[+] Añadiendo Chaotic-AUR (Keyring y Mirrorlist)..."
-for server in hkps://keyserver.ubuntu.com:443 hkp://keyserver.ubuntu.com pgp.mit.edu keys.openpgp.org; do
-  if timeout 10 pacman-key --recv-key 3056513887B78AEB --keyserver "$server"; then
-    break
-  fi
-  echo "[!] Servidor $server agotó el tiempo o no está disponible, probando el siguiente..."
-done
-
-pacman-key --lsign-key 3056513887B78AEB
+pacman-key --init
+pacman-key --populate archlinux
 pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 

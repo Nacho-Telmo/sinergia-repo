@@ -1,9 +1,14 @@
-##!/bin/bash
+#!/bin/bash
 
 if [ "$EUID" -ne 0 ]; then
   echo "[-] Este script debe ejecutarse como root (sudo)."
   exit 1
 fi
+
+echo "[+] Limpiando configuraciones previas de Chaotic en pacman.conf..."
+# Eliminar referencias viejas para evitar errores de lectura prematura
+sed -i '/\[chaotic-aur\]/{N;N;d}' /etc/pacman.conf
+sed -i '/chaotic-mirrorlist/d' /etc/pacman.conf
 
 echo "[+] Inicializando llaveros de Pacman..."
 pacman-key --init
@@ -13,13 +18,13 @@ pacman-key --populate archlinux
 pacman -S --noconfirm --needed archlinux-keyring
 
 echo "[+] Configurando Chaotic-AUR..."
-# Crear un archivo de configuración temporal limpio exclusivamente para instalar los paquetes de Chaotic
+# Crear archivo de configuración temporal limpio
 TEMP_CONF=$(mktemp)
 echo "SigLevel = Never" > "$TEMP_CONF"
 echo "DBPath = /var/lib/pacman/" >> "$TEMP_CONF"
 echo "CacheDir = /var/cache/pacman/pkg/" >> "$TEMP_CONF"
 
-# Instalar keyring y mirrorlist sin tocar el pacman.conf principal todavía
+# Instalar keyring y mirrorlist de Chaotic
 pacman -U --config "$TEMP_CONF" --noconfirm --needed \
   'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
   'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
@@ -28,8 +33,8 @@ rm -f "$TEMP_CONF"
 # Poblar la clave de Chaotic
 pacman-key --populate chaotic
 
-# Añadir el repositorio a pacman.conf SOLAMENTE si el mirrorlist ya existe en el sistema
-if [ -f /etc/pacman.d/chaotic-mirrorlist ] && ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
+# Añadir el repositorio a pacman.conf ahora que el mirrorlist ya existe físicamente
+if [ -f /etc/pacman.d/chaotic-mirrorlist ]; then
   echo "" >> /etc/pacman.conf
   echo "[chaotic-aur]" >> /etc/pacman.conf
   echo "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf

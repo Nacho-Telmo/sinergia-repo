@@ -79,7 +79,7 @@ pacman -S --noconfirm --needed \
 # Desinstalar aplicaciones y componentes no deseados
 echo "[+] Desinstalando componentes y aplicaciones seleccionadas (Discover, KDE Connect, Vim, Plasma Bigscreen)..."
 pacman -R --noconfirm \
-  plasma-discover \
+  discover \
   kdeconnect \
   vim \
   plasma-bigscreen

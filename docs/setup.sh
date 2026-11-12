@@ -74,7 +74,8 @@ pacman -S --noconfirm --needed \
   curl \
   yay \
   sinergia-keyring \
-  sinergia-welcome
+  sinergia-welcome \
+  kcalc
 
 # Desinstalar aplicaciones y componentes no deseados
 echo "[+] Desinstalando componentes y aplicaciones seleccionadas (Discover, KDE Connect, Vim, Plasma Bigscreen)..."
@@ -82,6 +83,7 @@ pacman -R --noconfirm \
   discover \
   kdeconnect \
   vim \
-  plasma-bigscreen
+  plasma-bigscreen \
+  plasma-welcome
 
 echo "[+] ¡Instalación y configuración completa de Sinergia finalizada con éxito! 🐧🚀"

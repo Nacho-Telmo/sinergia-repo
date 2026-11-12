@@ -1,7 +1,7 @@
 # Maintainer: Sinergia <contacto@sinergia>
 pkgname=sinergia-welcome
 pkgver=2.0.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Centro de Control y Bienvenida de Sinergia para Arch Linux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
@@ -9,16 +9,19 @@ license=('GPL3')
 depends=('python' 'python-pyqt6' 'alacritty' 'sinergia-reflector-top' 'sinergia-cleaner' 'sinergia-dd-burner' 'sinergia-aur-helper' 'sinergia-service-manager' 'sinergia-store')
 source=('main.py'
         'sinergia-welcome.desktop'
-        'sinergia-welcome')
-sha256sums=('SKIP'
-            'SKIP'
-            'SKIP')
+        'sinergia-welcome'
+        'logo.png')
+sha256sums=('0da84e04ba1b69095c46acfa03e0cc956ab616cebb0f89eaead6dfdf3e6a97da'
+            '0d54ff85dd4cdb2ee5c76256c2ea5a10802b44aab2e045364be83928d30c4275'
+            '60ac29bad41cfc7486152b82daf0a61b162656358aa58cb402b626a41c0a8284'
+            '0af167c393298f6aeb550eea0506381ad1a44dc1c96a228449ccd1f61229ba2a')
 
 package() {
     # Crear directorios de destino
     install -d "$pkgdir/usr/share/sinergia-welcome"
     install -d "$pkgdir/usr/bin"
     install -d "$pkgdir/usr/share/applications"
+    install -d "$pkgdir/usr/share/icons/hicolor/256x256/apps"
 
     # Copiar el script principal de Python y recursos
     install -m 644 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-welcome/"
@@ -28,4 +31,7 @@ package() {
 
     # Copiar el archivo .desktop
     install -m 644 "$srcdir/sinergia-welcome.desktop" "$pkgdir/usr/share/applications/"
+
+    # Copiar el ícono (lo toma como logo.png y lo guarda como sinergia-welcome.png)
+    install -m 644 "$srcdir/logo.png" "$pkgdir/usr/share/icons/hicolor/256x256/apps/sinergia-welcome.png"
 }

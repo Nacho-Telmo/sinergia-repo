@@ -5,7 +5,18 @@
         "removable": true,
         "uki": true
     },
-    "custom_commands": [],
+    "custom_commands": [
+        "pacman-key --add /root/sinergia/sinergia-key.asc",
+        "pacman-key --lsign-key 33986859CBA9A0329EE9321E1AA165CC95EBE1F1",
+        "pacman-key --recv-key 3056513887B78AEB --lsign-key 3056513887B78AEB",
+        "echo '[chaotic-aur]' >> /etc/pacman.conf",
+        "echo 'Include = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf",
+        "echo '[sinergia]' >> /etc/pacman.conf",
+        "echo 'SigLevel = Required DatabaseOptional' >> /etc/pacman.conf",
+        "echo 'Server = https://nacho-telmo.github.io/sinergia-repo/x86_64/' >> /etc/pacman.conf",
+        "echo 'Server = https://cdn-mirror.chaotic.cx/$repo/$arch' > /etc/pacman.d/chaotic-mirrorlist",
+        "pacman -Syy"
+    ],
     "firmware_optdeps": [],
     "hostname": "archlinux",
     "kernels": [
@@ -20,7 +31,9 @@
     "mirror_config": {
         "custom_repositories": [],
         "custom_servers": [],
-        "mirror_regions": {},
+        "mirror_regions": {
+            "Global": []
+        },
         "optional_repositories": [
             "multilib"
         ]

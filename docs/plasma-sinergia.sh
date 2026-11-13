@@ -82,7 +82,7 @@ sudo pacman-key --recv-keys 149ABD0C3A0563EE --keyserver keys.openpgp.org || \
 sudo pacman-key --lsign-key 149ABD0C3A0563EE
 
 echo "==> Instalando kiro-keyring y kiro-mirrorlist..."
-sudo pacman -Sy --needed kiro-keyring kiro-mirrorlist --noconfirm
+sudo pacman -Syy --needed kiro-keyring kiro-mirrorlist --noconfirm
 
 echo "==> Actualizando pacman.conf para usar kiro-mirrorlist..."
 sudo sed -i 's|Server = https://erikdubois.github.io/\$repo/\$arch|Include = /etc/pacman.d/kiro-mirrorlist|g' /etc/pacman.conf
@@ -107,7 +107,7 @@ EOF'
 fi
 
 echo "==> Actualizando la base de datos de repositorios..."
-sudo pacman -Sy
+sudo pacman -Syy
 
 
 # ==========================================
@@ -128,7 +128,7 @@ sudo pacman -S --noconfirm --needed \
   firefox \
   firefox-i18n-es-ar \
   libreoffice-fresh-es \
-  hunspell-es_uy \
+  hunspell-es_ar \
   telegram-desktop \
   fastfetch \
   ntfs-3g \

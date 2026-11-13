@@ -149,12 +149,16 @@ class DownloadWorker(QThread):
                 query = f"{track['artist']} - {track['title']}"
                 self.progress_signal.emit(f"[{index}/{total_tracks}] Descargando: {query}")
 
+                # Incluir número de pista con dos dígitos para ordenamiento cronológico en disco
+                track_num_str = f"{index:02d}"
+                filename_template = f"{track_num_str} - %(title)s.%(ext)s"
+
                 cmd = [
                     "yt-dlp",
                     f"ytsearch1:{query}",
                     "-x", "--audio-format", "mp3",
                     "--embed-thumbnail", "--add-metadata",
-                    "--output", str(target_dir / "%(title)s.%(ext)s")
+                    "--output", str(target_dir / filename_template)
                 ]
 
                 process = subprocess.Popen(

@@ -1,27 +1,33 @@
 # Maintainer: Sinergia Comunidad Linuxera sinergia.comunidad.linuxuera@gmail.com
 pkgname=sinergia-appimage-manager
 pkgver=1.0.1
-pkgrel=6
+pkgrel=7
 pkgdesc="Gestor de AppImages para Sinergia con integración a entorno y carpeta centralizada"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
 license=('GPL3')
 depends=('python' 'python-pyqt6')
 source=('appimage-manager.py'
-        'appimage-manager.desktop')
+        'appimage-manager.desktop'
+        'popamp.svg')
 sha256sums=('e9955d375b21855b88efd7a08d02a2fddf63248094042536ecd0abbabd243ad8'
-            '84e4a966b26ee23f839d18d636d5e3e46500e3c478d4aedf6364dcbefde455f2')
+            '9b725e321d386db130e2c07f644c00de69f2ded59efd88da16e888c1b18b6960'
+            'f5871f483a16f5a854e7d3de95acc9a7453d01b39eb25c5544eb73eb07eea89c')
 
 package() {
     install -d "$pkgdir/usr/bin"
     install -d "$pkgdir/usr/share/sinergia-appimage-manager"
     install -d "$pkgdir/usr/share/applications"
+    install -d "$pkgdir/usr/share/icons/hicolor/scalable/apps"
 
     # Instalar el script principal
     install -m 755 "$srcdir/appimage-manager.py" "$pkgdir/usr/share/sinergia-appimage-manager/appimage-manager.py"
 
-    # Instalar el archivo .desktop para el menú de aplicaciones
+    # Instalar el archivo .desktop para el menú
     install -m 644 "$srcdir/appimage-manager.desktop" "$pkgdir/usr/share/applications/sinergia-appimage-manager.desktop"
+
+    # Instalar el ícono personalizado vectorial
+    install -m 644 "$srcdir/popamp.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/popamp.svg"
 
     # Enlace simbólico para el comando global
     ln -s /usr/share/sinergia-appimage-manager/appimage-manager.py "$pkgdir/usr/bin/sinergia-appimage-manager"

@@ -173,13 +173,4 @@ echo "======================================================"
 echo "            COMUNIDAD    LINUXERA"
 echo "======================================================"
 
-read -p "¿Deseas reiniciar el sistema ahora? (s/N): " respuesta
-case "$respuesta" in
-    [sS])
-        echo "==> Reiniciando..."
-        sudo reboot
-        ;;
-    *)
-        echo "==> Instalación finalizada. Podés reiniciar manualmente cuando desees."
-        ;;
-esac
+echo "reinicie su sistema"

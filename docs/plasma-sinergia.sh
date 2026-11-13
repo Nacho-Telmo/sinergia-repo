@@ -183,4 +183,4 @@ case "$respuesta" in
     *)
         echo "==> Reinicio cancelado. Recordá reiniciar manualmente para aplicar los cambios."
         ;;
-es:
+esac

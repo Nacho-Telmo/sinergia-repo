@@ -155,7 +155,7 @@ sudo pacman -S --noconfirm --needed \
   sinergia-keyring \
   os-prober
 
-  # ==========================================
+# ==========================================
 # 5. LIMPIEZA Y REINICIO
 # ==========================================
 rm -rf "$USER_HOME/LinuxScripts"
@@ -183,4 +183,4 @@ case "$respuesta" in
     *)
         echo "==> Reinicio cancelado. Recordá reiniciar manualmente para aplicar los cambios."
         ;;
-esac
+es:

@@ -1,7 +1,7 @@
 # Maintainer: Sinergia <contacto@sinergia>
 pkgname=sinergia-welcome
 pkgver=2.0.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Centro de Control y Bienvenida de Sinergia para Arch Linux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
@@ -11,7 +11,7 @@ source=('main.py'
         'sinergia-welcome.desktop'
         'sinergia-welcome'
         'logo.png')
-sha256sums=('0da84e04ba1b69095c46acfa03e0cc956ab616cebb0f89eaead6dfdf3e6a97da'
+sha256sums=('2f0157d696196900457be36c189a54f1b5b9fdad8056841914e8b124e0cfee1d'
             '0d54ff85dd4cdb2ee5c76256c2ea5a10802b44aab2e045364be83928d30c4275'
             '60ac29bad41cfc7486152b82daf0a61b162656358aa58cb402b626a41c0a8284'
             '0af167c393298f6aeb550eea0506381ad1a44dc1c96a228449ccd1f61229ba2a')

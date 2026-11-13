@@ -37,7 +37,8 @@ class SearchWorker(QThread):
                     tracks.append({
                         'artist': data['artist']['name'],
                         'title': data['title'],
-                        'album': data.get('album', {}).get('title', 'Singles')
+                        'album': data.get('album', {}).get('title', 'Singles'),
+                        'track_position': data.get('track_position', 1)
                     })
                 self.results_signal.emit(tracks)
                 return
@@ -56,13 +57,16 @@ class SearchWorker(QThread):
                 req = urllib.request.urlopen(tracks_url)
                 data = json.loads(req.read().decode('utf-8'))
                 if 'data' in data:
-                    for item in data['data']:
+                    for idx, item in enumerate(data['data'], start=1):
                         if 'title' in item:
                             tracks.append({
                                 'artist': item.get('artist', {}).get('name', artist_name),
                                 'title': item['title'],
-                                'album': album_title
+                                'album': album_title,
+                                'track_position': item.get('track_position', idx)
                             })
+                # Ordenar estrictamente por número de pista original
+                tracks = sorted(tracks, key=lambda x: x['track_position'])
                 self.results_signal.emit(tracks)
                 return
 
@@ -85,12 +89,15 @@ class SearchWorker(QThread):
                     tracks_data = json.loads(req_tracks.read().decode('utf-8'))
 
                     if 'data' in tracks_data and len(tracks_data['data']) > 0:
-                        for item in tracks_data['data']:
+                        for idx, item in enumerate(tracks_data['data'], start=1):
                             tracks.append({
                                 'artist': item.get('artist', {}).get('name', artist_name),
                                 'title': item['title'],
-                                'album': album_title
+                                'album': album_title,
+                                'track_position': item.get('track_position', idx)
                             })
+                        # Ordenar estrictamente por número de pista original
+                        tracks = sorted(tracks, key=lambda x: x['track_position'])
                         self.results_signal.emit(tracks)
                         return
             except Exception:
@@ -102,12 +109,13 @@ class SearchWorker(QThread):
             data = json.loads(req.read().decode('utf-8'))
 
             if 'data' in data:
-                for item in data['data']:
+                for idx, item in enumerate(data['data'], start=1):
                     if 'title' in item and 'artist' in item:
                         tracks.append({
                             'artist': item['artist']['name'],
                             'title': item['title'],
-                            'album': item.get('album', {}).get('title', 'Singles')
+                            'album': item.get('album', {}).get('title', 'Singles'),
+                            'track_position': item.get('track_position', idx)
                         })
 
             self.results_signal.emit(tracks)
@@ -186,7 +194,9 @@ class SinergiaLongPlayApp(QMainWindow):
         super().__init__()
         self.setProperty("class", "sinergia-longplay")
 
-        icon_path_sys = Path("/usr/share/icons/hicolor/128x128/apps/sinergia-longplay.png")
+        icon_path_sys = Path("/usr/share/icons/hicolor/scalable/apps/sinergia-longplay.svg")
+        if not icon_path_sys.exists():
+            icon_path_sys = Path("/usr/share/icons/hicolor/128x128/apps/sinergia-longplay.png")
         if icon_path_sys.exists():
             self.setWindowIcon(QIcon(str(icon_path_sys)))
 
@@ -213,7 +223,7 @@ class SinergiaLongPlayApp(QMainWindow):
         # Barra de búsqueda
         search_layout = QHBoxLayout()
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Buscar álbum completo de un artista")
+        self.search_input.setPlaceholderText("Buscar álbum completo o artista...")
         self.search_input.setStyleSheet("""
             QLineEdit {
                 background-color: #1f2335;
@@ -246,7 +256,7 @@ class SinergiaLongPlayApp(QMainWindow):
 
         # Cabecera de resultados y botón Seleccionar Todo
         results_header_layout = QHBoxLayout()
-        results_label = QLabel("Resultados (Álbum completo o pistas detectadas):")
+        results_label = QLabel("Resultados (Ordenados por pista original):")
         results_label.setStyleSheet("color: #7aa2f7; font-size: 12px; font-weight: bold;")
         results_header_layout.addWidget(results_label)
 
@@ -411,11 +421,11 @@ class SinergiaLongPlayApp(QMainWindow):
             self.results_list.addItem("No se encontraron resultados.")
             return
 
-        for track in tracks:
-            item_text = f"{track['artist']}  —  {track['title']}  ({track['album']})"
+        for idx, track in enumerate(tracks, start=1):
+            item_text = f"{idx:02d}. {track['artist']}  —  {track['title']}  ({track['album']})"
             self.results_list.addItem(item_text)
 
-        self.log_list.addItem(f"¡Cargados {len(tracks)} temas! Hacé clic en 'Seleccionar todo' y dale a descargar.")
+        self.log_list.addItem(f"¡Cargados {len(tracks)} temas ordenados! Hacé clic en 'Seleccionar todo' y dale a descargar.")
 
     def handle_search_error(self, err):
         self.btn_search.setEnabled(True)

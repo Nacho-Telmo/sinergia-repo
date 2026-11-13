@@ -1,7 +1,7 @@
 # Maintainer: Ignacio Ezcurra <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sinergia-longplay
 pkgver=1.0.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Reproductor y descargador de álbumes completos de música para Sinergia Linux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-longplay"

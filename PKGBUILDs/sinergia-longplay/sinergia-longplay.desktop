@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia LongPlay
+Comment=Descarga y organiza álbumes completos de música
+Exec=sinergia-longplay
+Icon=sinergia-longplay
+Terminal=false
+Categories=AudioVideo;Audio;Player;
+StartupWMClass=sinergia-longplay

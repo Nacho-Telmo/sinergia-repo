@@ -120,6 +120,15 @@ class AppImageManager(QMainWindow):
 
   def __init__(self):
     super().__init__()
+
+    # 1. Configuración de clase para X11 (WM_CLASS) para que coincida con el .desktop
+    self.setProperty("class", "sinergia-appimage-manager")
+
+    # 2. Respaldo visual directo de ícono en la ventana para cualquier entorno
+    icon_path_sys = Path("/usr/share/icons/hicolor/128x128/apps/appimage-manager.png")
+    if icon_path_sys.exists():
+      self.setWindowIcon(QIcon(str(icon_path_sys)))
+
     self.setWindowTitle("Sinergia AppImage Manager")
     self.resize(650, 520)
     self.appimages = []
@@ -134,7 +143,6 @@ class AppImageManager(QMainWindow):
     self.desktop_apps_dir = Path.home() / ".local" / "share" / "applications"
     self.desktop_apps_dir.mkdir(parents=True, exist_ok=True)
 
-    # NUEVA UBICACIÓN SEGURA SOLICITADA
     self.managed_appimages_dir = Path.home() / "appimage"
     self.managed_appimages_dir.mkdir(parents=True, exist_ok=True)
 
@@ -423,6 +431,9 @@ class AppImageManager(QMainWindow):
 
 
 if __name__ == "__main__":
+  # 3. Configuración para Wayland (Plasma / GNOME moderno)
+  QApplication.setDesktopFileName("sinergia-appimage-manager")
+
   app = QApplication(sys.argv)
   window = AppImageManager()
   window.show()

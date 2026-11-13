@@ -115,8 +115,7 @@ sudo pacman -Syy
 # ==========================================
 echo "==> Instalando Plasma, sddm, aplicaciones, dependencias y paquetes del sistema..."
 sudo pacman -S --noconfirm --needed \
-  plasma \
-  sddm \
+
   sddm-kcm \
   amd-ucode \
   intel-ucode \

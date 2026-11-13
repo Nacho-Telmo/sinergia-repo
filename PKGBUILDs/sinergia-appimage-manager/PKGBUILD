@@ -1,7 +1,7 @@
 # Maintainer: Sinergia Comunidad Linuxera sinergia.comunidad.linuxuera@gmail.com
 pkgname=sinergia-appimage-manager
 pkgver=1.0.1
-pkgrel=5
+pkgrel=6
 pkgdesc="Gestor de AppImages para Sinergia con integración a entorno y carpeta centralizada"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
@@ -10,7 +10,7 @@ depends=('python' 'python-pyqt6')
 source=('appimage-manager.py'
         'appimage-manager.desktop')
 sha256sums=('e9955d375b21855b88efd7a08d02a2fddf63248094042536ecd0abbabd243ad8'
-            '275712e88d7422ff05b68eb96e7a65f1ec639d82554fecd7ce25f3d2c5332447')
+            '84e4a966b26ee23f839d18d636d5e3e46500e3c478d4aedf6364dcbefde455f2')
 
 package() {
     install -d "$pkgdir/usr/bin"

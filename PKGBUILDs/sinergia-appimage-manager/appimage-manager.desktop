@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia AppImage Manager
+Comment=Gestor moderno de archivos AppImage para Linux
+Exec=sinergia-appimage-manager
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;PackageManager;
+StartupNotify=true
+StartupWMClass=sinergia-appimage-manager

@@ -1,22 +1,17 @@
 {
+    "app_config": {
+        "audio_config": {
+            "audio": "pipewire"
+        }
+    },
     "archinstall_language": "Spanish",
+    "auth_config": {},
     "bootloader_config": {
         "bootloader": "Grub",
         "removable": true,
         "uki": true
     },
-    "custom_commands": [
-        "pacman-key --add /root/sinergia/sinergia-key.asc",
-        "pacman-key --lsign-key 33986859CBA9A0329EE9321E1AA165CC95EBE1F1",
-        "pacman-key --recv-key 3056513887B78AEB --lsign-key 3056513887B78AEB",
-        "echo '[chaotic-aur]' >> /etc/pacman.conf",
-        "echo 'Include = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf",
-        "echo '[sinergia]' >> /etc/pacman.conf",
-        "echo 'SigLevel = Required DatabaseOptional' >> /etc/pacman.conf",
-        "echo 'Server = https://nacho-telmo.github.io/sinergia-repo/x86_64/' >> /etc/pacman.conf",
-        "echo 'Server = https://cdn-mirror.chaotic.cx/$repo/$arch' > /etc/pacman.d/chaotic-mirrorlist",
-        "pacman -Syy"
-    ],
+    "custom_commands": [],
     "firmware_optdeps": [],
     "hostname": "archlinux",
     "kernels": [
@@ -31,9 +26,7 @@
     "mirror_config": {
         "custom_repositories": [],
         "custom_servers": [],
-        "mirror_regions": {
-            "Global": []
-        },
+        "mirror_regions": {},
         "optional_repositories": [
             "multilib"
         ]
@@ -42,30 +35,18 @@
         "type": "nm"
     },
     "ntp": true,
-    "packages": [
-        "konsole",
-        "kscreen",
-        "plasma-nm",
-        "plasma-pa",
-        "sddm-kcm"
-    ],
+    "packages": [],
     "pacman_config": {
         "color": true,
         "parallel_downloads": 5
     },
     "profile_config": {
-        "gfx_driver": "All open-source",
-        "greeter": "sddm",
+        "gfx_driver": null,
+        "greeter": null,
         "profile": {
-            "custom_settings": {
-                "KDE Plasma": {
-                    "plasma_flavor": "plasma-desktop"
-                }
-            },
-            "details": [
-                "KDE Plasma"
-            ],
-            "main": "Desktop"
+            "custom_settings": {},
+            "details": [],
+            "main": "Minimal"
         }
     },
     "script": null,

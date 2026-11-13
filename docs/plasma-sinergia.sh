@@ -158,7 +158,6 @@ sudo pacman -S --noconfirm --needed \
 # ==========================================
 # 5. LIMPIEZA Y REINICIO
 # ==========================================
-rm -rf "$USER_HOME/LinuxScripts"
 
 echo "======================================================"
 echo " Instalación y configuración completadas con éxito."

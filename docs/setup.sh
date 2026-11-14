@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ "$EUID" -ne 0 ]; then
   echo "[-] Este script debe ejecutarse como root (sudo)."
@@ -65,25 +65,6 @@ if [ $success -eq 0 ]; then
   exit 1
 fi
 
-# Instalar componentes de Sinergia, yay-bin y utilidades base
-echo "[+] Instalando componentes de Sinergia, yay y utilidades base..."
-pacman -S --noconfirm --needed \
-  base-devel \
-  git \
-  wget \
-  curl \
-  yay \
-  sinergia-keyring \
-  sinergia-welcome \
-  kcalc
 
-# Desinstalar aplicaciones y componentes no deseados
-echo "[+] Desinstalando componentes y aplicaciones seleccionadas (Discover, KDE Connect, Vim, Plasma Bigscreen)..."
-pacman -R --noconfirm \
-  discover \
-  kdeconnect \
-  vim \
-  plasma-bigscreen \
-  plasma-welcome
 
 echo "[+] ¡Instalación y configuración completa de Sinergia finalizada con éxito! 🐧🚀"

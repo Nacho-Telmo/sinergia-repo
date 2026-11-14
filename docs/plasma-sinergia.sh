@@ -114,45 +114,7 @@ sudo pacman -Syy
 # 4. INSTALACIÓN DE PAQUETES OFICIALES Y CHAOTIC-AUR
 # ==========================================
 echo "==> Instalando Plasma, sddm, aplicaciones, dependencias y paquetes del sistema..."
-sudo pacman -S --noconfirm --needed \
-
-  sddm-kcm \
-  amd-ucode \
-  intel-ucode \
-  okular \
-  vlc \
-  unrar \
-  unarchiver \
-  p7zip \
-  firefox \
-  firefox-i18n-es-ar \
-  libreoffice-fresh-es \
-  hunspell-es_ar \
-  telegram-desktop \
-  fastfetch \
-  ntfs-3g \
-  archlinux-tweak-tool-gtk4 \
-  konsole \
-  dolphin \
-  kcalc \
-  vlc-plugins-all \
-  hardinfo2 \
-  mpv \
-  btop \
-  gparted \
-  nano \
-  shelly \
-  ark \
-  powerdevil \
-  plasma-systemmonitor \
-  kwalletmanager \
-  kate \
-  koko \
-  yay \
-  stacer-bin \
-  sinergia-welcome \
-  sinergia-keyring \
-  os-prober
+sudo pacman -S --noconfirm --needed plasma sddm sddm-kcm amd-ucode intel-ucode okular vlc unrar unarchiver p7zip firefox firefox-i18n-es-ar libreoffice-fresh-es hunspell-es_uy telegram-desktop fastfetch ntfs-3g archlinux-tweak-tool-gtk4 konsole dolphin kcalc vlc-plugins-all hardinfo2 mpv btop gparted nano shelly ark powerdevil plasma-systemmonitor kwalletmanager kate koko yay stacer-bin sinergia-welcome sinergia-keyring os-prober
 
 # ==========================================
 # 5. LIMPIEZA Y REINICIO

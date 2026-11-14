@@ -66,7 +66,7 @@ if [ $success -eq 0 ]; then
 fi
 
 # Agregar sinergia-keyring
-pacman -S --noconfirm --needed sinergia-keyring
+pacman -S --noconfirm --needed sinergia-keyring yay sinergia-welcome
 
 
 

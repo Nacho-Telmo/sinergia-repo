@@ -1,7 +1,7 @@
 # Mantenedor: Sinergia - Comunidad Linuxera <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sddm-theme-sinergia
 pkgver=1.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Tema SDDM oficial de Sinergia Comunidad Linuxera"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
@@ -12,6 +12,12 @@ sha256sums=('SKIP')
 
 package() {
     install -dm755 "${pkgdir}/usr/share/sddm/themes/sinergia"
-    # Copia todo el contenido extraído de forma recursiva al destino
-    cp -r "${srcdir}/." "${pkgdir}/usr/share/sddm/themes/sinergia/"
+
+    # Si el tar.gz descomprime dentro de una carpeta llamada 'sinergia', copiamos su contenido interno
+    if [ -d "${srcdir}/sinergia" ]; then
+        cp -r "${srcdir}/sinergia/"* "${pkgdir}/usr/share/sddm/themes/sinergia/"
+    else
+        # Si se descomprime suelto directamente, evitamos copiar el propio archivo tar.gz
+        find "${srcdir}" -mindepth 1 -maxdepth 1 ! -name "sinergia.tar.gz" -exec cp -r {} "${pkgdir}/usr/share/sddm/themes/sinergia/" \;
+    fi
 }

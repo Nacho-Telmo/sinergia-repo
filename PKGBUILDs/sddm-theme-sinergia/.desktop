@@ -1,0 +1,6 @@
+[SddmGreeterTheme]
+Name=Sinergia Theme
+Description=Tema oficial de Sinergia Linux
+Author=Nacho Telmo
+Version=1.0.3
+Mainscript=main.qml

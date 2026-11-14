@@ -65,6 +65,9 @@ if [ $success -eq 0 ]; then
   exit 1
 fi
 
+# Agregar sinergia-keyring
+pacman -S --noconfirm --needed sinergia-keyring
+
 
 
 echo "[+] ¡Instalación y configuración completa de Sinergia finalizada con éxito! 🐧🚀"

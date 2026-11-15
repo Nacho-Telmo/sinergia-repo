@@ -147,9 +147,10 @@ class SinergiaWelcome(QMainWindow):
     btn_logs.clicked.connect(self.on_logs_clicked)
     grid.addWidget(btn_logs, 8, 1)
 
-    # Nuevo botón integrado para Sinergia Top
+    # Botón integrado para Sinergia Top (con objeto dedicado para centrarlo)
     btn_top = QPushButton("📊 Sinergia Top (Monitor del Sistema)")
     btn_top.setFixedHeight(32)
+    btn_top.setObjectName("btn-top")
     btn_top.clicked.connect(self.on_top_clicked)
     grid.addWidget(btn_top, 9, 0, 1, 2)
 
@@ -160,8 +161,8 @@ class SinergiaWelcome(QMainWindow):
         btn_services,
         btn_aur,
         btn_logs,
-        btn_top,
     ]
+    self.btn_top = btn_top
 
     main_layout.addLayout(grid)
 
@@ -309,6 +310,24 @@ class SinergiaWelcome(QMainWindow):
     for btn in self.grid_buttons:
       btn.setStyleSheet(grid_style)
 
+    # Estilo específico centrado para Sinergia Top
+    top_centered_style = f"""
+            QPushButton#btn-top {{
+                background-color: {grid_bg};
+                color: {'#222222' if is_light_mode else '#ffffff'};
+                border: 1px solid #7e57c2;
+                border-radius: 6px;
+                font-weight: bold;
+                font-size: 9pt;
+                text-align: center;
+            }}
+            QPushButton#btn-top:hover {{
+                background-color: {grid_hover};
+                border: 1px solid {'#5e35b1' if is_light_mode else '#ffffff'};
+            }}
+        """
+    self.btn_top.setStyleSheet(top_centered_style)
+
     comm_style = f"""
             QPushButton {{
                 background-color: {comm_bg};
@@ -362,7 +381,8 @@ class SinergiaWelcome(QMainWindow):
 
   @pyqtSlot()
   def on_top_clicked(self):
-    self.run_app("sinergia-top")
+    # Al ser una TUI, se lanza correctamente dentro de Alacritty
+    self.run_in_terminal("sinergia-top")
 
   @pyqtSlot()
   def on_info_clicked(self):

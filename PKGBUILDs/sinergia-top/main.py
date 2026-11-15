@@ -135,7 +135,6 @@ class SinergiaTopApp(App):
                         pass
 
                 with Vertical(id="right-column"):
-                    # Caja unificada para RAM y SWAP
                     with Container(classes="box", id="ram-box"):
                         yield Static("[bold #a6e3a1]RAM & SWAP USAGE[/]")
                         self.ram_label = Static("RAM: 0.0 GB / 0.0 GB (0%)")
@@ -164,7 +163,9 @@ class SinergiaTopApp(App):
         self.prev_net = psutil.net_io_counters()
         self.boot_time = psutil.boot_time()
 
-        # Detección inteligente y automática de núcleos de quien lo instale
+        # Inicializar llamadas de CPU de psutil para evitar picos iniciales
+        psutil.cpu_percent(interval=None, percpu=True)
+
         num_cores = psutil.cpu_count(logical=True) or 4
         self.core_bars = []
 
@@ -176,6 +177,13 @@ class SinergiaTopApp(App):
             cores_container.mount(row)
             self.core_bars.append(bar)
 
+        # Pre-cachear procesos para evitar bloqueo de CPU en el primer ciclo
+        for p in psutil.process_iter(['pid', 'username', 'name']):
+            try:
+                p.cpu_percent(interval=None)
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+
         self.set_interval(1.0, self.update_metrics)
 
     def update_metrics(self) -> None:
@@ -185,7 +193,7 @@ class SinergiaTopApp(App):
             minutes = int((uptime_seconds % 3600) // 60)
             self.uptime_label.update(f"Uptime: {hours}h {minutes}m encendido")
 
-            cpu_percents = psutil.cpu_percent(interval=0, percpu=True)
+            cpu_percents = psutil.cpu_percent(interval=None, percpu=True)
             global_cpu = sum(cpu_percents) / len(cpu_percents) if cpu_percents else 0.0
 
             for i, pct in enumerate(cpu_percents):
@@ -206,7 +214,6 @@ class SinergiaTopApp(App):
 
             self.cpu_info_label.update(f"Global: {global_cpu:.1f}% | Temp: {cpu_temp_str}")
 
-            # RAM y SWAP en tiempo real
             ram = psutil.virtual_memory()
             self.ram_label.update(f"RAM: {ram.used / (1024**3):.2f} / {ram.total / (1024**3):.2f} GB ({ram.percent}%)")
             self.ram_bar.progress = ram.percent
@@ -226,10 +233,13 @@ class SinergiaTopApp(App):
             self.net_up.update(f"↑ {sent:.1f} KB/s")
             self.net_down.update(f"↓ {recv:.1f} KB/s")
 
+            # Optimización de lectura de procesos segura y ligera
             processes = []
-            for p in psutil.process_iter(['pid', 'username', 'name', 'cpu_percent', 'memory_percent']):
+            for p in psutil.process_iter(['pid', 'username', 'name', 'memory_percent']):
                 try:
-                    processes.append(p.info)
+                    p_info = p.info
+                    p_info['cpu_percent'] = p.cpu_percent(interval=None)
+                    processes.append(p_info)
                 except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                     pass
 

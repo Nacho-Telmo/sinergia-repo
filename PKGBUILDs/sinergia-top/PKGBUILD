@@ -1,7 +1,7 @@
 # Maintainer: Ignacio Ezcurra <nacho@sinergia.com>
 pkgname=sinergia-top
 pkgver=1.0.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Monitoreo de sistema avanzado para Arch Linux con estética Catppuccin"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-top"
@@ -11,7 +11,7 @@ optdepends=('nerd-fonts: para una correcta visualización de la iconografía')
 source=('main.py'
         'logo.svg'
         'sinergia-top.desktop')
-sha256sums=('703b888748ed82c295d0e1740dc6bc803bf1a480e72a094d089c858f02a82765'
+sha256sums=('SKIP'
             'SKIP'
             'SKIP')
 

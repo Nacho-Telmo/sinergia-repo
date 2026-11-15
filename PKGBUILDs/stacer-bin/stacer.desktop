@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Stacer
+Comment=Linux System Optimizer and Monitoring
+Exec=stacer
+Icon=stacer
+Terminal=false
+Categories=System;Monitor;Utility;
+Keywords=system;optimizer;monitor;cleaner;stacer;

@@ -1,25 +1,46 @@
-# Maintainer: Rafael Dominiquini <rafaeldominiquini at gmail dot com>
-# Contributor: asukaminato <asukaminato at nyan dot eu dot org>
-# Contributor: Bradley Nelson <bradleynelson102 at gmail dot com>
-# Contributor: liberodark Frederic Bezies
-
+# Maintainer: Ignacio Ezcurra <nacho@sinergia.com>
 pkgname=stacer-bin
 pkgver=1.8.0
 pkgrel=1
-pkgdesc="Linux System Optimizer and Monitoring"
+_tag="v1.8.0"
+pkgdesc="Linux System Optimizer and Monitoring (QuentiumYT fork)"
 arch=('x86_64')
 url="https://github.com/QuentiumYT/Stacer"
-license=('GPL-3.0-only')
-
-depends=('glibc' 'gcc-libs' 'libsm' 'libx11' 'e2fsprogs' 'harfbuzz' 'libglvnd' 'gmp' 'libice' 'zlib' 'freetype2' 'hicolor-icon-theme' 'fontconfig' 'libxcb' 'qt6-base' 'qt6-charts')
+license=('GPL3')
+depends=('glibc' 'gcc-libs' 'hicolor-icon-theme')
+provides=('stacer')
 conflicts=('stacer' 'stacer-git')
+source=("https://github.com/QuentiumYT/Stacer/releases/download/${_tag}/Stacer-${pkgver}-x86_64.AppImage"
+        "stacer.desktop")
+sha256sums=('SKIP'
+            'SKIP')
 
-options=('!strip')
-
-source_x86_64=("https://github.com/QuentiumYT/Stacer/releases/download/v${pkgver}/stacer_${pkgver}-${pkgrel}_amd64.deb")
-sha512sums_x86_64=('b0bb85a0c4ec3a4de2c339d2aea7e84c73aa2b41f4c862988069f472ae54d0dee033ef8d74b16176d563a961154ac47986b7699023308eb1e915529a6fc55099')
-
+prepare() {
+    chmod +x "Stacer-${pkgver}-x86_64.AppImage"
+    ./"Stacer-${pkgver}-x86_64.AppImage" --appimage-extract
+}
 
 package() {
-    tar xpvf data.tar.zst -C "${pkgdir}"
+    cd "${srcdir}/squashfs-root"
+
+    # Instalar el binario principal (ubicado en usr/bin dentro de la AppImage o en la raíz)
+    if [ -f "usr/bin/stacer" ]; then
+        install -Dm755 "usr/bin/stacer" "${pkgdir}/usr/bin/stacer"
+    elif [ -f "stacer/stacer" ]; then
+        install -Dm755 "stacer/stacer" "${pkgdir}/usr/bin/stacer"
+    else
+        # Búsqueda general si cambia de ruta
+        find . -maxdepth 3 -type f -name "stacer" -executable -exec install -Dm755 {} "${pkgdir}/usr/bin/stacer" \;
+    fi
+
+    # Archivo .desktop local
+    install -Dm644 "${srcdir}/stacer.desktop" "${pkgdir}/usr/share/applications/stacer.desktop"
+
+    # Iconos en alta calidad
+    if [ -d "usr/share/icons/hicolor" ]; then
+        cp -r usr/share/icons/hicolor "${pkgdir}/usr/share/icons/"
+    elif [ -d "icons/hicolor" ]; then
+        install -dm755 "${pkgdir}/usr/share/icons/hicolor"
+        cp -r icons/hicolor/* "${pkgdir}/usr/share/icons/hicolor/"
+    fi
 }

@@ -1,0 +1,33 @@
+# Maintainer: Ignacio Ezcurra <nacho@sinergia.com>
+pkgname=sinergia-top
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Monitoreo de sistema avanzado para Arch Linux con estética Catppuccin"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-top"
+license=('GPL3')
+depends=('python' 'python-psutil' 'python-textual')
+optdepends=('nerd-fonts: para una correcta visualización de la iconografía')
+source=('main.py'
+        'logo.svg'
+        'sinergia-top.desktop')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    # Instalar script principal en la ruta compartida de sistema
+    install -Dm755 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-top/main.py"
+
+    # Crear wrapper ejecutable en /usr/bin
+    install -dm755 "$pkgdir/usr/bin"
+    cat << EOF > "$pkgdir/usr/bin/sinergia-top"
+#!/bin/bash
+exec python3 /usr/share/sinergia-top/main.py "\$@"
+EOF
+    chmod +x "$pkgdir/usr/bin/sinergia-top"
+
+    # Instalar archivo .desktop y el logotipo SVG vectorial
+    install -Dm644 "$srcdir/sinergia-top.desktop" "$pkgdir/usr/share/applications/sinergia-top.desktop"
+    install -Dm644 "$srcdir/logo.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/sinergia-top.svg"
+}

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Gradiente de fondo oscuro Catppuccin Base / Crust -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#181825" />
+      <stop offset="100%" stop-color="#11111b" />
+    </radialGradient>
+
+    <!-- Gradiente para el anillo exterior de energía (Azul Sinergia / Blue Catppuccin) -->
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#89b4fa" />
+      <stop offset="50%" stop-color="#74c7ec" />
+      <stop offset="100%" stop-color="#b4befe" />
+    </linearGradient>
+
+    <!-- Gradiente para las barras de rendimiento / nodos (Verde y Amarillo Catppuccin) -->
+    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a6e3a1" />
+      <stop offset="100%" stop-color="#f9e2af" />
+    </linearGradient>
+
+    <!-- Filtro de Sombra Suave (Glow) -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Fondo Circular del Logo -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGrad)" stroke="#313244" stroke-width="8" />
+
+  <!-- Anillo Técnico / Métricas de Fondo -->
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#313244" stroke-width="4" stroke-dasharray="12 6" opacity="0.6" />
+  
+  <!-- Anillo Principal de Progreso (Capa de Rendimiento) -->
+  <circle cx="256" cy="256" r="190" fill="none" stroke="url(#ringGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="900" stroke-dashoffset="200" filter="url(#glow)" transform="rotate(-90 256 256)" />
+
+  <!-- Núcleo Gráfico / Símbolo de TUI y Sinergia (Terminal prompt '>_' estilizado entrelazado con barras de CPU) -->
+  <g transform="translate(256, 240)">
+    <!-- Simbología de Terminal >_ -->
+    <path d="M -80 -45 L -40 -15 L -80 15" fill="none" stroke="#89b4fa" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="-25" y1="20" x2="25" y2="20" stroke="#f38ba8" stroke-width="12" stroke-linecap="round" />
+
+    <!-- Gráfico de Barras de Sistema Integrado (Sinergia de Nodos) -->
+    <rect x="50" y="-20" width="16" height="40" rx="4" fill="url(#accentGrad)" />
+    <rect x="76" y="-45" width="16" height="65" rx="4" fill="url(#ringGrad)" />
+  </g>
+
+  <!-- Texto Circular / Sello de Identidad (Sinergia Top • Linux System Monitor) -->
+  <path id="curve" d="M 86 256 A 170 170 0 1 1 426 256" fill="none" stroke="none" />
+  <text font-family="monospace" font-weight="bold" font-size="21" fill="#cdd6f4" letter-spacing="4">
+    <textPath href="#curve" startOffset="50%" text-anchor="middle">
+      SINERGIA TOP • ARCH LINUX
+    </textPath>
+  </text>
+</svg>

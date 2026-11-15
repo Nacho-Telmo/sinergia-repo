@@ -9,7 +9,6 @@ import sys
 import tempfile
 
 # Forzar plataforma xcb solo si es necesario, pero manteniendo la flexibilidad multiplataforma
-# (Comentado o adaptado si querés permitir Wayland nativo, tal como en appimage-manager)
 # os.environ["QT_QPA_PLATFORM"] = "xcb"
 
 from PyQt6.QtCore import QEvent, Qt, QUrl, pyqtSlot
@@ -49,7 +48,7 @@ class SinergiaWelcome(QMainWindow):
       self.setWindowIcon(QIcon(str(icon_path_sys)))
 
     self.setWindowTitle("Sinergia Welcome - Centro de Control")
-    self.setFixedSize(540, 750)
+    self.setFixedSize(540, 780)
     self.init_ui()
     # Aplicar el tema inicial según la configuración del sistema
     self.actualizar_estilo_segun_tema()
@@ -148,6 +147,12 @@ class SinergiaWelcome(QMainWindow):
     btn_logs.clicked.connect(self.on_logs_clicked)
     grid.addWidget(btn_logs, 8, 1)
 
+    # Nuevo botón integrado para Sinergia Top
+    btn_top = QPushButton("📊 Sinergia Top (Monitor del Sistema)")
+    btn_top.setFixedHeight(32)
+    btn_top.clicked.connect(self.on_top_clicked)
+    grid.addWidget(btn_top, 9, 0, 1, 2)
+
     self.grid_buttons = [
         btn_info,
         btn_net,
@@ -155,6 +160,7 @@ class SinergiaWelcome(QMainWindow):
         btn_services,
         btn_aur,
         btn_logs,
+        btn_top,
     ]
 
     main_layout.addLayout(grid)
@@ -191,9 +197,8 @@ class SinergiaWelcome(QMainWindow):
     main_layout.addLayout(com_layout)
     main_layout.addStretch()
 
-    # Checkbox autostart (Activado por defecto si no existe archivo de configuración previa)
+    # Checkbox autostart
     autostart_exists = os.path.exists(AUTOSTART_PATH)
-    # Si el directorio padre no existe, asumimos primera ejecución y lo activamos por defecto creando el archivo
     if (
         not os.path.exists(os.path.dirname(AUTOSTART_PATH))
         and not autostart_exists
@@ -213,7 +218,6 @@ class SinergiaWelcome(QMainWindow):
     main_layout.addWidget(self.chk_autostart)
 
   def changeEvent(self, event):
-    # Detecta cambios en la paleta del sistema operativo en tiempo real
     if event.type() == QEvent.Type.ApplicationPaletteChange:
       self.actualizar_estilo_segun_tema()
     super().changeEvent(event)
@@ -224,7 +228,6 @@ class SinergiaWelcome(QMainWindow):
     is_light_mode = bg_color.lightness() > 128
 
     if is_light_mode:
-      # Estilos Modo Claro
       self.setStyleSheet("""
                 QMainWindow {
                     background-color: #f5f5f5;
@@ -247,7 +250,6 @@ class SinergiaWelcome(QMainWindow):
       grid_bg, grid_hover = "#ffffff", "#eaeaea"
       comm_bg, comm_hover = "#ffffff", "#eaeaea"
     else:
-      # Estilos Modo Oscuro (Ecosistema Sinergia)
       self.setStyleSheet("""
                 QMainWindow {
                     background-color: #121212;
@@ -270,7 +272,6 @@ class SinergiaWelcome(QMainWindow):
       grid_bg, grid_hover = "#1e1e1e", "#2d2d2d"
       comm_bg, comm_hover = "#1e1e1e", "#2d2d2d"
 
-    # Aplicar estilos dinámicos a los botones superiores
     top_style = f"""
             QPushButton {{
                 background-color: {top_bg};
@@ -289,7 +290,6 @@ class SinergiaWelcome(QMainWindow):
     for btn in self.top_buttons:
       btn.setStyleSheet(top_style)
 
-    # Aplicar estilos a la grilla central
     grid_style = f"""
             QPushButton {{
                 background-color: {grid_bg};
@@ -309,7 +309,6 @@ class SinergiaWelcome(QMainWindow):
     for btn in self.grid_buttons:
       btn.setStyleSheet(grid_style)
 
-    # Aplicar estilos los botones de comunidad
     comm_style = f"""
             QPushButton {{
                 background-color: {comm_bg};
@@ -360,6 +359,10 @@ class SinergiaWelcome(QMainWindow):
   @pyqtSlot()
   def on_aur_clicked(self):
     self.run_app("sinergia-aur-helper")
+
+  @pyqtSlot()
+  def on_top_clicked(self):
+    self.run_app("sinergia-top")
 
   @pyqtSlot()
   def on_info_clicked(self):
@@ -461,7 +464,6 @@ Categories=Utility;
 
 
 if __name__ == "__main__":
-  # 3. Configuración para Wayland (Plasma / GNOME moderno) antes de instanciar QApplication
   QApplication.setDesktopFileName("sinergia-welcome")
 
   app = QApplication(sys.argv)

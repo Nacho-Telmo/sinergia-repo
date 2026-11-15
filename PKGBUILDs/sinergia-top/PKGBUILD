@@ -11,7 +11,7 @@ optdepends=('nerd-fonts: para una correcta visualización de la iconografía')
 source=('main.py'
         'logo.svg'
         'sinergia-top.desktop')
-sha256sums=('SKIP'
+sha256sums=('703b888748ed82c295d0e1740dc6bc803bf1a480e72a094d089c858f02a82765'
             'SKIP'
             'SKIP')
 

@@ -1,7 +1,7 @@
 # Maintainer: Ignacio Ezcurra <nacho@sinergia.com>
 pkgname=sinergia-top
 pkgver=1.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Monitoreo de sistema avanzado para Arch Linux con estética Catppuccin"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-top"

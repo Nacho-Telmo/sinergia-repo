@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Top
+Comment=Monitoreo de sistema avanzado para Arch Linux con estética Catppuccin
+Exec=sinergia-top
+Icon=sinergia-top
+Terminal=true
+Categories=System;Monitor;Utility;
+Keywords=system;monitor;tui;top;cpufetch;sinergia;

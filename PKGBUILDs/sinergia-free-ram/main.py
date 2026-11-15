@@ -22,7 +22,9 @@ class SinergiaFreeRam(QMainWindow):
         super().__init__()
         self.setWindowTitle("Sinergia Free RAM")
         self.setFixedSize(480, 420)
-        self.setProperty("class", "sinergia-free-ram")
+
+        # Forzar el icono de la aplicación de manera universal
+        self.setWindowIcon(QIcon.fromTheme("sinergia-free-ram"))
 
         self.init_ui()
 
@@ -159,7 +161,14 @@ class SinergiaFreeRam(QMainWindow):
                 QMessageBox.critical(self, "Error", f"No se pudo ejecutar la limpieza: {e}")
 
 if __name__ == "__main__":
+    # CRUCIAL PARA WAYLAND Y X11: Vincula la app con su archivo .desktop antes de iniciar
+    QApplication.setDesktopFileName("sinergia-free-ram")
+
     app = QApplication(sys.argv)
+
+    # Asignar un icono global de respaldo a toda la aplicación
+    app.setWindowIcon(QIcon.fromTheme("sinergia-free-ram"))
+
     window = SinergiaFreeRam()
     window.show()
     sys.exit(app.exec())

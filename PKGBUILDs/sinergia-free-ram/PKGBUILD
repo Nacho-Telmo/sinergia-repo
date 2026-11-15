@@ -1,0 +1,27 @@
+# Maintainer: Ignacio Ezcurra <nacho@sinergia.com>
+pkgname=sinergia-free-ram
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Monitor de memoria RAM y liberador de caché en tiempo real para Sinergia"
+arch=('any')
+url="https://nacho-telmo.github.io/sinergia-repo/"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'python-psutil' 'polkit')
+optdependents=('alacritty: emulador de terminal recomendado')
+source=('main.py'
+        'logo.svg'
+        'sinergia-free-ram.desktop')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    # Instalar el script principal como binario ejecutable
+    install -Dm755 "${srcdir}/main.py" "${pkgdir}/usr/bin/sinergia-free-ram"
+
+    # Instalar el archivo .desktop para el menú de aplicaciones
+    install -Dm644 "${srcdir}/sinergia-free-ram.desktop" "${pkgdir}/usr/share/applications/sinergia-free-ram.desktop"
+
+    # Instalar el logotipo en alta calidad compatible con hicolor
+    install -Dm644 "${srcdir}/logo.svg" "${pkgdir}/usr/share/icons/hicolor/scalable/apps/sinergia-free-ram.svg"
+}

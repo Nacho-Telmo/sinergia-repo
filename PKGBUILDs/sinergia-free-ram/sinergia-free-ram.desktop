@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Free RAM
+Comment=Monitoreo y optimización de memoria RAM en tiempo real
+Exec=sinergia-free-ram
+Icon=sinergia-free-ram
+Terminal=false
+Categories=System;Monitor;Utility;
+Keywords=ram;memory;cache;optimizacion;sinergia;

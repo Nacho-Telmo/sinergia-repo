@@ -47,7 +47,7 @@ class SinergiaDNSManager(QMainWindow):
         self.setWindowTitle("Sinergia DNS Manager")
         self.setFixedSize(600, 480)
 
-        # Establecer el icono de la ventana basado en el tema del sistema (buscando el nombre instalado por el paquete)
+        # Establecer el icono de la ventana basado en el tema del sistema
         self.setWindowIcon(QIcon.fromTheme("sinergia-dns-manager"))
 
         self.init_ui()
@@ -215,17 +215,17 @@ class SinergiaDNSManager(QMainWindow):
         ipv4_dns = " ".join(provider["ipv4"])
         ipv6_dns = " ".join(provider["ipv6"])
 
-        # Preparar comandos IPv4
+        # Preparar comandos IPv4 (usando 'remove' para limpiar de forma segura en modo automático)
         if ipv4_dns:
             cmd_ipv4 = f'nmcli con mod "{conn_name}" ipv4.dns "{ipv4_dns}" ipv4.ignore-auto-dns yes'
         else:
-            cmd_ipv4 = f'nmcli con mod "{conn_name}" ipv4.dns "" ipv4.ignore-auto-dns no'
+            cmd_ipv4 = f'nmcli con mod "{conn_name}" remove ipv4.dns ipv4.ignore-auto-dns no'
 
         # Preparar comandos IPv6
         if ipv6_dns:
             cmd_ipv6 = f'nmcli con mod "{conn_name}" ipv6.dns "{ipv6_dns}" ipv6.ignore-auto-dns yes'
         else:
-            cmd_ipv6 = f'nmcli con mod "{conn_name}" ipv6.dns "" ipv6.ignore-auto-dns no'
+            cmd_ipv6 = f'nmcli con mod "{conn_name}" remove ipv6.dns ipv6.ignore-auto-dns no'
 
         # Consolidar todo en una única ejecución segura con bash
         full_command = f"{cmd_ipv4} && {cmd_ipv6} && nmcli con up \"{conn_name}\""
@@ -253,7 +253,7 @@ class SinergiaDNSManager(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    # CRUCIAL PARA WAYLAND: Vincula la app con el archivo .desktop para que el compositor reconozca el icono
+    # Vincula la app con el archivo .desktop para Wayland e iconos
     QApplication.setDesktopFileName("sinergia-dns-manager")
 
     window = SinergiaDNSManager()

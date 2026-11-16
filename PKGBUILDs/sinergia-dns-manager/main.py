@@ -215,17 +215,17 @@ class SinergiaDNSManager(QMainWindow):
         ipv4_dns = " ".join(provider["ipv4"])
         ipv6_dns = " ".join(provider["ipv6"])
 
-        # Preparar comandos IPv4 (usando 'remove' para limpiar de forma segura en modo automático)
+        # Preparar comandos IPv4 (evitando modificar ipv4.dns si es automático, solo ajustando ignore-auto-dns)
         if ipv4_dns:
             cmd_ipv4 = f'nmcli con mod "{conn_name}" ipv4.dns "{ipv4_dns}" ipv4.ignore-auto-dns yes'
         else:
-            cmd_ipv4 = f'nmcli con mod "{conn_name}" remove ipv4.dns ipv4.ignore-auto-dns no'
+            cmd_ipv4 = f'nmcli con mod "{conn_name}" ipv4.ignore-auto-dns no'
 
         # Preparar comandos IPv6
         if ipv6_dns:
             cmd_ipv6 = f'nmcli con mod "{conn_name}" ipv6.dns "{ipv6_dns}" ipv6.ignore-auto-dns yes'
         else:
-            cmd_ipv6 = f'nmcli con mod "{conn_name}" remove ipv6.dns ipv6.ignore-auto-dns no'
+            cmd_ipv6 = f'nmcli con mod "{conn_name}" ipv6.ignore-auto-dns no'
 
         # Consolidar todo en una única ejecución segura con bash
         full_command = f"{cmd_ipv4} && {cmd_ipv6} && nmcli con up \"{conn_name}\""

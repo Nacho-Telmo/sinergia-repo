@@ -147,12 +147,16 @@ class SinergiaWelcome(QMainWindow):
     btn_logs.clicked.connect(self.on_logs_clicked)
     grid.addWidget(btn_logs, 8, 1)
 
-    # Botón integrado para Sinergia Top (con objeto dedicado para centrarlo)
-    btn_top = QPushButton("📊 Sinergia Top (Monitor del Sistema)")
-    btn_top.setFixedHeight(32)
-    btn_top.setObjectName("btn-top")
+    # Fila unificada para Sinergia DNS Manager y Sinergia Top lado a lado
+    btn_dns = QPushButton("🌐 Sinergia DNS Manager")
+    btn_dns.setFixedHeight(34)
+    btn_dns.clicked.connect(self.on_dns_clicked)
+    grid.addWidget(btn_dns, 9, 0)
+
+    btn_top = QPushButton("📊 Sinergia Top")
+    btn_top.setFixedHeight(34)
     btn_top.clicked.connect(self.on_top_clicked)
-    grid.addWidget(btn_top, 9, 0, 1, 2)
+    grid.addWidget(btn_top, 9, 1)
 
     self.grid_buttons = [
         btn_info,
@@ -161,8 +165,9 @@ class SinergiaWelcome(QMainWindow):
         btn_services,
         btn_aur,
         btn_logs,
+        btn_dns,
+        btn_top,
     ]
-    self.btn_top = btn_top
 
     main_layout.addLayout(grid)
 
@@ -310,24 +315,6 @@ class SinergiaWelcome(QMainWindow):
     for btn in self.grid_buttons:
       btn.setStyleSheet(grid_style)
 
-    # Estilo específico centrado para Sinergia Top
-    top_centered_style = f"""
-            QPushButton#btn-top {{
-                background-color: {grid_bg};
-                color: {'#222222' if is_light_mode else '#ffffff'};
-                border: 1px solid #7e57c2;
-                border-radius: 6px;
-                font-weight: bold;
-                font-size: 9pt;
-                text-align: center;
-            }}
-            QPushButton#btn-top:hover {{
-                background-color: {grid_hover};
-                border: 1px solid {'#5e35b1' if is_light_mode else '#ffffff'};
-            }}
-        """
-    self.btn_top.setStyleSheet(top_centered_style)
-
     comm_style = f"""
             QPushButton {{
                 background-color: {comm_bg};
@@ -383,6 +370,11 @@ class SinergiaWelcome(QMainWindow):
   def on_top_clicked(self):
     # Al ser una TUI, se lanza correctamente dentro de Alacritty
     self.run_in_terminal("sinergia-top")
+
+  @pyqtSlot()
+  def on_dns_clicked(self):
+    # Lanza la interfaz gráfica de Sinergia DNS Manager
+    self.run_app("sinergia-dns-manager")
 
   @pyqtSlot()
   def on_info_clicked(self):

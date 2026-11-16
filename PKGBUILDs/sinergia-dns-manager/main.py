@@ -203,7 +203,7 @@ class SinergiaDNSManager(QMainWindow):
         self.lbl_desc.setText(text)
 
     def apply_selected_dns(self):
-        """Aplica toda la configuración en un solo bloque con una única solicitud de pkexec."""
+        """Aplica toda la configuración en un solo bloque con una única solicitud de pkexec y limpieza de IPs anteriores."""
         conn_name = self.get_active_connection()
         if not conn_name:
             QMessageBox.warning(self, "Error de red", "No se encontró ninguna conexión de red activa.")
@@ -215,17 +215,26 @@ class SinergiaDNSManager(QMainWindow):
         ipv4_dns = " ".join(provider["ipv4"])
         ipv6_dns = " ".join(provider["ipv6"])
 
-        # Preparar comandos IPv4 (evitando modificar ipv4.dns si es automático, solo ajustando ignore-auto-dns)
+        # Recopilar todas las IPs conocidas para limpiar perfiles anteriores en modo automático
+        all_ipv4 = []
+        all_ipv6 = []
+        for p_data in DNS_PROVIDERS.values():
+            all_ipv4.extend(p_data.get("ipv4", []))
+            all_ipv6.extend(p_data.get("ipv6", []))
+
+        # Preparar comandos IPv4
         if ipv4_dns:
             cmd_ipv4 = f'nmcli con mod "{conn_name}" ipv4.dns "{ipv4_dns}" ipv4.ignore-auto-dns yes'
         else:
-            cmd_ipv4 = f'nmcli con mod "{conn_name}" ipv4.ignore-auto-dns no'
+            remove_args_v4 = " ".join([f'-ipv4.dns "{ip}"' for ip in set(all_ipv4)])
+            cmd_ipv4 = f'nmcli con mod "{conn_name}" {remove_args_v4} ipv4.ignore-auto-dns no'
 
         # Preparar comandos IPv6
         if ipv6_dns:
             cmd_ipv6 = f'nmcli con mod "{conn_name}" ipv6.dns "{ipv6_dns}" ipv6.ignore-auto-dns yes'
         else:
-            cmd_ipv6 = f'nmcli con mod "{conn_name}" ipv6.ignore-auto-dns no'
+            remove_args_v6 = " ".join([f'-ipv6.dns "{ip}"' for ip in set(all_ipv6)])
+            cmd_ipv6 = f'nmcli con mod "{conn_name}" {remove_args_v6} ipv6.ignore-auto-dns no'
 
         # Consolidar todo en una única ejecución segura con bash
         full_command = f"{cmd_ipv4} && {cmd_ipv6} && nmcli con up \"{conn_name}\""
@@ -251,11 +260,17 @@ class SinergiaDNSManager(QMainWindow):
             )
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    try:
+        app = QApplication(sys.argv)
 
-    # Vincula la app con el archivo .desktop para Wayland e iconos
-    QApplication.setDesktopFileName("sinergia-dns-manager")
+        # Vincula la app con el archivo .desktop para Wayland e iconos
+        QApplication.setDesktopFileName("sinergia-dns-manager")
 
-    window = SinergiaDNSManager()
-    window.show()
-    sys.exit(app.exec())
+        window = SinergiaDNSManager()
+        window.show()
+        sys.exit(app.exec())
+    except Exception as e:
+        import traceback
+        print("CRITICAL ERROR:", file=sys.stderr)
+        traceback.print_exc()
+        sys.exit(1)

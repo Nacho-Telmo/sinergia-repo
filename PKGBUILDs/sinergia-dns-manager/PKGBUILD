@@ -1,7 +1,7 @@
 # Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sinergia-dns-manager
 pkgver=1.0.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Gestor de DNS modular y limpio para Arch Linux basado en PyQt6 y NetworkManager"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"

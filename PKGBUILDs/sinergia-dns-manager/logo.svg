@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Gradiente de fondo radial -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a232a" />
+      <stop offset="100%" stop-color="#0e1317" />
+    </radialGradient>
+
+    <!-- Gradiente principal verde Sinergia -->
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2ecc71" />
+      <stop offset="100%" stop-color="#27ae60" />
+    </linearGradient>
+
+    <!-- Gradiente secundario cian/azul para nodos de red -->
+    <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3498db" />
+      <stop offset="100%" stop-color="#2980b9" />
+    </linearGradient>
+
+    <!-- Sombra sutil para profundidad -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+
+    <!-- Máscara de recorte circular -->
+    <clipPath id="circleClip">
+      <circle cx="256" cy="256" r="240" />
+    </clipPath>
+  </defs>
+
+  <!-- Anillo exterior decorativo -->
+  <circle cx="256" cy="256" r="244" fill="none" stroke="url(#primaryGrad)" stroke-width="4" opacity="0.4" />
+  
+  <!-- Fondo circular principal -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGrad)" filter="url(#dropShadow)" />
+
+  <!-- Contenido interior recortado al círculo -->
+  <g clip-path="url(#circleClip)">
+    <!-- Anillo exterior de red / conectividad -->
+    <circle cx="256" cy="210" r="130" fill="none" stroke="url(#nodeGrad)" stroke-width="6" stroke-opacity="0.2" stroke-dasharray="10 6" />
+
+    <!-- Conexiones de red -->
+    <g filter="url(#dropShadow)">
+      <line x1="256" y1="210" x2="256" y2="120" stroke="#2ecc71" stroke-width="4" stroke-linecap="round" stroke-opacity="0.6" />
+      <line x1="256" y1="210" x2="166" y2="262" stroke="#2ecc71" stroke-width="4" stroke-linecap="round" stroke-opacity="0.6" />
+      <line x1="256" y1="210" x2="346" y2="262" stroke="#2ecc71" stroke-width="4" stroke-linecap="round" stroke-opacity="0.6" />
+    </g>
+
+    <!-- Nodo central DNS / Escudo estilizado -->
+    <g filter="url(#dropShadow)" transform="translate(0, -10)">
+      <polygon points="256,150 340,198 340,294 256,342 172,294 172,198" fill="#161f26" stroke="url(#primaryGrad)" stroke-width="8" stroke-linejoin="round" />
+      <polygon points="256,176 316,211 316,281 256,316 196,281 196,211" fill="url(#primaryGrad)" opacity="0.15" />
+    </g>
+
+    <!-- Icono interno: Servidor y satélites -->
+    <g transform="translate(256, 236)">
+      <circle cx="0" cy="0" r="28" fill="url(#primaryGrad)" />
+      <circle cx="0" cy="0" r="12" fill="#12181b" />
+      <circle cx="0" cy="-65" r="10" fill="url(#nodeGrad)" />
+      <circle cx="60" cy="35" r="10" fill="url(#nodeGrad)" />
+      <circle cx="-60" cy="35" r="10" fill="url(#nodeGrad)" />
+    </g>
+
+    <!-- Textos adaptados al radio inferior -->
+    <text x="256" y="415" font-family="system-ui, -apple-system, &#39;Segoe UI&#39;, Roboto, sans-serif" font-size="24" font-weight="800" fill="#ffffff" letter-spacing="5" text-anchor="middle">SINERGIA</text>
+    <text x="256" y="438" font-family="system-ui, -apple-system, &#39;Segoe UI&#39;, Roboto, sans-serif" font-size="11" font-weight="600" fill="#2ecc71" letter-spacing="3" text-anchor="middle">DNS MANAGER</text>
+  </g>
+</svg>

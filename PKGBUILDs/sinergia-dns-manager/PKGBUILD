@@ -1,0 +1,26 @@
+# Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-dns-manager
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Gestor de DNS modular y limpio para Arch Linux basado en PyQt6 y NetworkManager"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL')
+depends=('python' 'python-pyqt6' 'networkmanager' 'polkit')
+source=('main.py'
+        'logo.svg'
+        'sinergia-dns-manager.desktop')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    # Instalar script principal como binario ejecutable
+    install -Dm755 "$srcdir/main.py" "$pkgdir/usr/bin/sinergia-dns-manager"
+
+    # Instalar logo SVG en el tema de iconos del sistema
+    install -Dm644 "$srcdir/logo.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/sinergia-dns-manager.svg"
+
+    # Instalar archivo lanzador .desktop para el menú de aplicaciones
+    install -Dm644 "$srcdir/sinergia-dns-manager.desktop" "$pkgdir/usr/share/applications/sinergia-dns-manager.desktop"
+}

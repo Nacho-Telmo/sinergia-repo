@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia DNS Manager
+Comment=Gestiona y cambia tus servidores DNS de forma rápida y segura
+Exec=sinergia-dns-manager
+Icon=sinergia-dns-manager
+Terminal=false
+Categories=Network;Settings;
+StartupNotify=true

@@ -1,0 +1,28 @@
+# Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-firewall-gui
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Gestor gráfico de cortafuegos UFW para Arch Linux - Sinergia"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'ufw')
+optdepends=('polkit: para autenticación gráfica segura con pkexec')
+source=('main.py'
+        'logo.svg'
+        'sinergia-firewall-gui.desktop')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    install -dm755 "$pkgdir/usr/bin"
+    install -dm755 "$pkgdir/usr/share/applications"
+    install -dm755 "$pkgdir/usr/share/icons/hicolor/scalable/apps"
+
+    install -Dm755 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-firewall-gui/main.py"
+    ln -s /usr/share/sinergia-firewall-gui/main.py "$pkgdir/usr/bin/sinergia-firewall-gui"
+
+    install -Dm644 "$srcdir/sinergia-firewall-gui.desktop" "$pkgdir/usr/share/applications/sinergia-firewall-gui.desktop"
+    install -Dm644 "$srcdir/logo.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/sinergia-firewall-gui.svg"
+}

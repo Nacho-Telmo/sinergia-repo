@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Firewall GUI
+Comment=Gestor gráfico seguro para UFW en Arch Linux
+Exec=sinergia-firewall-gui
+Icon=sinergia-firewall-gui
+Terminal=false
+Categories=Utility;Settings;Security;
+StartupWMClass=sinergia-firewall-gui

@@ -1,0 +1,35 @@
+# Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-codec-fixer
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Gestor gráfico de códecs multimedia y fuentes tipográficas para Arch Linux"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'gstreamer' 'gst-plugins-good' 'gst-plugins-bad' 'gst-plugins-ugly' 'gst-libav' 'ttf-ms-fonts')
+optdepends=('polkit: para autenticación gráfica segura con pkexec')
+source=('main.py'
+        'logo.svg'
+        'sinergia-codec-fixer.desktop')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    # 1. Crear directorios de destino en el sistema
+    install -dm755 "$pkgdir/usr/bin"
+    install -dm755 "$pkgdir/usr/share/applications"
+    install -dm755 "$pkgdir/usr/share/icons/hicolor/scalable/apps"
+
+    # 2. Instalar el script principal y darle permisos de ejecución
+    install -Dm755 "$srcdir/main.py" "$pkgdir/usr/share/sinergia-codec-fixer/main.py"
+
+    # Crear enlace simbólico ejecutable en /usr/bin
+    ln -s /usr/share/sinergia-codec-fixer/main.py "$pkgdir/usr/bin/sinergia-codec-fixer"
+
+    # 3. Instalar archivo .desktop
+    install -Dm644 "$srcdir/sinergia-codec-fixer.desktop" "$pkgdir/usr/share/applications/sinergia-codec-fixer.desktop"
+
+    # 4. Instalar el logo SVG en el directorio de iconos del sistema
+    install -Dm644 "$srcdir/logo.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/sinergia-codec-fixer.svg"
+}

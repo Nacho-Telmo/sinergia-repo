@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Gestor de Codec y fuentes
+Comment=Gestor de códecs multimedia y fuentes para Arch Linux
+Exec=sinergia-codec-fixer
+Icon=sinergia-codec-fixer
+Terminal=false
+Type=Application
+Categories=Utility;Settings;
+StartupWMClass=sinergia-codec-fixer

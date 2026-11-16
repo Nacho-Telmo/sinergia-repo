@@ -1,12 +1,12 @@
 # Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sinergia-codec-fixer
 pkgver=1.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Gestor gráfico de códecs multimedia y fuentes tipográficas para Arch Linux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
 license=('GPL3')
-depends=('python' 'python-pyqt6' 'gstreamer' 'gst-plugins-good' 'gst-plugins-bad' 'gst-plugins-ugly' 'gst-libav' 'ttf-ms-fonts')
+depends=('python' 'python-pyqt6' 'polkit')
 optdepends=('polkit: para autenticación gráfica segura con pkexec')
 source=('main.py'
         'logo.svg'

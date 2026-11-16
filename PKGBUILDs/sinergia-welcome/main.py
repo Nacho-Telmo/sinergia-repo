@@ -48,7 +48,7 @@ class SinergiaWelcome(QMainWindow):
       self.setWindowIcon(QIcon(str(icon_path_sys)))
 
     self.setWindowTitle("Sinergia Welcome - Centro de Control")
-    self.setFixedSize(540, 780)
+    self.setFixedSize(540, 820)
     self.init_ui()
     # Aplicar el tema inicial según la configuración del sistema
     self.actualizar_estilo_segun_tema()
@@ -158,6 +158,12 @@ class SinergiaWelcome(QMainWindow):
     btn_top.clicked.connect(self.on_top_clicked)
     grid.addWidget(btn_top, 9, 1)
 
+    # Botón unificado de ancho completo para Sinergia Codec Fixer
+    btn_codec = QPushButton("🎬 Sinergia Codec Fixer")
+    btn_codec.setFixedHeight(34)
+    btn_codec.clicked.connect(self.on_codec_clicked)
+    grid.addWidget(btn_codec, 10, 0, 1, 2)
+
     self.grid_buttons = [
         btn_info,
         btn_net,
@@ -167,6 +173,7 @@ class SinergiaWelcome(QMainWindow):
         btn_logs,
         btn_dns,
         btn_top,
+        btn_codec,
     ]
 
     main_layout.addLayout(grid)
@@ -296,6 +303,7 @@ class SinergiaWelcome(QMainWindow):
     for btn in self.top_buttons:
       btn.setStyleSheet(top_style)
 
+    # TEXTO CENTRADO EN LOS BOTONES DE LA GRILLA
     grid_style = f"""
             QPushButton {{
                 background-color: {grid_bg};
@@ -304,8 +312,7 @@ class SinergiaWelcome(QMainWindow):
                 border-radius: 6px;
                 font-weight: bold;
                 font-size: 9pt;
-                text-align: left;
-                padding-left: 10px;
+                text-align: center;
             }}
             QPushButton:hover {{
                 background-color: {grid_hover};
@@ -315,6 +322,7 @@ class SinergiaWelcome(QMainWindow):
     for btn in self.grid_buttons:
       btn.setStyleSheet(grid_style)
 
+    # TEXTO CENTRADO EN LOS BOTONES DE COMUNIDAD
     comm_style = f"""
             QPushButton {{
                 background-color: {comm_bg};
@@ -323,8 +331,7 @@ class SinergiaWelcome(QMainWindow):
                 border-radius: 6px;
                 font-weight: bold;
                 font-size: 9pt;
-                text-align: left;
-                padding-left: 10px;
+                text-align: center;
             }}
             QPushButton:hover {{
                 background-color: {comm_hover};
@@ -375,6 +382,11 @@ class SinergiaWelcome(QMainWindow):
   def on_dns_clicked(self):
     # Lanza la interfaz gráfica de Sinergia DNS Manager
     self.run_app("sinergia-dns-manager")
+
+  @pyqtSlot()
+  def on_codec_clicked(self):
+    # Lanza la interfaz gráfica de Sinergia Codec Fixer
+    self.run_app("sinergia-codec-fixer")
 
   @pyqtSlot()
   def on_info_clicked(self):

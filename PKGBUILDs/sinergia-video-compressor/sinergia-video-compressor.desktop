@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Video Compressor
+Comment=Herramienta local y privada para comprimir videos con ffmpeg
+Exec=sinergia-video-compressor
+Icon=sinergia-video-compressor
+Terminal=false
+Categories=Utility;AudioVideo;Video;
+Keywords=video;compressor;ffmpeg;sinergia;
+StartupNotify=true

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Gradiente de fondo oscuro estilo Plasma -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2b2b2b" />
+      <stop offset="100%" stop-color="#1e1e1e" />
+    </linearGradient>
+
+    <!-- Gradiente vibrante para los elementos multimedia (Azul Sinergia / Cyan) -->
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3daee9" />
+      <stop offset="100%" stop-color="#2980b9" />
+    </linearGradient>
+
+    <!-- Gradiente secundario de acento (Naranja/Verde técnico) -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f67400" />
+      <stop offset="100%" stop-color="#2ecc71" />
+    </linearGradient>
+
+    <!-- Sombra suave para profundidad -->
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Fondo redondeado de la aplicación / icono -->
+  <rect x="32" y="32" width="448" height="448" rx="96" fill="url(#bgGrad)" stroke="#3a3a3a" stroke-width="8" filter="url(#dropShadow)" />
+
+  <!-- Contenedor del ícono central (Clapboard / Película y Compresión) -->
+  <g transform="translate(64, 64)">
+    <!-- Cuerpo de la claqueta / fotograma de video -->
+    <rect x="32" y="96" width="320" height="224" rx="24" fill="#31363b" stroke="url(#primaryGrad)" stroke-width="12" />
+
+    <!-- Franja superior de la claqueta con líneas diagonales -->
+    <path d="M 32 120 L 352 120 L 352 64 C 352 50.745 341.255 40 328 40 L 56 40 C 42.745 40 32 50.745 32 64 Z" fill="#232629" />
+    
+    <!-- Marcas diagonales de la claqueta -->
+    <g stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity="0.8">
+      <line x1="80" y1="40" x2="112" y2="120" />
+      <line x1="144" y1="40" x2="176" y2="120" />
+      <line x1="208" y1="40" x2="240" y2="120" />
+      <line x1="272" y1="40" x2="304" y2="120" />
+    </g>
+
+    <!-- Símbolo central de reproducción (Play) con flechas de compresión -->
+    <circle cx="192" cy="208" r="64" fill="#1e1e1e" stroke="url(#primaryGrad)" stroke-width="8" />
+    <polygon points="172,176 224,208 172,240" fill="url(#accentGrad)" />
+
+    <!-- Indicador visual de compresión (Esquinas inferiores o ondas) -->
+    <path d="M 80 288 L 128 288 M 256 288 L 304 288" stroke="url(#accentGrad)" stroke-width="8" stroke-linecap="round" />
+  </g>
+</svg>

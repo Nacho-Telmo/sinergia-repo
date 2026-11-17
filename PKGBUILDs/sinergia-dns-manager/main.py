@@ -7,36 +7,30 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QIcon
 
-# Proveedores con sus respectivas direcciones IPv4 e IPv6
+# Proveedores de DNS (enfocados exclusivamente en IPv4)
 DNS_PROVIDERS = {
     "AdGuard DNS (Recomendado - Sin publicidad)": {
         "ipv4": ["94.140.14.14", "94.140.15.15"],
-        "ipv6": ["2a10:50c0::ad1:ff", "2a10:50c0::ad2:ff"],
         "desc": "Bloqueo automático de anuncios, rastreadores y protección de privacidad."
     },
     "AdGuard DNS - Protección Familiar": {
         "ipv4": ["94.140.14.15", "94.140.15.16"],
-        "ipv6": ["2a10:50c0::ad2:ff", "2a10:50c0::ad1:ff"],
         "desc": "Bloqueo de contenido para adultos y control parental seguro."
     },
     "Cloudflare (Rápido y Privado)": {
         "ipv4": ["1.1.1.1", "1.0.0.1"],
-        "ipv6": ["2606:4700:4700::1111", "2606:4700:4700::1001"],
         "desc": "Enfoque en velocidad extrema y política estricta de cero registro."
     },
     "Google Public DNS": {
         "ipv4": ["8.8.8.8", "8.8.4.4"],
-        "ipv6": ["2001:4860:4860::8888", "2001:4860:4860::8844"],
         "desc": "Los servidores DNS tradicionales provistos por Google."
     },
     "Quad9 (Seguridad y Malware)": {
         "ipv4": ["9.9.9.9", "149.112.112.112"],
-        "ipv6": ["2620:fe::fe", "2620:fe::9"],
         "desc": "Bloqueo activo de sitios de phishing y dominios maliciosos."
     },
     "Automático (DHCP del Router / ISP)": {
         "ipv4": [],
-        "ipv6": [],
         "desc": "Restaura la configuración predeterminada provista por tu red."
     }
 }
@@ -45,7 +39,7 @@ class SinergiaDNSManager(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sinergia DNS Manager")
-        self.setFixedSize(600, 480)
+        self.setFixedSize(600, 460)
 
         # Establecer el icono de la ventana basado en el tema del sistema
         self.setWindowIcon(QIcon.fromTheme("sinergia-dns-manager"))
@@ -109,7 +103,7 @@ class SinergiaDNSManager(QMainWindow):
         layout.addStretch()
 
         # Botón Aplicar
-        self.btn_apply = QPushButton("Aplicar Cambios (IPv4 & IPv6)")
+        self.btn_apply = QPushButton("Aplicar Cambios de DNS")
         self.btn_apply.setStyleSheet("""
             QPushButton {
                 background-color: #27ae60;
@@ -135,6 +129,22 @@ class SinergiaDNSManager(QMainWindow):
             for line in output.strip().split("\n"):
                 if "activated" in line:
                     return line.split(":")[0]
+        except Exception:
+            pass
+        return None
+
+    def get_active_device(self, conn_name):
+        """Obtiene la interfaz de red física/inalámbrica asociada a la conexión activa."""
+        try:
+            output = subprocess.check_output(
+                ["nmcli", "-t", "-f", "NAME,DEVICE", "connection", "show", "--active"],
+                universal_newlines=True
+            )
+            for line in output.strip().split("\n"):
+                if line.startswith(f"{conn_name}:"):
+                    parts = line.split(":")
+                    if len(parts) > 1 and parts[1].strip():
+                        return parts[1].strip()
         except Exception:
             pass
         return None
@@ -189,21 +199,19 @@ class SinergiaDNSManager(QMainWindow):
             return f"Personalizado ({', '.join(found_ips)})"
 
     def update_description(self):
-        """Muestra los detalles de IPv4 e IPv6 del proveedor seleccionado en el combo con buen espacio."""
+        """Muestra los detalles de IPv4 del proveedor seleccionado en el combo."""
         selected = self.combo_providers.currentText()
         p = DNS_PROVIDERS.get(selected, {})
-        ipv4_str = ", ".join(p.get("ipv4", [])) or "Automático"
-        ipv6_str = ", ".join(p.get("ipv6", [])) or "Automático"
+        ipv4_str = ", ".join(p.get("ipv4", [])) or "Automático (DHCP)"
 
         text = (
             f"<b>Descripción:</b> {p.get('desc', '')}<br><br>"
-            f"<b>IPv4:</b> {ipv4_str}<br>"
-            f"<b>IPv6:</b> {ipv6_str}"
+            f"<b>Servidores IPv4:</b> {ipv4_str}"
         )
         self.lbl_desc.setText(text)
 
     def apply_selected_dns(self):
-        """Aplica toda la configuración en un solo bloque con una única solicitud de pkexec y limpieza de IPs anteriores."""
+        """Aplica la configuración exclusivamente en IPv4, reaplica en caliente y restaura el puente de VMs."""
         conn_name = self.get_active_connection()
         if not conn_name:
             QMessageBox.warning(self, "Error de red", "No se encontró ninguna conexión de red activa.")
@@ -211,46 +219,46 @@ class SinergiaDNSManager(QMainWindow):
 
         selected_key = self.combo_providers.currentText()
         provider = DNS_PROVIDERS.get(selected_key)
-
         ipv4_dns = " ".join(provider["ipv4"])
-        ipv6_dns = " ".join(provider["ipv6"])
 
         # Recopilar todas las IPs conocidas para limpiar perfiles anteriores en modo automático
         all_ipv4 = []
-        all_ipv6 = []
         for p_data in DNS_PROVIDERS.values():
             all_ipv4.extend(p_data.get("ipv4", []))
-            all_ipv6.extend(p_data.get("ipv6", []))
 
-        # Preparar comandos IPv4
+        # Configurar exclusivamente IPv4 (sin tocar IPv6)
         if ipv4_dns:
             cmd_ipv4 = f'nmcli con mod "{conn_name}" ipv4.dns "{ipv4_dns}" ipv4.ignore-auto-dns yes'
         else:
             remove_args_v4 = " ".join([f'-ipv4.dns "{ip}"' for ip in set(all_ipv4)])
             cmd_ipv4 = f'nmcli con mod "{conn_name}" {remove_args_v4} ipv4.ignore-auto-dns no'
 
-        # Preparar comandos IPv6
-        if ipv6_dns:
-            cmd_ipv6 = f'nmcli con mod "{conn_name}" ipv6.dns "{ipv6_dns}" ipv6.ignore-auto-dns yes'
-        else:
-            remove_args_v6 = " ".join([f'-ipv6.dns "{ip}"' for ip in set(all_ipv6)])
-            cmd_ipv6 = f'nmcli con mod "{conn_name}" {remove_args_v6} ipv6.ignore-auto-dns no'
+        # Detectar el dispositivo activo
+        device = self.get_active_device(conn_name)
 
-        # Consolidar todo en una única ejecución segura con bash
-        full_command = f"{cmd_ipv4} && {cmd_ipv6} && nmcli con up \"{conn_name}\""
+        # Comando base de red en caliente
+        if device:
+            net_command = f'{cmd_ipv4} && nmcli device reapply "{device}"'
+        else:
+            net_command = f'{cmd_ipv4} && nmcli con up "{conn_name}"'
+
+        # Hook inteligente para KVM/libvirt: si existe la red 'default', la recarga para restaurar el NAT de las VMs
+        libvirt_fix = ' && (virsh net-info default &>/dev/null && (virsh net-destroy default && virsh net-start default) || true)'
+
+        full_command = f'{net_command}{libvirt_fix}'
 
         try:
-            # Una única llamada a pkexec que pide la contraseña una sola vez
+            # Ejecución segura con privilegios administrativos
             subprocess.run(["pkexec", "bash", "-c", full_command], check=True)
 
-            # Refrescar la etiqueta en pantalla con los nuevos DNS aplicados
+            # Refrescar etiqueta en pantalla
             updated_dns_named = self.get_current_dns_servers()
             self.lbl_current_dns.setText(f"<b>DNS en uso actual:</b> {updated_dns_named}")
 
             QMessageBox.information(
                 self,
                 "¡Éxito!",
-                f"Los servidores DNS se aplicaron correctamente en '{conn_name}'."
+                f"Los servidores DNS se aplicaron correctamente en '{conn_name}' y las interfaces virtuales se sincronizaron."
             )
         except subprocess.CalledProcessError:
             QMessageBox.critical(
@@ -262,8 +270,6 @@ class SinergiaDNSManager(QMainWindow):
 if __name__ == "__main__":
     try:
         app = QApplication(sys.argv)
-
-        # Vincula la app con el archivo .desktop para Wayland e iconos
         QApplication.setDesktopFileName("sinergia-dns-manager")
 
         window = SinergiaDNSManager()

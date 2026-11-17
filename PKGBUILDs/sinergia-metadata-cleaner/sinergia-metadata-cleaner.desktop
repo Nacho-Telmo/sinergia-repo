@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Metadata Cleaner
+Comment=Herramienta local y privada para eliminar metadatos de imágenes
+Exec=sinergia-metadata-cleaner
+Icon=sinergia-metadata-cleaner
+Terminal=false
+Categories=Utility;Graphics;Photography;
+Keywords=metadata;privacy;cleaner;images;sinergia;
+StartupNotify=true

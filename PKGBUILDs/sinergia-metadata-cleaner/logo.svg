@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Gradiente principal del fondo (estilo moderno oscuro/azulado) -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e222b" />
+      <stop offset="100%" stop-color="#12151b" />
+    </linearGradient>
+
+    <!-- Gradiente brillante para acentos (estilo KDE/Sinergia Plasma) -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3daee9" />
+      <stop offset="100%" stop-color="#1d99f3" />
+    </linearGradient>
+
+    <!-- Gradiente secundario para el escudo interior -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2b313c" />
+      <stop offset="100%" stop-color="#1b2028" />
+    </linearGradient>
+
+    <!-- Sombra sutil para profundidad vectorial -->
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Fondo redondeado principal tipo AppIcon -->
+  <rect x="32" y="32" width="448" height="448" rx="96" ry="96" fill="url(#bgGrad)" filter="url(#dropShadow)" stroke="#3daee9" stroke-width="4" stroke-opacity="0.3" />
+
+  <!-- Anillo o engranaje decorativo esquemático de fondo -->
+  <g transform="translate(256, 256) scale(0.85)">
+    <!-- Escudo central de protección/privacidad -->
+    <path d="M 0,-160 C 80,-160 140,-130 160,-110 C 160,30 110,120 0,180 C -110,120 -160,30 -160,-110 C -140,-130 -80,-160 0,-160 Z" fill="url(#shieldGrad)" stroke="url(#accentGrad)" stroke-width="12" stroke-linejoin="round" />
+
+    <!-- Elementos representativos de imagen y limpieza (Cámara estilizada / Limpieza de metadatos) -->
+    <rect x="-70" y="-70" width="140" height="110" rx="20" fill="none" stroke="#f6f6f6" stroke-width="12" opacity="0.95" />
+    <circle cx="0" cy="-15" r="32" fill="none" stroke="#3daee9" stroke-width="12" />
+    <circle cx="42" cy="-42" r="8" fill="#3daee9" />
+
+    <!-- Símbolo de verificación (Check) brillante que denota "Metadata Limpia" -->
+    <path d="M -35,25 L -10,50 L 45,-15" fill="none" stroke="#2ecc71" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" filter="url(#dropShadow)" />
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+# Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-metadata-cleaner
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Herramienta local y privada para eliminar metadatos de imágenes con interfaz PyQt6"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-metadata-cleaner"
+license=('MIT')
+depends=('python' 'python-pyqt6' 'python-pillow')
+makedepends=('python-setuptools')
+source=('main.py' 'logo.svg' 'sinergia-metadata-cleaner.desktop')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    # Instalar el script principal directamente en /usr/bin con permisos de ejecución
+    install -Dm755 "${srcdir}/main.py" "${pkgdir}/usr/bin/sinergia-metadata-cleaner"
+
+    # Instalar el icono vectorial en el tema del sistema
+    install -Dm644 "${srcdir}/logo.svg" "${pkgdir}/usr/share/icons/hicolor/scalable/apps/sinergia-metadata-cleaner.svg"
+
+    # Instalar el archivo .desktop para el menú de aplicaciones
+    install -Dm644 "${srcdir}/sinergia-metadata-cleaner.desktop" "${pkgdir}/usr/share/applications/sinergia-metadata-cleaner.desktop"
+}

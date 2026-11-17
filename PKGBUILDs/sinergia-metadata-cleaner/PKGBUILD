@@ -1,7 +1,7 @@
 # Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sinergia-metadata-cleaner
 pkgver=1.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Herramienta local y privada para eliminar metadatos de imágenes con interfaz PyQt6"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-metadata-cleaner"

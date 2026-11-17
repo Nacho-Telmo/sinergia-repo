@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QLabel, QFileDialog, QMessageBox, QFrame
 )
 from PyQt6.QtCore import Qt, QUrl
-from PyQt6.QtGui import QDesktopServices
+from PyQt6.QtGui import QDesktopServices, QIcon, QGuiApplication
 from PIL import Image
 
 class DropArea(QFrame):
@@ -154,7 +154,18 @@ class MetadataCleanerApp(QWidget):
                 QDesktopServices.openUrl(folder_url)
 
 if __name__ == '__main__':
+    # Clave para Wayland: asocia el app_id de la ventana con el archivo .desktop del sistema
+    QGuiApplication.setDesktopFileName("sinergia-metadata-cleaner")
+
     app = QApplication(sys.argv)
+
+    # Configurar icono compatible con Wayland y X11 (busca el SVG local o recurre al tema del sistema)
+    icon_path = Path(__file__).parent / "logo.svg"
+    if icon_path.exists():
+        app.setWindowIcon(QIcon(str(icon_path)))
+    else:
+        app.setWindowIcon(QIcon.fromTheme("sinergia-metadata-cleaner"))
+
     ex = MetadataCleanerApp()
     ex.show()
     sys.exit(app.exec())

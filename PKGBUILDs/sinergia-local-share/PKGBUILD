@@ -1,0 +1,32 @@
+# Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-local-share
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Herramienta local y privada para compartir archivos mediante servidor HTTP y códigos QR"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-repo"
+license=('GPL3')
+depends=('python' 'python-pyqt6' 'python-qrcode' 'python-pillow')
+optdepends=('xdg-desktop-portal: integración con Wayland y gestor de archivos')
+source=('main.py'
+        'logo.svg'
+        'sinergia-local-share.desktop')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    # Crear la estructura de directorios en el paquete
+    install -dm755 "$pkgdir/usr/bin"
+    install -dm755 "$pkgdir/usr/share/applications"
+    install -dm755 "$pkgdir/usr/share/icons/hicolor/scalable/apps"
+
+    # Instalar el script principal y renombrarlo como comando ejecutable
+    install -m755 "$srcdir/main.py" "$pkgdir/usr/bin/sinergia-local-share"
+
+    # Instalar el archivo .desktop
+    install -m644 "$srcdir/sinergia-local-share.desktop" "$pkgdir/usr/share/applications/"
+
+    # Instalar el icono vectorial SVG
+    install -m644 "$srcdir/logo.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/sinergia-local-share.svg"
+}

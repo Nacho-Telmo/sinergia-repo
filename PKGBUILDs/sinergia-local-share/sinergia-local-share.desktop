@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Sinergia Local Share
+Comment=Herramienta local y privada para compartir archivos mediante servidor HTTP y códigos QR
+Exec=sinergia-local-share
+Icon=sinergia-local-share
+Terminal=false
+Categories=Utility;Network;FileTransfer;
+Keywords=share;local;http;qr;transferencia;sinergia;
+StartupNotify=true

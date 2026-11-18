@@ -5,15 +5,17 @@ import socket
 import http.server
 import socketserver
 import urllib.parse
+import subprocess
+import re
 from pathlib import Path
 from io import BytesIO
 import qrcode
 
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QPushButton,
-    QLabel, QFileDialog, QFrame
+    QLabel, QFileDialog, QFrame, QCheckBox
 )
-from PyQt6.QtCore import Qt, QThread
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPixmap, QImage, QIcon, QGuiApplication
 
 class ServerWorker(QThread):
@@ -27,7 +29,7 @@ class ServerWorker(QThread):
         os.chdir(self.file_path.parent)
         Handler = http.server.SimpleHTTPRequestHandler
         try:
-            with socketserver.TCPServer(("", self.port), Handler) as self.httpd:
+            with socketserver.ThreadingTCPServer(("", self.port), Handler) as self.httpd:
                 self.httpd.serve_forever()
         except Exception:
             pass
@@ -36,6 +38,45 @@ class ServerWorker(QThread):
         if self.httpd:
             self.httpd.shutdown()
             self.httpd.server_close()
+        self.quit()
+        self.wait()
+
+
+class CloudflareWorker(QThread):
+    url_ready = pyqtSignal(str)
+
+    def __init__(self, port=8080):
+        super().__init__()
+        self.port = port
+        self.process = None
+
+    def run(self):
+        cmd = ['cloudflared', 'tunnel', '--url', f'http://localhost:{self.port}']
+        try:
+            self.process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1
+            )
+            for line in self.process.stderr:
+                if "trycloudflare.com" in line:
+                    match = re.search(r'https://[a-zA-Z0-9\-]+\.trycloudflare\.com', line)
+                    if match:
+                        public_url = match.group(0)
+                        self.url_ready.emit(public_url)
+                        break
+        except Exception:
+            pass
+
+    def stop(self):
+        if self.process:
+            self.process.terminate()
+            try:
+                self.process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                self.process.kill()
         self.quit()
         self.wait()
 
@@ -113,12 +154,13 @@ class LocalShareApp(QWidget):
         super().__init__()
         self.input_path = None
         self.server_thread = None
+        self.cloudflare_thread = None
         self.port = 8080
         self.initUI()
 
     def initUI(self):
         self.setWindowTitle('Sinergia Local Share')
-        self.setFixedSize(400, 480)
+        self.setFixedSize(400, 540)
 
         self.setStyleSheet("""
             QPushButton {
@@ -135,6 +177,17 @@ class LocalShareApp(QWidget):
                 background-color: #454545;
                 color: #888888;
             }
+            /* Checkbox grande y con color llamativo */
+            QCheckBox {
+                color: #f67400;
+                font-size: 13px;
+                font-weight: bold;
+                spacing: 8px;
+            }
+            QCheckBox::indicator {
+                width: 18px;
+                height: 18px;
+            }
         """)
 
         layout = QVBoxLayout()
@@ -147,11 +200,15 @@ class LocalShareApp(QWidget):
         self.file_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.file_label)
 
+        # Checkbox Modo Remoto destacado
+        self.chk_remote = QCheckBox("🌐 Modo Remoto global (vía Cloudflare)", self)
+        layout.addWidget(self.chk_remote)
+
         # Etiqueta para mostrar el QR
         self.qr_label = QLabel(self)
         self.qr_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.qr_label.setStyleSheet("background-color: #1e1e1e; border-radius: 6px; padding: 5px;")
-        self.qr_label.setFixedSize(380, 200)
+        self.qr_label.setFixedSize(380, 180)
         self.show_default_qr_message("Esperando archivo...")
         layout.addWidget(self.qr_label)
 
@@ -174,25 +231,36 @@ class LocalShareApp(QWidget):
     def set_input_file(self, file_path):
         if self.server_thread:
             self.server_thread.stop()
+        if self.cloudflare_thread:
+            self.cloudflare_thread.stop()
 
         self.input_path = Path(file_path)
         self.file_label.setStyleSheet("color: #2ecc71; font-weight: bold; font-size: 11px;")
         self.file_label.setText(f"✓ {self.input_path.name}")
 
-        # Obtener IP local y codificar correctamente el nombre para la URL
-        local_ip = self.get_local_ip()
         encoded_filename = urllib.parse.quote(self.input_path.name)
-        file_url = f"http://{local_ip}:{self.port}/{encoded_filename}"
-
-        # Generar QR
-        self.generate_qr(file_url)
 
         # Iniciar servidor HTTP en segundo plano
         self.server_thread = ServerWorker(self.input_path, self.port)
         self.server_thread.start()
 
+        if self.chk_remote.isChecked():
+            self.show_default_qr_message("Conectando con Cloudflare...")
+            self.cloudflare_thread = CloudflareWorker(self.port)
+            self.cloudflare_thread.url_ready.connect(lambda base_url: self.on_cloudflare_ready(base_url, encoded_filename))
+            self.cloudflare_thread.start()
+        else:
+            local_ip = self.get_local_ip()
+            file_url = f"http://{local_ip}:{self.port}/{encoded_filename}"
+            self.generate_qr(file_url)
+
         self.btn_stop.setEnabled(True)
         self.drop_area.setEnabled(False)
+        self.chk_remote.setEnabled(False)
+
+    def on_cloudflare_ready(self, base_url, encoded_filename):
+        public_url = f"{base_url}/{encoded_filename}"
+        self.generate_qr(public_url)
 
     def get_local_ip(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -216,12 +284,15 @@ class LocalShareApp(QWidget):
         qimage = QImage.fromData(buffer.getvalue())
         pixmap = QPixmap.fromImage(qimage)
 
-        self.qr_label.setPixmap(pixmap.scaled(180, 180, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        self.qr_label.setPixmap(pixmap.scaled(160, 160, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
 
     def reset_state(self):
         if self.server_thread:
             self.server_thread.stop()
             self.server_thread = None
+        if self.cloudflare_thread:
+            self.cloudflare_thread.stop()
+            self.cloudflare_thread = None
 
         self.input_path = None
         self.file_label.setStyleSheet("color: #f67400; font-weight: bold; font-size: 11px;")
@@ -229,10 +300,13 @@ class LocalShareApp(QWidget):
         self.show_default_qr_message("Servidor detenido. Seleccioná otro archivo.")
         self.btn_stop.setEnabled(False)
         self.drop_area.setEnabled(True)
+        self.chk_remote.setEnabled(True)
 
     def closeEvent(self, event):
         if self.server_thread:
             self.server_thread.stop()
+        if self.cloudflare_thread:
+            self.cloudflare_thread.stop()
         event.accept()
 
 if __name__ == '__main__':

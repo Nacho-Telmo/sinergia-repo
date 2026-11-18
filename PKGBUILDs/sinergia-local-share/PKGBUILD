@@ -1,12 +1,12 @@
 # Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sinergia-local-share
 pkgver=1.0.0
-pkgrel=2
-pkgdesc="Herramienta local y privada para compartir archivos mediante servidor HTTP y códigos QR"
+pkgrel=3
+pkgdesc="Herramienta local y privada para compartir archivos mediante servidor HTTP y códigos QR (con soporte de red local y remota)"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"
 license=('GPL3')
-depends=('python' 'python-pyqt6' 'python-qrcode' 'python-pillow')
+depends=('python' 'python-pyqt6' 'python-qrcode' 'python-pillow' 'cloudflared')
 optdepends=('xdg-desktop-portal: integración con Wayland y gestor de archivos')
 source=('main.py'
         'logo.svg'

@@ -1,7 +1,7 @@
 # Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sinergia-local-share
 pkgver=1.0.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Herramienta local y privada para compartir archivos mediante servidor HTTP y códigos QR (con soporte de red local y remota)"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-repo"

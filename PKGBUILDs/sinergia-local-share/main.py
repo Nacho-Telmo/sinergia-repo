@@ -18,7 +18,23 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPixmap, QImage, QIcon, QGuiApplication
 
+class CustomHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, download_callback=None, **kwargs):
+        self.download_callback = download_callback
+        super().__init__(*args, **kwargs)
+
+    def log_message(self, format, *args):
+        # Capturamos cuando hay una petición GET exitosa (código 200) que no sea el favicon
+        if len(args) >= 2 and args[1] == '200':
+            path_requested = args[0].split()[1] if len(args[0].split()) >  1 else ""
+            if "favicon.ico" not in path_requested and self.download_callback:
+                self.download_callback()
+        super().log_message(format, *args)
+
+
 class ServerWorker(QThread):
+    download_detected = pyqtSignal()
+
     def __init__(self, file_path, port=8080):
         super().__init__()
         self.file_path = file_path
@@ -27,9 +43,13 @@ class ServerWorker(QThread):
 
     def run(self):
         os.chdir(self.file_path.parent)
-        Handler = http.server.SimpleHTTPRequestHandler
+
+        # Creamos una clase fábrica para pasarle el callback al handler
+        def handler_factory(*args, **kwargs):
+            return CustomHandler(*args, download_callback=self.download_detected.emit, **kwargs)
+
         try:
-            with socketserver.ThreadingTCPServer(("", self.port), Handler) as self.httpd:
+            with socketserver.ThreadingTCPServer(("", self.port), handler_factory) as self.httpd:
                 self.httpd.serve_forever()
         except Exception:
             pass
@@ -177,7 +197,6 @@ class LocalShareApp(QWidget):
                 background-color: #454545;
                 color: #888888;
             }
-            /* Checkbox grande y con color llamativo */
             QCheckBox {
                 color: #f67400;
                 font-size: 13px;
@@ -240,8 +259,9 @@ class LocalShareApp(QWidget):
 
         encoded_filename = urllib.parse.quote(self.input_path.name)
 
-        # Iniciar servidor HTTP en segundo plano
+        # Iniciar servidor HTTP en segundo plano con hilo de detección de descarga
         self.server_thread = ServerWorker(self.input_path, self.port)
+        self.server_thread.download_detected.connect(self.on_download_success)
         self.server_thread.start()
 
         if self.chk_remote.isChecked():
@@ -261,6 +281,11 @@ class LocalShareApp(QWidget):
     def on_cloudflare_ready(self, base_url, encoded_filename):
         public_url = f"{base_url}/{encoded_filename}"
         self.generate_qr(public_url)
+
+    def on_download_success(self):
+        # Actualizamos la etiqueta superior avisando que se descargó con éxito
+        self.file_label.setStyleSheet("color: #3daee9; font-weight: bold; font-size: 11px;")
+        self.file_label.setText(f"🎉 ¡Archivo descargado con éxito!")
 
     def get_local_ip(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

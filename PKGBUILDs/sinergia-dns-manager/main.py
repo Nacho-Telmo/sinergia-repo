@@ -252,12 +252,7 @@ class SinergiaDNSManager(QMainWindow):
         device = self.get_active_device(conn_name)
         found_ips = []
 
-        # 1. Consultar DNS activos en systemd-resolved si está en uso
-        resolved_ips = self._get_resolved_active_dns(device)
-        if resolved_ips:
-            found_ips = resolved_ips
-
-        # 2. Consultar configuración en NetworkManager
+        # 1. Consultar configuración explícita en NetworkManager
         nm_dns = ""
         try:
             output = subprocess.check_output(
@@ -270,8 +265,13 @@ class SinergiaDNSManager(QMainWindow):
         except Exception:
             pass
 
-        if not found_ips and nm_dns:
+        if nm_dns:
             found_ips = [ip.strip() for ip in nm_dns.replace(",", " ").split() if ip.strip()]
+        else:
+            # 2. Consultar DNS activos en systemd-resolved si está en uso
+            resolved_ips = self._get_resolved_active_dns(device)
+            if resolved_ips:
+                found_ips = resolved_ips
 
         # 3. Fallback a /etc/resolv.conf
         if not found_ips:
@@ -386,6 +386,8 @@ class SinergiaDNSManager(QMainWindow):
             self.lbl_connection.setText(f"<b>Conexión activa:</b> {active_conn}")
             updated_dns_named = self.get_current_dns_servers()
             self.lbl_current_dns.setText(f"<b>DNS en uso actual:</b> {updated_dns_named}")
+            self.lbl_current_dns.update()
+            QApplication.processEvents()
 
             QMessageBox.information(
                 self,

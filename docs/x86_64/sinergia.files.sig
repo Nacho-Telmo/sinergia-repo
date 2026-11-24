@@ -1,1 +1,0 @@
-sinergia.files.tar.gz.sig

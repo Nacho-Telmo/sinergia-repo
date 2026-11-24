@@ -54,18 +54,33 @@ done
 # 4. Actualizar la base de datos de Pacman
 echo ""
 echo "--------------------------------------------------"
-echo "⚙️  Actualizando base de datos pacman en docs/x86_64..."
+echo "⚙  Actualizando base de datos pacman en docs/x86_64..."
 echo "--------------------------------------------------"
 cd "$DOCS_DIR"
 
-# Limpiar bases de datos previas para evitar entradas huérfanas o obsoletas
-rm -f sinergia.db* sinergia.files*
+if ! compgen -G "*.pkg.tar.zst" > /dev/null; then
+    echo "❌ ERROR CRÍTICO: No se encontraron paquetes *.pkg.tar.zst en $DOCS_DIR" >&2
+    exit 1
+fi
 
-# Regenerar y firmar sinergia.db.tar.gz desde cero
-repo-add -s --key "$KEY_ID" sinergia.db.tar.gz *.pkg.tar.zst
+rm -f sinergia-repo.db* sinergia-repo.files* sinergia.db* sinergia.files*
+repo-add -n -s --key "$KEY_ID" sinergia-repo.db.tar.gz ./*.pkg.tar.zst
+ln -sf sinergia-repo.db.tar.gz sinergia-repo.db
+ln -sf sinergia-repo.files.tar.gz sinergia-repo.files
+ln -sf sinergia-repo.db.tar.gz.sig sinergia-repo.db.sig
 
-echo "✅ Base de datos re-generada y firmada en limpio."
+for pkg_file in ./*.pkg.tar.zst; do
+    real_size=$(stat -c "%s" "$pkg_file")
+    base_name=$(basename "$pkg_file")
+    pkg_id=$(echo "$base_name" | sed -E 's/^([^-]+(-[^-]+)*)-[^-]+\.pkg\.tar\.zst$/\1/')
+    db_csize=$(tar -xOzf sinergia-repo.db.tar.gz "${pkg_id}/desc" 2>/dev/null | awk '/^%CSIZE%$/{getline; print $0}')
+    if [ -z "$db_csize" ] || [ "$real_size" -ne "$db_csize" ]; then
+        echo "❌ ERROR CRÍTICO: Desfase de tamaño en $base_name (real=$real_size vs %CSIZE%=${db_csize:-ninguno})" >&2
+        exit 1
+    fi
+done
 
+echo "✅ Base de datos re-generada, firmada y verificada al byte (%CSIZE% OK)."
 # 5. Actualizar la web / catálogo de aplicaciones público
 echo ""
 echo "--------------------------------------------------"

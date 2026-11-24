@@ -97,7 +97,7 @@ echo "==> Configurando el repositorio sinergia..."
 curl -fsSL https://nacho-telmo.github.io/sinergia-repo/x86_64/sinergia-key.asc | sudo pacman-key --add -
 sudo pacman-key --lsign-key 33986859CBA9A0329EE9321E1AA165CC95EBE1F1
 
-if ! grep -q "^\[sinergia\]" /etc/pacman.conf; then
+if ! grep -q "^\[sinergia-repo\]" /etc/pacman.conf; then
     echo "==> Agregando [sinergia-repo] a pacman.conf..."
     sudo bash -c 'cat << EOF >> /etc/pacman.conf
 

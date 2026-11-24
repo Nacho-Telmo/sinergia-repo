@@ -361,7 +361,7 @@ class SinergiaDNSManager(QMainWindow):
             )
 
         if q_dev:
-            net_command = f"{cmd_nm} && (nmcli device reapply {q_dev} || nmcli con up {q_conn}) && {cmd_resolved}"
+            net_command = f"{cmd_nm} && nmcli con up {q_conn} && {cmd_resolved}"
         else:
             net_command = f"{cmd_nm} && nmcli con up {q_conn} && {cmd_resolved}"
 
@@ -392,11 +392,16 @@ class SinergiaDNSManager(QMainWindow):
                 "¡Éxito!",
                 f"Los servidores DNS se aplicaron correctamente en '{active_conn}' y las interfaces virtuales se sincronizaron.",
             )
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            detail = (e.stderr or e.stdout or "").strip()
+            msg = (
+                "No se pudieron aplicar los cambios. Es posible que se haya cancelado la autenticación o la contraseña sea incorrecta."
+                + (f"\n\nDetalle:\n{detail}" if detail else "")
+            )
             QMessageBox.critical(
                 self,
                 "Cancelado o Error",
-                "No se pudieron aplicar los cambios. Es posible que se haya cancelado la autenticación o la contraseña sea incorrecta.",
+                msg,
             )
 
 

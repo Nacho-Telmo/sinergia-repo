@@ -1,39 +1,49 @@
 #!/usr/bin/env python3
-import sys
+import re
+import shlex
 import subprocess
-from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout,
-    QLabel, QComboBox, QPushButton, QMessageBox, QFrame
-)
+import sys
 from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QFrame,
+    QLabel,
+    QMainWindow,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
-# Proveedores de DNS (enfocados exclusivamente en IPv4)
+# Proveedores de DNS (enfocados en IPv4)
 DNS_PROVIDERS = {
     "AdGuard DNS (Recomendado - Sin publicidad)": {
         "ipv4": ["94.140.14.14", "94.140.15.15"],
-        "desc": "Bloqueo automático de anuncios, rastreadores y protección de privacidad."
+        "desc": "Bloqueo automático de anuncios, rastreadores y protección de privacidad.",
     },
     "AdGuard DNS - Protección Familiar": {
         "ipv4": ["94.140.14.15", "94.140.15.16"],
-        "desc": "Bloqueo de contenido para adultos y control parental seguro."
+        "desc": "Bloqueo de contenido para adultos y control parental seguro.",
     },
     "Cloudflare (Rápido y Privado)": {
         "ipv4": ["1.1.1.1", "1.0.0.1"],
-        "desc": "Enfoque en velocidad extrema y política estricta de cero registro."
+        "desc": "Enfoque en velocidad extrema y política estricta de cero registro.",
     },
     "Google Public DNS": {
         "ipv4": ["8.8.8.8", "8.8.4.4"],
-        "desc": "Los servidores DNS tradicionales provistos por Google."
+        "desc": "Los servidores DNS tradicionales provistos por Google.",
     },
     "Quad9 (Seguridad y Malware)": {
         "ipv4": ["9.9.9.9", "149.112.112.112"],
-        "desc": "Bloqueo activo de sitios de phishing y dominios maliciosos."
+        "desc": "Bloqueo activo de sitios de phishing y dominios maliciosos.",
     },
     "Automático (DHCP del Router / ISP)": {
         "ipv4": [],
-        "desc": "Restaura la configuración predeterminada provista por tu red."
-    }
+        "desc": "Restaura la configuración predeterminada provista por tu red.",
+    },
 }
+
 
 class SinergiaDNSManager(QMainWindow):
     def __init__(self):
@@ -60,12 +70,16 @@ class SinergiaDNSManager(QMainWindow):
 
         # Estado de la red y DNS actuales en uso
         info_frame = QFrame()
-        info_frame.setStyleSheet("background: transparent; border: 1px solid rgba(127, 140, 141, 0.3); border-radius: 6px;")
+        info_frame.setStyleSheet(
+            "background: transparent; border: 1px solid rgba(127, 140, 141, 0.3); border-radius: 6px;"
+        )
         info_layout = QVBoxLayout(info_frame)
         info_layout.setContentsMargins(14, 12, 14, 12)
         info_layout.setSpacing(8)
 
-        self.lbl_connection = QLabel(f"<b>Conexión activa:</b> {self.get_active_connection() or 'Ninguna detectada'}")
+        self.lbl_connection = QLabel(
+            f"<b>Conexión activa:</b> {self.get_active_connection() or 'Ninguna detectada'}"
+        )
         self.lbl_connection.setWordWrap(True)
         self.lbl_connection.setStyleSheet("color: #7f8c8d; font-size: 12px;")
         info_layout.addWidget(self.lbl_connection)
@@ -89,7 +103,9 @@ class SinergiaDNSManager(QMainWindow):
 
         # Tarjeta de descripción del proveedor
         self.desc_frame = QFrame()
-        self.desc_frame.setStyleSheet("background: transparent; border: 1px solid rgba(127, 140, 141, 0.3); border-radius: 6px;")
+        self.desc_frame.setStyleSheet(
+            "background: transparent; border: 1px solid rgba(127, 140, 141, 0.3); border-radius: 6px;"
+        )
         desc_layout = QVBoxLayout(self.desc_frame)
         desc_layout.setContentsMargins(14, 12, 14, 12)
 
@@ -119,16 +135,53 @@ class SinergiaDNSManager(QMainWindow):
         self.btn_apply.clicked.connect(self.apply_selected_dns)
         layout.addWidget(self.btn_apply)
 
-    def get_active_connection(self):
-        """Detecta el nombre de la conexión de red activa mediante NetworkManager."""
+    def _is_resolved_active(self) -> bool:
+        try:
+            res = subprocess.run(
+                ["systemctl", "is-active", "--quiet", "systemd-resolved"],
+                check=False,
+            )
+            return res.returncode == 0
+        except Exception:
+            return False
+
+    def _get_default_route_device(self) -> str | None:
         try:
             output = subprocess.check_output(
-                ["nmcli", "-t", "-f", "NAME,STATE", "connection", "show", "--active"],
-                universal_newlines=True
+                ["ip", "-o", "route", "show", "default"],
+                universal_newlines=True,
+                stderr=subprocess.DEVNULL,
             )
-            for line in output.strip().split("\n"):
-                if "activated" in line:
-                    return line.split(":")[0]
+            for line in output.splitlines():
+                parts = line.split()
+                if "dev" in parts:
+                    idx = parts.index("dev")
+                    if idx + 1 < len(parts):
+                        return parts[idx + 1]
+        except Exception:
+            pass
+        return None
+
+    def get_active_connection(self):
+        """Detecta el nombre de la conexión de red activa mediante NetworkManager."""
+        default_dev = self._get_default_route_device()
+        try:
+            output = subprocess.check_output(
+                ["nmcli", "-t", "-f", "NAME,DEVICE,STATE", "connection", "show", "--active"],
+                universal_newlines=True,
+            )
+            fallback_conn = None
+            for line in output.strip().splitlines():
+                parts = line.split(":")
+                if len(parts) >= 3:
+                    name, dev, state = parts[0], parts[1], parts[2]
+                    if dev in ("lo", "virbr0") or dev.startswith(("docker", "br-", "veth")):
+                        continue
+                    if default_dev and dev == default_dev:
+                        return name
+                    if not fallback_conn and state == "activated":
+                        fallback_conn = name
+            return fallback_conn
         except Exception:
             pass
         return None
@@ -138,16 +191,57 @@ class SinergiaDNSManager(QMainWindow):
         try:
             output = subprocess.check_output(
                 ["nmcli", "-t", "-f", "NAME,DEVICE", "connection", "show", "--active"],
-                universal_newlines=True
+                universal_newlines=True,
             )
-            for line in output.strip().split("\n"):
+            for line in output.strip().splitlines():
                 if line.startswith(f"{conn_name}:"):
-                    parts = line.split(":")
+                    parts = line.split(":", 1)
                     if len(parts) > 1 and parts[1].strip():
                         return parts[1].strip()
         except Exception:
             pass
         return None
+
+    def _get_resolved_active_dns(self, device: str | None) -> list[str]:
+        """Obtiene los servidores DNS activos reportados por systemd-resolved."""
+        if not self._is_resolved_active():
+            return []
+        try:
+            output = subprocess.check_output(
+                ["resolvectl", "status"],
+                universal_newlines=True,
+                stderr=subprocess.DEVNULL,
+            )
+            ip_pattern = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
+            # Buscar primero en el bloque de la interfaz activa
+            if device:
+                link_match = re.search(
+                    rf"Link \d+ \({re.escape(device)}\):.*?(?=\nLink \d+|\Z)",
+                    output,
+                    re.S,
+                )
+                if link_match:
+                    block = link_match.group(0)
+                    for line in block.splitlines():
+                        if "Current DNS Server:" in line:
+                            m = ip_pattern.search(line)
+                            if m:
+                                return [m.group(0)]
+                    for line in block.splitlines():
+                        if "DNS Servers:" in line:
+                            ips = ip_pattern.findall(line)
+                            if ips:
+                                return ips
+
+            # Fallback al servidor actual global si no se encontró en el enlace
+            for line in output.splitlines():
+                if "Current DNS Server:" in line:
+                    m = ip_pattern.search(line)
+                    if m:
+                        return [m.group(0)]
+        except Exception:
+            pass
+        return []
 
     def get_current_dns_servers(self):
         """Consulta los DNS actuales y los cruza con DNS_PROVIDERS para mostrar el nombre amigable."""
@@ -155,36 +249,44 @@ class SinergiaDNSManager(QMainWindow):
         if not conn_name:
             return "Sin conexión activa"
 
-        raw_dns = ""
+        device = self.get_active_device(conn_name)
+        found_ips = []
+
+        # 1. Consultar DNS activos en systemd-resolved si está en uso
+        resolved_ips = self._get_resolved_active_dns(device)
+        if resolved_ips:
+            found_ips = resolved_ips
+
+        # 2. Consultar configuración en NetworkManager
+        nm_dns = ""
         try:
             output = subprocess.check_output(
                 ["nmcli", "-t", "-f", "ipv4.dns", "con", "show", conn_name],
-                universal_newlines=True
+                universal_newlines=True,
             )
-            for line in output.strip().split("\n"):
+            for line in output.strip().splitlines():
                 if line.startswith("ipv4.dns:"):
-                    raw_dns = line.split(":", 1)[1].strip()
+                    nm_dns = line.split(":", 1)[1].strip()
         except Exception:
             pass
 
-        if not raw_dns:
+        if not found_ips and nm_dns:
+            found_ips = [ip.strip() for ip in nm_dns.replace(",", " ").split() if ip.strip()]
+
+        # 3. Fallback a /etc/resolv.conf
+        if not found_ips:
             try:
-                with open("/etc/resolv.conf", "r") as f:
-                    dns_list = []
+                with open("/etc/resolv.conf", "r", encoding="utf-8") as f:
                     for line in f:
                         if line.startswith("nameserver"):
                             parts = line.split()
                             if len(parts) > 1 and parts[1] != "127.0.0.53":
-                                dns_list.append(parts[1])
-                    if dns_list:
-                        raw_dns = " ".join(dns_list)
+                                found_ips.append(parts[1])
             except Exception:
                 pass
 
-        if not raw_dns:
+        if not found_ips and not nm_dns:
             return "Automático (DHCP / ISP)"
-
-        found_ips = [ip.strip() for ip in raw_dns.replace(",", " ").split() if ip.strip()]
 
         matched_name = None
         for name, data in DNS_PROVIDERS.items():
@@ -195,8 +297,10 @@ class SinergiaDNSManager(QMainWindow):
 
         if matched_name:
             return f"<b>{matched_name}</b> ({', '.join(found_ips)})"
+        elif found_ips:
+            return f"Personalizado / Red ({', '.join(found_ips)})"
         else:
-            return f"Personalizado ({', '.join(found_ips)})"
+            return "Automático (DHCP / ISP)"
 
     def update_description(self):
         """Muestra los detalles de IPv4 del proveedor seleccionado en el combo."""
@@ -211,7 +315,7 @@ class SinergiaDNSManager(QMainWindow):
         self.lbl_desc.setText(text)
 
     def apply_selected_dns(self):
-        """Aplica la configuración exclusivamente en IPv4, reaplica en caliente y restaura el puente de VMs."""
+        """Aplica la configuración DNS, evita que DHCP/IPv6 del ISP la pise y sincroniza resolved/VMs."""
         conn_name = self.get_active_connection()
         if not conn_name:
             QMessageBox.warning(self, "Error de red", "No se encontró ninguna conexión de red activa.")
@@ -219,53 +323,77 @@ class SinergiaDNSManager(QMainWindow):
 
         selected_key = self.combo_providers.currentText()
         provider = DNS_PROVIDERS.get(selected_key)
-        ipv4_dns = " ".join(provider["ipv4"])
+        ipv4_list = provider.get("ipv4", [])
+        ipv4_dns = " ".join(ipv4_list)
 
-        # Recopilar todas las IPs conocidas para limpiar perfiles anteriores en modo automático
-        all_ipv4 = []
-        for p_data in DNS_PROVIDERS.values():
-            all_ipv4.extend(p_data.get("ipv4", []))
-
-        # Configurar exclusivamente IPv4 (sin tocar IPv6)
-        if ipv4_dns:
-            cmd_ipv4 = f'nmcli con mod "{conn_name}" ipv4.dns "{ipv4_dns}" ipv4.ignore-auto-dns yes'
-        else:
-            remove_args_v4 = " ".join([f'-ipv4.dns "{ip}"' for ip in set(all_ipv4)])
-            cmd_ipv4 = f'nmcli con mod "{conn_name}" {remove_args_v4} ipv4.ignore-auto-dns no'
-
-        # Detectar el dispositivo activo
+        q_conn = shlex.quote(conn_name)
         device = self.get_active_device(conn_name)
+        q_dev = shlex.quote(device) if device else ""
 
-        # Comando base de red en caliente
-        if device:
-            net_command = f'{cmd_ipv4} && nmcli device reapply "{device}"'
+        if ipv4_dns:
+            q_dns = shlex.quote(ipv4_dns)
+            cmd_nm = (
+                f"nmcli con mod {q_conn} "
+                f"ipv4.dns {q_dns} ipv4.ignore-auto-dns yes "
+                f"ipv6.ignore-auto-dns yes"
+            )
+            cmd_resolved = (
+                f"if systemctl is-active --quiet systemd-resolved; then "
+                f"{f'resolvectl dns {q_dev} {ipv4_dns} && ' if q_dev else ''}"
+                f"resolvectl flush-caches; "
+                f"fi"
+            )
         else:
-            net_command = f'{cmd_ipv4} && nmcli con up "{conn_name}"'
+            all_ipv4 = []
+            for p_data in DNS_PROVIDERS.values():
+                all_ipv4.extend(p_data.get("ipv4", []))
+            remove_args_v4 = " ".join([f"-ipv4.dns {shlex.quote(ip)}" for ip in set(all_ipv4)])
+            cmd_nm = (
+                f"nmcli con mod {q_conn} "
+                f"{remove_args_v4} ipv4.ignore-auto-dns no "
+                f"ipv6.ignore-auto-dns no"
+            )
+            cmd_resolved = (
+                f"if systemctl is-active --quiet systemd-resolved; then "
+                f"{f'resolvectl revert {q_dev} && ' if q_dev else ''}"
+                f"resolvectl flush-caches; "
+                f"fi"
+            )
+
+        if q_dev:
+            net_command = f"{cmd_nm} && (nmcli device reapply {q_dev} || nmcli con up {q_conn}) && {cmd_resolved}"
+        else:
+            net_command = f"{cmd_nm} && nmcli con up {q_conn} && {cmd_resolved}"
 
         # Hook inteligente para KVM/libvirt: si existe la red 'default', la recarga para restaurar el NAT de las VMs
-        libvirt_fix = ' && (virsh net-info default &>/dev/null && (virsh net-destroy default && virsh net-start default) || true)'
+        libvirt_fix = (
+            " && (virsh net-info default &>/dev/null && "
+            "(virsh net-destroy default && virsh net-start default) || true)"
+        )
 
-        full_command = f'{net_command}{libvirt_fix}'
+        full_command = f"{net_command}{libvirt_fix}"
 
         try:
-            # Ejecución segura con privilegios administrativos
             subprocess.run(["pkexec", "bash", "-c", full_command], check=True)
 
-            # Refrescar etiqueta en pantalla
+            # Refrescar etiquetas en pantalla
+            active_conn = self.get_active_connection() or conn_name
+            self.lbl_connection.setText(f"<b>Conexión activa:</b> {active_conn}")
             updated_dns_named = self.get_current_dns_servers()
             self.lbl_current_dns.setText(f"<b>DNS en uso actual:</b> {updated_dns_named}")
 
             QMessageBox.information(
                 self,
                 "¡Éxito!",
-                f"Los servidores DNS se aplicaron correctamente en '{conn_name}' y las interfaces virtuales se sincronizaron."
+                f"Los servidores DNS se aplicaron correctamente en '{active_conn}' y las interfaces virtuales se sincronizaron.",
             )
         except subprocess.CalledProcessError:
             QMessageBox.critical(
                 self,
                 "Cancelado o Error",
-                "No se pudieron aplicar los cambios. Es posible que se haya cancelado la autenticación o la contraseña sea incorrecta."
+                "No se pudieron aplicar los cambios. Es posible que se haya cancelado la autenticación o la contraseña sea incorrecta.",
             )
+
 
 if __name__ == "__main__":
     try:
@@ -275,8 +403,9 @@ if __name__ == "__main__":
         window = SinergiaDNSManager()
         window.show()
         sys.exit(app.exec())
-    except Exception as e:
+    except Exception:
         import traceback
+
         print("CRITICAL ERROR:", file=sys.stderr)
         traceback.print_exc()
         sys.exit(1)

@@ -347,12 +347,12 @@ class SinergiaDNSManager(QMainWindow):
             all_ipv4 = []
             for p_data in DNS_PROVIDERS.values():
                 all_ipv4.extend(p_data.get("ipv4", []))
-            remove_args_v4 = " ".join([f"-ipv4.dns {shlex.quote(ip)}" for ip in set(all_ipv4)])
-            cmd_nm = (
-                f"nmcli con mod {q_conn} "
-                f"{remove_args_v4} ipv4.ignore-auto-dns no "
-                f"ipv6.ignore-auto-dns no"
-            )
+            remove_args_v4 = " ".join([f"-ipv4.dns {shlex.quote(ip)}" for ip in sorted(set(all_ipv4))])
+            nm_parts = [f"nmcli con mod {q_conn}"]
+            if remove_args_v4:
+                nm_parts.append(remove_args_v4)
+            nm_parts.extend(["ipv4.ignore-auto-dns no", "ipv6.ignore-auto-dns no"])
+            cmd_nm = " ".join(nm_parts)
             cmd_resolved = (
                 f"if systemctl is-active --quiet systemd-resolved; then "
                 f"{f'resolvectl revert {q_dev} && ' if q_dev else ''}"
@@ -374,7 +374,12 @@ class SinergiaDNSManager(QMainWindow):
         full_command = f"{net_command}{libvirt_fix}"
 
         try:
-            subprocess.run(["pkexec", "bash", "-c", full_command], check=True)
+            subprocess.run(
+                ["pkexec", "bash", "-c", full_command],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
 
             # Refrescar etiquetas en pantalla
             active_conn = self.get_active_connection() or conn_name

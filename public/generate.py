@@ -418,7 +418,7 @@ def build_catalog():
                     <div class="code-wrapper">
                         <pre id="code-3">sudo nano /etc/pacman.conf
 
-[sinergia]
+[sinergia-repo]
 SigLevel = Required DatabaseOptional
 Server = https://nacho-telmo.github.io/sinergia-repo/x86_64/</pre>
                         <button class="btn-copy" onclick="copyCode('code-3', this)">Copiar</button>

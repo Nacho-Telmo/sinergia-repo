@@ -42,7 +42,7 @@ sudo nano /etc/pacman.conf
 Añade las siguientes líneas **al final** del archivo:
 
 ```ini
-[sinergia]
+[sinergia-repo]
 SigLevel = Required DatabaseOptional
 Server = https://nacho-telmo.github.io/sinergia-repo/x86_64/
 ```

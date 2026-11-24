@@ -52,7 +52,14 @@ class SafeHandler(http.server.SimpleHTTPRequestHandler):
         super().log_message(format, *args)
 
 
+class ReusableThreadingTCPServer(socketserver.ThreadingTCPServer):
+    allow_reuse_address = True
+
+
 class ServerWorker(QThread):
+    error_occurred = pyqtSignal(str)
+    port_ready = pyqtSignal(int)
+
     def __init__(self, file_path, port=8080):
         super().__init__()
         self.file_path = file_path
@@ -62,11 +69,26 @@ class ServerWorker(QThread):
     def run(self):
         os.chdir(self.file_path.parent)
         Handler = SafeHandler
+        bound_port = None
+        for candidate in range(self.port, self.port + 15):
+            try:
+                self.httpd = ReusableThreadingTCPServer(("0.0.0.0", candidate), Handler)
+                bound_port = candidate
+                break
+            except OSError:
+                continue
+
+        if not self.httpd or bound_port is None:
+            self.error_occurred.emit(f"No se pudo abrir ningún puerto entre {self.port} y {self.port + 14}.")
+            return
+
+        self.port = bound_port
+        self.port_ready.emit(bound_port)
         try:
-            with socketserver.ThreadingTCPServer(("", self.port), Handler) as self.httpd:
+            with self.httpd:
                 self.httpd.serve_forever()
-        except Exception:
-            pass
+        except Exception as e:
+            self.error_occurred.emit(str(e))
 
     def stop(self):
         if self.httpd:

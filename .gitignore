@@ -9,3 +9,5 @@ PKGBUILDs/sinergia-webapp-manager/*.tar.gz
 # Ignorar carpetas temporales de makepkg (src y pkg en cualquier PKGBUILD)
 PKGBUILDs/*/src/
 PKGBUILDs/*/pkg/
+*.bak
+__pycache__/

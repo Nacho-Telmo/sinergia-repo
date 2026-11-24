@@ -300,21 +300,41 @@ class LocalShareApp(QWidget):
 
         # Iniciar servidor HTTP en segundo plano con SafeHandler
         self.server_thread = ServerWorker(self.input_path, self.port)
-        self.server_thread.start()
+        self.server_thread.error_occurred.connect(self.on_server_error)
 
         if self.chk_remote.isChecked():
-            self.show_default_qr_message("Conectando con Cloudflare...")
-            self.cloudflare_thread = CloudflareWorker(self.port)
-            self.cloudflare_thread.url_ready.connect(lambda base_url: self.on_cloudflare_ready(base_url, encoded_filename))
-            self.cloudflare_thread.start()
+            self.server_thread.port_ready.connect(self.start_cloudflare_tunnel)
+            self.server_thread.start()
         else:
-            local_ip = self.get_local_ip()
-            file_url = f"http://{local_ip}:{self.port}/{encoded_filename}"
-            self.generate_qr(file_url)
+            self.server_thread.port_ready.connect(
+                lambda actual_port, fname=encoded_filename: self.on_local_server_ready(actual_port, fname)
+            )
+            self.server_thread.start()
 
         self.btn_stop.setEnabled(True)
         self.drop_area.setEnabled(False)
         self.chk_remote.setEnabled(False)
+
+
+    def on_local_server_ready(self, actual_port, encoded_filename):
+        self.port = actual_port
+        local_ip = self.get_local_ip()
+        file_url = f"http://{local_ip}:{self.port}/{encoded_filename}"
+        self.generate_qr(file_url)
+
+    def start_cloudflare_tunnel(self, actual_port):
+        self.port = actual_port
+        encoded_filename = urllib.parse.quote(self.input_path.name) if self.input_path else ""
+        self.show_default_qr_message("Conectando con Cloudflare...")
+        self.cloudflare_thread = CloudflareWorker(self.port)
+        self.cloudflare_thread.url_ready.connect(lambda base_url: self.on_cloudflare_ready(base_url, encoded_filename))
+        self.cloudflare_thread.start()
+
+    def on_server_error(self, message):
+        self.show_default_qr_message(f"Error de red: {message}")
+        self.btn_stop.setEnabled(True)
+        self.drop_area.setEnabled(True)
+        self.chk_remote.setEnabled(True)
 
     def on_cloudflare_ready(self, base_url, encoded_filename):
         public_url = f"{base_url}/{encoded_filename}"

@@ -39,7 +39,7 @@ if [ -f /etc/pacman.d/chaotic-mirrorlist ]; then
 fi
 
 echo "" >> /etc/pacman.conf
-echo "[sinergia]" >> /etc/pacman.conf
+echo "[sinergia-repo]" >> /etc/pacman.conf
 echo "SigLevel = Required DatabaseOptional" >> /etc/pacman.conf
 echo "Server = https://Nacho-Telmo.github.io/sinergia-repo/\$arch" >> /etc/pacman.conf
 

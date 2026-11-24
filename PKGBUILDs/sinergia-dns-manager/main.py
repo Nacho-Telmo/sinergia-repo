@@ -330,6 +330,16 @@ class SinergiaDNSManager(QMainWindow):
         device = self.get_active_device(conn_name)
         q_dev = shlex.quote(device) if device else ""
 
+        cmd_networkd_fix = (
+            "if systemctl is-active --quiet NetworkManager && systemctl is-active --quiet systemd-networkd; then "
+            "systemctl disable --now systemd-networkd.service systemd-networkd.socket "
+            "systemd-networkd-varlink.socket systemd-networkd-varlink-metrics.socket "
+            "systemd-networkd-resolve-hook.socket >/dev/null 2>&1 || true; "
+            "mkdir -p /etc/systemd/network.bak && "
+            "mv /etc/systemd/network/20-*.network /etc/systemd/network.bak/ 2>/dev/null || true; "
+            "fi"
+        )
+
         if ipv4_dns:
             q_dns = shlex.quote(ipv4_dns)
             cmd_nm = (
@@ -339,6 +349,9 @@ class SinergiaDNSManager(QMainWindow):
             )
             cmd_resolved = (
                 f"if systemctl is-active --quiet systemd-resolved; then "
+                f"mkdir -p /etc/systemd/resolved.conf.d && "
+                f"printf '[Resolve]\nDNS={ipv4_dns}\nFallbackDNS=\n' > /etc/systemd/resolved.conf.d/99-sinergia-dns.conf && "
+                f"systemctl restart systemd-resolved && "
                 f"{f'resolvectl dns {q_dev} {ipv4_dns} && ' if q_dev else ''}"
                 f"resolvectl flush-caches; "
                 f"fi"
@@ -355,15 +368,14 @@ class SinergiaDNSManager(QMainWindow):
             cmd_nm = " ".join(nm_parts)
             cmd_resolved = (
                 f"if systemctl is-active --quiet systemd-resolved; then "
+                f"rm -f /etc/systemd/resolved.conf.d/99-sinergia-dns.conf && "
+                f"systemctl restart systemd-resolved && "
                 f"{f'resolvectl revert {q_dev} && ' if q_dev else ''}"
                 f"resolvectl flush-caches; "
                 f"fi"
             )
 
-        if q_dev:
-            net_command = f"{cmd_nm} && nmcli con up {q_conn} && {cmd_resolved}"
-        else:
-            net_command = f"{cmd_nm} && nmcli con up {q_conn} && {cmd_resolved}"
+        net_command = f"{cmd_networkd_fix} && {cmd_nm} && nmcli con up {q_conn} && {cmd_resolved}"
 
         # Hook inteligente para KVM/libvirt: si existe la red 'default', la recarga para restaurar el NAT de las VMs
         libvirt_fix = (

@@ -1,4 +1,4 @@
-#!/usr/init/env python3
+#!/usr/bin/env python3
 import sys
 import subprocess
 import shutil
@@ -104,13 +104,14 @@ class SinergiaStore(QMainWindow):
             }
         """)
 
-        # Lista de aplicaciones actualizada con Thunderbird, OBS Studio, Obsidian y KeePassXC
+        # Lista de aplicaciones actualizada con ZapZap desde Chaotic-AUR
         self.apps = [
             ("🌐 Vivaldi", "Navegador web avanzado y personalizable", "vivaldi", "sudo pacman -S --noconfirm vivaldi", "sudo pacman -Rns --noconfirm vivaldi", "Internet", "Arch Extra"),
             ("🌐 Chromium", "Navegador web rápido y de código abierto basado en Blink", "chromium", "sudo pacman -S --noconfirm chromium", "sudo pacman -Rns --noconfirm chromium", "Internet", "Arch Extra"),
             ("🦁 Brave", "Navegador web enfocado en la privacidad", "brave-bin", "sudo pacman -S --noconfirm brave-bin", "sudo pacman -Rns --noconfirm brave-bin", "Internet", "Chaotic-AUR"),
             ("📧 Thunderbird", "Cliente de correo electrónico libre y robusto", "thunderbird", "sudo pacman -S --noconfirm thunderbird", "sudo pacman -Rns --noconfirm thunderbird", "Internet", "Arch Extra"),
             ("🔒 Signal", "Mensajería privada rápida y segura", "signal-desktop", "sudo pacman -S --noconfirm signal-desktop", "sudo pacman -Rns --noconfirm signal-desktop", "Internet", "Arch Extra"),
+            ("💬 ZapZap", "Cliente de escritorio para WhatsApp", "zapzap", "sudo pacman -S --noconfirm zapzap", "sudo pacman -Rns --noconfirm zapzap", "Internet", "Chaotic-AUR"),
             ("💬 Discord", "Chat de voz y comunidades gamer/dev", "discord", "sudo pacman -S --noconfirm discord", "sudo pacman -Rns --noconfirm discord", "Gamer", "Arch Extra"),
             ("🎮 Heroic Launcher", "Lanzador de juegos de Epic, GOG y Amazon", "heroic-games-launcher-bin", "yay -S --noconfirm heroic-games-launcher-bin", "yay -R --noconfirm heroic-games-launcher-bin", "Gamer", "AUR"),
             ("🎵 Spotify", "Música y streaming en línea", "spotify", "yay -S --noconfirm spotify", "yay -R --noconfirm spotify", "Multimedia", "Chaotic-AUR"),
@@ -466,3 +467,9 @@ if __name__ == "__main__":
     window = SinergiaStore()
     window.show()
     sys.exit(app.exec())
+```[cite: 1]
+
+Para comprobarlo rápido antes de empaquetarlo:
+
+```bash
+python3 -m py_compile main.py

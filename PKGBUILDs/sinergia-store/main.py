@@ -467,7 +467,3 @@ if __name__ == "__main__":
     window = SinergiaStore()
     window.show()
     sys.exit(app.exec())
-
-Para comprobarlo rápido antes de empaquetarlo:
-
-python3 -m py_compile main.py

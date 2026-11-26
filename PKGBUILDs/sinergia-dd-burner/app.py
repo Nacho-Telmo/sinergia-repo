@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import os
 import subprocess
@@ -6,6 +7,7 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QPushButton, QFileDialog, QComboBox, QProgressBar,
                              QLabel, QMessageBox)
 from PyQt6.QtCore import QThread, pyqtSignal, Qt
+
 
 class BurnWorker(QThread):
     progress_changed = pyqtSignal(int)
@@ -150,15 +152,15 @@ class DDBurnerPro(QWidget):
             QPushButton:pressed {
                 background-color: #585b70;
             }
-QPushButton#BurnButton {
-    background-color: #a6e3a1;
-    color: #11111b !important;
-    font-weight: bold;
-    font-size: 14px;
-    height: 40px;
-    border-radius: 6px;
-    border: 1px solid #1e1e2e;
-}
+            QPushButton#BurnButton {
+                background-color: #a6e3a1;
+                color: #11111b !important;
+                font-weight: bold;
+                font-size: 14px;
+                height: 40px;
+                border-radius: 6px;
+                border: 1px solid #1e1e2e;
+            }
             QPushButton#BurnButton:hover {
                 background-color: #b4befe;
             }
@@ -286,8 +288,12 @@ QPushButton#BurnButton {
         self.refresh_drives()
 
 
-if __name__ == "__main__":
+def main():
     app = QApplication(sys.argv)
     gui = DDBurnerPro()
     gui.show()
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()

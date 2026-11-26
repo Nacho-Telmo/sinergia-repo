@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Sinergia DD Burner
+Comment=Grabador de imágenes ISO/IMG en unidades USB mediante dd
+Exec=sinergia-dd-burner
+Icon=sinergia-dd-burner
+Terminal=false
+Type=Application
+Categories=System;Utility;
+Keywords=iso;usb;dd;burner;image;pendrive;booteable;
+StartupNotify=true

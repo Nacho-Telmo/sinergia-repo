@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 from datetime import datetime
+from pathlib import Path
 import shutil
 import subprocess
 import sys
 from PyQt6.QtCore import QEvent, QProcess, Qt
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -20,11 +21,25 @@ from PyQt6.QtWidgets import (
 )
 
 
-class SinergiaBtPrint(QMainWindow):
+def cargar_icono_app() -> QIcon:
+    candidatos = [
+        Path("/usr/share/icons/hicolor/scalable/apps/sinergia-perifericos.svg"),
+        Path(__file__).resolve().parent / "logo.svg",
+    ]
+    for ruta in candidatos:
+        if ruta.is_file():
+            icono = QIcon(str(ruta))
+            if not icono.isNull():
+                return icono
+    return QIcon.fromTheme("preferences-system")
+
+
+class SinergiaPerifericos(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setProperty("class", "sinergia-bt-print")
-        self.setWindowTitle("Sinergia — Bluetooth e Impresoras")
+        self.setProperty("class", "sinergia-perifericos")
+        self.setWindowTitle("Sinergia Periféricos")
+        self.setWindowIcon(cargar_icono_app())
         self.resize(620, 560)
 
         self.process = QProcess(self)
@@ -43,7 +58,7 @@ class SinergiaBtPrint(QMainWindow):
         layout.setContentsMargins(20, 18, 20, 18)
         layout.setSpacing(12)
 
-        titulo = QLabel("Sinergia Linux — Bluetooth e Impresoras")
+        titulo = QLabel("Sinergia Periféricos — Bluetooth e Impresoras")
         titulo.setFont(QFont("Sans Serif", 14, QFont.Weight.Bold))
         titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(titulo)
@@ -338,8 +353,12 @@ class SinergiaBtPrint(QMainWindow):
 
 
 if __name__ == "__main__":
-    QApplication.setDesktopFileName("sinergia-bt-print")
+    QApplication.setDesktopFileName("sinergia-perifericos")
     app = QApplication(sys.argv)
-    win = SinergiaBtPrint()
+    app.setApplicationName("sinergia-perifericos")
+    icono = cargar_icono_app()
+    if not icono.isNull():
+        app.setWindowIcon(icono)
+    win = SinergiaPerifericos()
     win.show()
     sys.exit(app.exec())

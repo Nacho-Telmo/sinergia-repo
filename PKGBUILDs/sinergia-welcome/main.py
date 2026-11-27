@@ -30,6 +30,7 @@ from PyQt6.QtWidgets import (
 AUTOSTART_PATH = os.path.expanduser(
     "~/.config/autostart/sinergia-welcome.desktop"
 )
+SYSTEM_AUTOSTART_PATH = "/etc/xdg/autostart/sinergia-welcome.desktop"
 
 
 class SinergiaWelcome(QMainWindow):
@@ -211,22 +212,18 @@ class SinergiaWelcome(QMainWindow):
     main_layout.addStretch()
 
     # Checkbox autostart
-    autostart_exists = os.path.exists(AUTOSTART_PATH)
-    if (
-        not os.path.exists(os.path.dirname(AUTOSTART_PATH))
-        and not autostart_exists
+    if not os.path.exists(AUTOSTART_PATH) and not os.path.exists(
+        SYSTEM_AUTOSTART_PATH
     ):
       try:
-        os.makedirs(os.path.dirname(AUTOSTART_PATH), exist_ok=True)
-        self.crear_archivo_autostart()
-        autostart_exists = True
+        self.crear_archivo_autostart(hidden=False)
       except Exception as e:
         print(f"No se pudo crear el autostart por defecto: {e}")
 
     self.chk_autostart = QCheckBox(
         "Mostrar esta ventana al iniciar el sistema"
     )
-    self.chk_autostart.setChecked(autostart_exists)
+    self.chk_autostart.setChecked(self.is_autostart_enabled())
     self.chk_autostart.toggled.connect(self.toggle_autostart)
     main_layout.addWidget(self.chk_autostart)
 
@@ -465,25 +462,43 @@ class SinergiaWelcome(QMainWindow):
     except Exception as e:
       print(f"Error al lanzar app: {e}")
 
-  def crear_archivo_autostart(self):
-    content = """[Desktop Entry]
-Type=Application
-Name=Sinergia Welcome
-Exec=sinergia-welcome
-Icon=sinergia-welcome
-Terminal=false
-Categories=Utility;
-"""
+  def is_autostart_enabled(self):
+    if os.path.exists(AUTOSTART_PATH):
+      try:
+        with open(AUTOSTART_PATH, "r", encoding="utf-8") as f:
+          for line in f:
+            if line.strip().lower() == "hidden=true":
+              return False
+        return True
+      except Exception:
+        return True
+    return os.path.exists(SYSTEM_AUTOSTART_PATH)
+
+  def crear_archivo_autostart(self, hidden=False):
+    os.makedirs(os.path.dirname(AUTOSTART_PATH), exist_ok=True)
+    hidden_line = "Hidden=true\n" if hidden else ""
+    content = (
+        "[Desktop Entry]\n"
+        "Type=Application\n"
+        "Name=Sinergia Welcome\n"
+        "Exec=/usr/bin/sinergia-welcome\n"
+        "Icon=sinergia-welcome\n"
+        "Terminal=false\n"
+        "Categories=Utility;\n"
+        "X-KDE-autostart-phase=2\n"
+        f"{hidden_line}"
+    )
     with open(AUTOSTART_PATH, "w", encoding="utf-8") as f:
       f.write(content)
 
   @pyqtSlot(bool)
   def toggle_autostart(self, checked):
     if checked:
-      os.makedirs(os.path.dirname(AUTOSTART_PATH), exist_ok=True)
-      self.crear_archivo_autostart()
+      self.crear_archivo_autostart(hidden=False)
     else:
-      if os.path.exists(AUTOSTART_PATH):
+      if os.path.exists(SYSTEM_AUTOSTART_PATH):
+        self.crear_archivo_autostart(hidden=True)
+      elif os.path.exists(AUTOSTART_PATH):
         os.remove(AUTOSTART_PATH)
 
 

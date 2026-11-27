@@ -1,7 +1,7 @@
 # Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
 pkgname=sinergia-perifericos
 pkgver=1.0.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Herramienta gráfica en PyQt6 para instalar y activar Bluetooth e impresión en SinergiaLinux"
 arch=('any')
 url="https://github.com/Nacho-Telmo/sinergia-perifericos"

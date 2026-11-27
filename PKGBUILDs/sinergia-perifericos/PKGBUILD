@@ -1,0 +1,35 @@
+# Maintainer: Nacho Telmo <sinergia.comunidad.linuxera@gmail.com>
+pkgname=sinergia-perifericos
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Herramienta gráfica en PyQt6 para instalar y activar Bluetooth e impresión en SinergiaLinux"
+arch=('any')
+url="https://github.com/Nacho-Telmo/sinergia-perifericos"
+license=('GPL-3.0-or-later')
+depends=('python' 'python-pyqt6' 'polkit' 'bash')
+optdepends=(
+    'bluez: soporte base de Bluetooth'
+    'bluez-utils: utilidades de línea de comandos para Bluetooth'
+    'blueman: gestor gráfico de Bluetooth'
+    'cups: servidor de impresión CUPS'
+    'cups-pdf: impresora virtual PDF'
+    'print-manager: módulo de impresoras en Preferencias de KDE Plasma'
+    'system-config-printer: configurador gráfico de impresoras'
+    'hplip: controladores y utilidades para impresoras HP'
+)
+source=(
+    "main.py"
+    "sinergia-perifericos.desktop"
+    "logo.svg"
+)
+sha256sums=(
+    'SKIP'
+    'SKIP'
+    'SKIP'
+)
+
+package() {
+    install -Dm755 "${srcdir}/main.py" "${pkgdir}/usr/bin/${pkgname}"
+    install -Dm644 "${srcdir}/sinergia-perifericos.desktop" "${pkgdir}/usr/share/applications/${pkgname}.desktop"
+    install -Dm644 "${srcdir}/logo.svg" "${pkgdir}/usr/share/icons/hicolor/scalable/apps/${pkgname}.svg"
+}

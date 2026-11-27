@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e242b" />
+      <stop offset="100%" stop-color="#101418" />
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#26c6da" />
+      <stop offset="100%" stop-color="#00838f" />
+    </linearGradient>
+  </defs>
+
+  
+  <circle cx="128" cy="128" r="118" fill="url(#bgGrad)" stroke="url(#cyanGrad)" stroke-width="8" />
+  <circle cx="128" cy="128" r="106" fill="none" stroke="#00acc1" stroke-opacity="0.25" stroke-width="2" />
+
+  
+  <line x1="128" y1="62" x2="128" y2="194" stroke="#00acc1" stroke-opacity="0.3" stroke-width="2" stroke-linecap="round" />
+
+  
+  <g fill="none" stroke="#26c6da" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="62,102 104,148 83,172 83,84 104,108 62,154" />
+  </g>
+
+  
+  <g>
+    
+    <rect x="158" y="84" width="38" height="22" rx="3" fill="#e0f7fa" />
+    
+    <rect x="144" y="102" width="66" height="44" rx="8" fill="url(#cyanGrad)" />
+    
+    <circle cx="197" cy="114" r="3" fill="#101418" />
+    
+    <rect x="154" y="130" width="46" height="8" rx="2" fill="#101418" />
+    
+    <rect x="158" y="134" width="38" height="34" rx="3" fill="#ffffff" />
+    <line x1="165" y1="144" x2="189" y2="144" stroke="#00838f" stroke-width="3" stroke-linecap="round" />
+    <line x1="165" y1="153" x2="189" y2="153" stroke="#00838f" stroke-width="3" stroke-linecap="round" />
+    <line x1="165" y1="161" x2="181" y2="161" stroke="#00838f" stroke-width="3" stroke-linecap="round" />
+  </g>
+</svg>

@@ -34,211 +34,216 @@ SYSTEM_AUTOSTART_PATH = "/etc/xdg/autostart/sinergia-welcome.desktop"
 
 
 class SinergiaWelcome(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-  def __init__(self):
-    super().__init__()
+        # 1. Configuración de clase para X11 (WM_CLASS) para que coincida con el .desktop
+        self.setProperty("class", "sinergia-welcome")
 
-    # 1. Configuración de clase para X11 (WM_CLASS) para que coincida con el .desktop
-    self.setProperty("class", "sinergia-welcome")
+        # 2. Respaldo visual directo de ícono en la ventana para cualquier entorno
+        icon_path_sys = Path(
+            "/usr/share/icons/hicolor/128x128/apps/sinergia-welcome.png"
+        )
+        if icon_path_sys.exists():
+            self.setWindowIcon(QIcon(str(icon_path_sys)))
 
-    # 2. Respaldo visual directo de ícono en la ventana para cualquier entorno
-    icon_path_sys = Path(
-        "/usr/share/icons/hicolor/128x128/apps/sinergia-welcome.png"
-    )
-    if icon_path_sys.exists():
-      self.setWindowIcon(QIcon(str(icon_path_sys)))
+        self.setWindowTitle("Sinergia Welcome - Centro de Control")
+        self.setFixedSize(540, 820)
+        self.init_ui()
+        # Aplicar el tema inicial según la configuración del sistema
+        self.actualizar_estilo_segun_tema()
 
-    self.setWindowTitle("Sinergia Welcome - Centro de Control")
-    self.setFixedSize(540, 820)
-    self.init_ui()
-    # Aplicar el tema inicial según la configuración del sistema
-    self.actualizar_estilo_segun_tema()
+    def init_ui(self):
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        main_layout = QVBoxLayout(central_widget)
+        main_layout.setContentsMargins(25, 20, 25, 20)
+        main_layout.setSpacing(12)
 
-  def init_ui(self):
-    central_widget = QWidget()
-    self.setCentralWidget(central_widget)
-    main_layout = QVBoxLayout(central_widget)
-    main_layout.setContentsMargins(25, 20, 25, 20)
-    main_layout.setSpacing(12)
+        # Encabezado
+        title = QLabel("🚀 Sinergia Comunidad Linuxera")
+        title.setFont(QFont("Sans Serif", 15, QFont.Weight.Bold))
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet("margin-top: 5px;")
+        main_layout.addWidget(title)
 
-    # Encabezado
-    title = QLabel("🚀 Sinergia Comunidad Linuxera")
-    title.setFont(QFont("Sans Serif", 15, QFont.Weight.Bold))
-    title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    title.setStyleSheet("margin-top: 5px;")
-    main_layout.addWidget(title)
+        subtitle = QLabel("Bienvenido a tu entorno optimizado para Arch Linux")
+        subtitle.setFont(QFont("Sans Serif", 10))
+        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(subtitle)
 
-    subtitle = QLabel("Bienvenido a tu entorno optimizado para Arch Linux")
-    subtitle.setFont(QFont("Sans Serif", 10))
-    subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    main_layout.addWidget(subtitle)
+        # Separador visual 1
+        line = QFrame()
+        line.setObjectName("separator")
+        line.setFrameShape(QFrame.Shape.HLine)
+        main_layout.addWidget(line)
 
-    # Separador visual 1
-    line = QFrame()
-    line.setObjectName("separator")
-    line.setFrameShape(QFrame.Shape.HLine)
-    main_layout.addWidget(line)
+        # Grilla de Accesos Directos
+        grid = QGridLayout()
+        grid.setSpacing(8)
 
-    # Grilla de Accesos Directos
-    grid = QGridLayout()
-    grid.setSpacing(8)
+        # Sección: Mantenimiento y Sistema (Botones compactos y texto centrado)
+        lbl_sys = QLabel("🛠️ Mantenimiento y Sistema")
+        lbl_sys.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
+        lbl_sys.setStyleSheet("margin-top: 2px;")
+        grid.addWidget(lbl_sys, 0, 0, 1, 2)
 
-    # Sección: Mantenimiento y Sistema (Botones compactos y texto centrado)
-    lbl_sys = QLabel("🛠️ Mantenimiento y Sistema")
-    lbl_sys.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
-    lbl_sys.setStyleSheet("margin-top: 2px;")
-    grid.addWidget(lbl_sys, 0, 0, 1, 2)
+        btn_update = QPushButton("🔄 Actualizar Sistema")
+        btn_update.setFixedHeight(30)
+        btn_update.clicked.connect(self.on_update_clicked)
+        grid.addWidget(btn_update, 1, 0, 1, 2)
 
-    btn_update = QPushButton("🔄 Actualizar Sistema")
-    btn_update.setFixedHeight(30)
-    btn_update.clicked.connect(self.on_update_clicked)
-    grid.addWidget(btn_update, 1, 0, 1, 2)
+        btn_store = QPushButton("🛍️ Sinergia Store (Tienda de Apps)")
+        btn_store.setFixedHeight(30)
+        btn_store.clicked.connect(self.on_store_clicked)
+        grid.addWidget(btn_store, 2, 0, 1, 2)
 
-    btn_store = QPushButton("🛍️ Sinergia Store (Tienda de Apps)")
-    btn_store.setFixedHeight(30)
-    btn_store.clicked.connect(self.on_store_clicked)
-    grid.addWidget(btn_store, 2, 0, 1, 2)
+        btn_mirrors = QPushButton("⚡ Refrescar Mirrors")
+        btn_mirrors.setFixedHeight(30)
+        btn_mirrors.clicked.connect(self.on_mirrors_clicked)
+        grid.addWidget(btn_mirrors, 3, 0, 1, 2)
 
-    btn_mirrors = QPushButton("⚡ Refrescar Mirrors")
-    btn_mirrors.setFixedHeight(30)
-    btn_mirrors.clicked.connect(self.on_mirrors_clicked)
-    grid.addWidget(btn_mirrors, 3, 0, 1, 2)
+        btn_clean = QPushButton("🧹 Limpiar Caché / Huérfanos")
+        btn_clean.setFixedHeight(30)
+        btn_clean.clicked.connect(self.on_clean_clicked)
+        grid.addWidget(btn_clean, 4, 0, 1, 2)
 
-    btn_clean = QPushButton("🧹 Limpiar Caché / Huérfanos")
-    btn_clean.setFixedHeight(30)
-    btn_clean.clicked.connect(self.on_clean_clicked)
-    grid.addWidget(btn_clean, 4, 0, 1, 2)
+        # Guardar referencias para actualizar estilos dinámicamente
+        self.top_buttons = [btn_update, btn_store, btn_mirrors, btn_clean]
 
-    # Guardar referencias para actualizar estilos dinámicamente
-    self.top_buttons = [btn_update, btn_store, btn_mirrors, btn_clean]
+        # Sección: Diagnóstico y Herramientas Novato
+        lbl_diag = QLabel("🔍 Diagnóstico y Herramientas")
+        lbl_diag.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
+        lbl_diag.setStyleSheet("margin-top: 6px;")
+        grid.addWidget(lbl_diag, 5, 0, 1, 2)
 
-    # Sección: Diagnóstico y Herramientas Novato
-    lbl_diag = QLabel("🔍 Diagnóstico y Herramientas")
-    lbl_diag.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
-    lbl_diag.setStyleSheet("margin-top: 6px;")
-    grid.addWidget(lbl_diag, 5, 0, 1, 2)
+        btn_info = QPushButton("💻 Información del Sistema")
+        btn_info.setFixedHeight(34)
+        btn_info.clicked.connect(self.on_info_clicked)
+        grid.addWidget(btn_info, 6, 0)
 
-    btn_info = QPushButton("💻 Información del Sistema")
-    btn_info.setFixedHeight(34)
-    btn_info.clicked.connect(self.on_info_clicked)
-    grid.addWidget(btn_info, 6, 0)
+        btn_net = QPushButton("🌐 Probar Conexión Red")
+        btn_net.setFixedHeight(34)
+        btn_net.clicked.connect(self.on_net_clicked)
+        grid.addWidget(btn_net, 6, 1)
 
-    btn_net = QPushButton("🌐 Probar Conexión Red")
-    btn_net.setFixedHeight(34)
-    btn_net.clicked.connect(self.on_net_clicked)
-    grid.addWidget(btn_net, 6, 1)
+        btn_burner = QPushButton("🔥 Grabar ISO (DD Burner)")
+        btn_burner.setFixedHeight(34)
+        btn_burner.clicked.connect(self.on_burner_clicked)
+        grid.addWidget(btn_burner, 7, 0)
 
-    btn_burner = QPushButton("🔥 Grabar ISO (DD Burner)")
-    btn_burner.setFixedHeight(34)
-    btn_burner.clicked.connect(self.on_burner_clicked)
-    grid.addWidget(btn_burner, 7, 0)
+        btn_services = QPushButton("⚙️ Gestor de Servicios")
+        btn_services.setFixedHeight(34)
+        btn_services.clicked.connect(self.on_services_clicked)
+        grid.addWidget(btn_services, 7, 1)
 
-    btn_services = QPushButton("⚙️ Gestor de Servicios")
-    btn_services.setFixedHeight(34)
-    btn_services.clicked.connect(self.on_services_clicked)
-    grid.addWidget(btn_services, 7, 1)
+        btn_aur = QPushButton("📦 Gestor AUR Helper")
+        btn_aur.setFixedHeight(34)
+        btn_aur.clicked.connect(self.on_aur_clicked)
+        grid.addWidget(btn_aur, 8, 0)
 
-    btn_aur = QPushButton("📦 Gestor AUR Helper")
-    btn_aur.setFixedHeight(34)
-    btn_aur.clicked.connect(self.on_aur_clicked)
-    grid.addWidget(btn_aur, 8, 0)
+        btn_logs = QPushButton("📋 Ver Logs de Errores")
+        btn_logs.setFixedHeight(34)
+        btn_logs.clicked.connect(self.on_logs_clicked)
+        grid.addWidget(btn_logs, 8, 1)
 
-    btn_logs = QPushButton("📋 Ver Logs de Errores")
-    btn_logs.setFixedHeight(34)
-    btn_logs.clicked.connect(self.on_logs_clicked)
-    grid.addWidget(btn_logs, 8, 1)
+        # Fila unificada para Sinergia DNS Manager y Sinergia Top lado a lado
+        btn_dns = QPushButton("🌐 Sinergia DNS Manager")
+        btn_dns.setFixedHeight(34)
+        btn_dns.clicked.connect(self.on_dns_clicked)
+        grid.addWidget(btn_dns, 9, 0)
 
-    # Fila unificada para Sinergia DNS Manager y Sinergia Top lado a lado
-    btn_dns = QPushButton("🌐 Sinergia DNS Manager")
-    btn_dns.setFixedHeight(34)
-    btn_dns.clicked.connect(self.on_dns_clicked)
-    grid.addWidget(btn_dns, 9, 0)
+        btn_top = QPushButton("📊 Sinergia Top")
+        btn_top.setFixedHeight(34)
+        btn_top.clicked.connect(self.on_top_clicked)
+        grid.addWidget(btn_top, 9, 1)
 
-    btn_top = QPushButton("📊 Sinergia Top")
-    btn_top.setFixedHeight(34)
-    btn_top.clicked.connect(self.on_top_clicked)
-    grid.addWidget(btn_top, 9, 1)
+        # Fila unificada para Sinergia Codec Fixer y Sinergia Periféricos lado a lado
+        btn_codec = QPushButton("🎬 Sinergia Codec Fixer")
+        btn_codec.setFixedHeight(34)
+        btn_codec.clicked.connect(self.on_codec_clicked)
+        grid.addWidget(btn_codec, 10, 0)
 
-    # Botón unificado de ancho completo para Sinergia Codec Fixer
-    btn_codec = QPushButton("🎬 Sinergia Codec Fixer")
-    btn_codec.setFixedHeight(34)
-    btn_codec.clicked.connect(self.on_codec_clicked)
-    grid.addWidget(btn_codec, 10, 0, 1, 2)
+        btn_perifericos = QPushButton("🖨️ Sinergia Periféricos")
+        btn_perifericos.setFixedHeight(34)
+        btn_perifericos.clicked.connect(self.on_perifericos_clicked)
+        grid.addWidget(btn_perifericos, 10, 1)
 
-    self.grid_buttons = [
-        btn_info,
-        btn_net,
-        btn_burner,
-        btn_services,
-        btn_aur,
-        btn_logs,
-        btn_dns,
-        btn_top,
-        btn_codec,
-    ]
+        self.grid_buttons = [
+            btn_info,
+            btn_net,
+            btn_burner,
+            btn_services,
+            btn_aur,
+            btn_logs,
+            btn_dns,
+            btn_top,
+            btn_codec,
+            btn_perifericos,
+        ]
 
-    main_layout.addLayout(grid)
+        main_layout.addLayout(grid)
 
-    # Separador visual 2
-    line2 = QFrame()
-    line2.setObjectName("separator")
-    line2.setFrameShape(QFrame.Shape.HLine)
-    main_layout.addWidget(line2)
+        # Separador visual 2
+        line2 = QFrame()
+        line2.setObjectName("separator")
+        line2.setFrameShape(QFrame.Shape.HLine)
+        main_layout.addWidget(line2)
 
-    # Comunidad
-    lbl_com = QLabel("🌐 Comunidad")
-    lbl_com.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
-    main_layout.addWidget(lbl_com)
+        # Comunidad
+        lbl_com = QLabel("🌐 Comunidad")
+        lbl_com.setFont(QFont("Sans Serif", 10, QFont.Weight.Bold))
+        main_layout.addWidget(lbl_com)
 
-    com_layout = QHBoxLayout()
-    btn_yt = QPushButton("📺 YouTube")
-    btn_yt.setFixedHeight(34)
-    btn_yt.clicked.connect(self.open_yt)
-    com_layout.addWidget(btn_yt)
+        com_layout = QHBoxLayout()
+        btn_yt = QPushButton("📺 YouTube")
+        btn_yt.setFixedHeight(34)
+        btn_yt.clicked.connect(self.open_yt)
+        com_layout.addWidget(btn_yt)
 
-    btn_tg = QPushButton("💬 Telegram")
-    btn_tg.setFixedHeight(34)
-    btn_tg.clicked.connect(self.open_tg)
-    com_layout.addWidget(btn_tg)
+        btn_tg = QPushButton("💬 Telegram")
+        btn_tg.setFixedHeight(34)
+        btn_tg.clicked.connect(self.open_tg)
+        com_layout.addWidget(btn_tg)
 
-    btn_repo = QPushButton("💻 Repo Web")
-    btn_repo.setFixedHeight(34)
-    btn_repo.clicked.connect(self.open_repo)
-    com_layout.addWidget(btn_repo)
+        btn_repo = QPushButton("💻 Repo Web")
+        btn_repo.setFixedHeight(34)
+        btn_repo.clicked.connect(self.open_repo)
+        com_layout.addWidget(btn_repo)
 
-    self.comm_buttons = [btn_yt, btn_tg, btn_repo]
+        self.comm_buttons = [btn_yt, btn_tg, btn_repo]
 
-    main_layout.addLayout(com_layout)
-    main_layout.addStretch()
+        main_layout.addLayout(com_layout)
+        main_layout.addStretch()
 
-    # Checkbox autostart
-    if not os.path.exists(AUTOSTART_PATH) and not os.path.exists(
-        SYSTEM_AUTOSTART_PATH
-    ):
-      try:
-        self.crear_archivo_autostart(hidden=False)
-      except Exception as e:
-        print(f"No se pudo crear el autostart por defecto: {e}")
+        # Checkbox autostart
+        if not os.path.exists(AUTOSTART_PATH) and not os.path.exists(
+            SYSTEM_AUTOSTART_PATH
+        ):
+            try:
+                self.crear_archivo_autostart(hidden=False)
+            except Exception as e:
+                print(f"No se pudo crear el autostart por defecto: {e}")
 
-    self.chk_autostart = QCheckBox(
-        "Mostrar esta ventana al iniciar el sistema"
-    )
-    self.chk_autostart.setChecked(self.is_autostart_enabled())
-    self.chk_autostart.toggled.connect(self.toggle_autostart)
-    main_layout.addWidget(self.chk_autostart)
+        self.chk_autostart = QCheckBox(
+            "Mostrar esta ventana al iniciar el sistema"
+        )
+        self.chk_autostart.setChecked(self.is_autostart_enabled())
+        self.chk_autostart.toggled.connect(self.toggle_autostart)
+        main_layout.addWidget(self.chk_autostart)
 
-  def changeEvent(self, event):
-    if event.type() == QEvent.Type.ApplicationPaletteChange:
-      self.actualizar_estilo_segun_tema()
-    super().changeEvent(event)
+    def changeEvent(self, event):
+        if event.type() == QEvent.Type.ApplicationPaletteChange:
+            self.actualizar_estilo_segun_tema()
+        super().changeEvent(event)
 
-  def actualizar_estilo_segun_tema(self):
-    palette = QApplication.palette()
-    bg_color = palette.color(palette.ColorRole.Window)
-    is_light_mode = bg_color.lightness() > 128
+    def actualizar_estilo_segun_tema(self):
+        palette = QApplication.palette()
+        bg_color = palette.color(palette.ColorRole.Window)
+        is_light_mode = bg_color.lightness() > 128
 
-    if is_light_mode:
-      self.setStyleSheet("""
+        if is_light_mode:
+            self.setStyleSheet("""
                 QMainWindow {
                     background-color: #f5f5f5;
                     color: #222222;
@@ -256,11 +261,11 @@ class SinergiaWelcome(QMainWindow):
                     max-height: 2px;
                 }
             """)
-      top_bg, top_hover = "#ffffff", "#eaeaea"
-      grid_bg, grid_hover = "#ffffff", "#eaeaea"
-      comm_bg, comm_hover = "#ffffff", "#eaeaea"
-    else:
-      self.setStyleSheet("""
+            top_bg, top_hover = "#ffffff", "#eaeaea"
+            grid_bg, grid_hover = "#ffffff", "#eaeaea"
+            comm_bg, comm_hover = "#ffffff", "#eaeaea"
+        else:
+            self.setStyleSheet("""
                 QMainWindow {
                     background-color: #121212;
                     color: #ffffff;
@@ -278,11 +283,11 @@ class SinergiaWelcome(QMainWindow):
                     max-height: 2px;
                 }
             """)
-      top_bg, top_hover = "#1e1e1e", "#2d2d2d"
-      grid_bg, grid_hover = "#1e1e1e", "#2d2d2d"
-      comm_bg, comm_hover = "#1e1e1e", "#2d2d2d"
+            top_bg, top_hover = "#1e1e1e", "#2d2d2d"
+            grid_bg, grid_hover = "#1e1e1e", "#2d2d2d"
+            comm_bg, comm_hover = "#1e1e1e", "#2d2d2d"
 
-    top_style = f"""
+        top_style = f"""
             QPushButton {{
                 background-color: {top_bg};
                 color: {'#222222' if is_light_mode else '#ffffff'};
@@ -297,11 +302,11 @@ class SinergiaWelcome(QMainWindow):
                 border: 1px solid {'#00838f' if is_light_mode else '#ffffff'};
             }}
         """
-    for btn in self.top_buttons:
-      btn.setStyleSheet(top_style)
+        for btn in self.top_buttons:
+            btn.setStyleSheet(top_style)
 
-    # TEXTO CENTRADO EN LOS BOTONES DE LA GRILLA
-    grid_style = f"""
+        # TEXTO CENTRADO EN LOS BOTONES DE LA GRILLA
+        grid_style = f"""
             QPushButton {{
                 background-color: {grid_bg};
                 color: {'#222222' if is_light_mode else '#ffffff'};
@@ -316,11 +321,11 @@ class SinergiaWelcome(QMainWindow):
                 border: 1px solid {'#5e35b1' if is_light_mode else '#ffffff'};
             }}
         """
-    for btn in self.grid_buttons:
-      btn.setStyleSheet(grid_style)
+        for btn in self.grid_buttons:
+            btn.setStyleSheet(grid_style)
 
-    # TEXTO CENTRADO EN LOS BOTONES DE COMUNIDAD
-    comm_style = f"""
+        # TEXTO CENTRADO EN LOS BOTONES DE COMUNIDAD
+        comm_style = f"""
             QPushButton {{
                 background-color: {comm_bg};
                 color: {'#222222' if is_light_mode else '#ffffff'};
@@ -335,177 +340,182 @@ class SinergiaWelcome(QMainWindow):
                 border: 1px solid {'#f57c00' if is_light_mode else '#ffffff'};
             }}
         """
-    for btn in self.comm_buttons:
-      btn.setStyleSheet(comm_style)
+        for btn in self.comm_buttons:
+            btn.setStyleSheet(comm_style)
 
-  @pyqtSlot()
-  def on_update_clicked(self):
-    comando = (
-        "sudo pacman -Syu --noconfirm && yay -Syu --noconfirm; echo ''; echo"
-        " '¡Actualización completada con éxito!'; sleep 8"
-    )
-    self.run_in_terminal(comando)
-
-  @pyqtSlot()
-  def on_store_clicked(self):
-    self.run_app("sinergia-store")
-
-  @pyqtSlot()
-  def on_mirrors_clicked(self):
-    self.run_app("sinergia-reflector-top")
-
-  @pyqtSlot()
-  def on_clean_clicked(self):
-    self.run_app("sinergia-cleaner")
-
-  @pyqtSlot()
-  def on_burner_clicked(self):
-    self.run_app("sinergia-dd-burner")
-
-  @pyqtSlot()
-  def on_services_clicked(self):
-    self.run_app("sinergia-service-manager")
-
-  @pyqtSlot()
-  def on_aur_clicked(self):
-    self.run_app("sinergia-aur-helper")
-
-  @pyqtSlot()
-  def on_top_clicked(self):
-    # Al ser una TUI, se lanza correctamente dentro de Alacritty
-    self.run_in_terminal("sinergia-top")
-
-  @pyqtSlot()
-  def on_dns_clicked(self):
-    # Lanza la interfaz gráfica de Sinergia DNS Manager
-    self.run_app("sinergia-dns-manager")
-
-  @pyqtSlot()
-  def on_codec_clicked(self):
-    # Lanza la interfaz gráfica de Sinergia Codec Fixer
-    self.run_app("sinergia-codec-fixer")
-
-  @pyqtSlot()
-  def on_info_clicked(self):
-    fetch_cmd = (
-        "fastfetch"
-        if shutil.which("fastfetch")
-        else (
-            "neofetch" if shutil.which("neofetch") else "uname -a && lscpu"
+    @pyqtSlot()
+    def on_update_clicked(self):
+        comando = (
+            "sudo pacman -Syu --noconfirm && yay -Syu --noconfirm; echo ''; echo"
+            " '¡Actualización completada con éxito!'; sleep 8"
         )
-    )
-    self.run_in_terminal(fetch_cmd)
+        self.run_in_terminal(comando)
 
-  @pyqtSlot()
-  def on_net_clicked(self):
-    self.run_in_terminal("ping -c 4 1.1.1.1 && ping -c 4 google.com")
+    @pyqtSlot()
+    def on_store_clicked(self):
+        self.run_app("sinergia-store")
 
-  @pyqtSlot()
-  def on_logs_clicked(self):
-    self.run_in_terminal("journalctl -p 3 -xb")
+    @pyqtSlot()
+    def on_mirrors_clicked(self):
+        self.run_app("sinergia-reflector-top")
 
-  @pyqtSlot()
-  def open_yt(self):
-    QDesktopServices.openUrl(
-        QUrl("https://www.youtube.com/@Sinergia-Comunidad-Linuxera")
-    )
+    @pyqtSlot()
+    def on_clean_clicked(self):
+        self.run_app("sinergia-cleaner")
 
-  @pyqtSlot()
-  def open_tg(self):
-    QDesktopServices.openUrl(QUrl("https://t.me/Guias_NovumSinergia"))
+    @pyqtSlot()
+    def on_burner_clicked(self):
+        self.run_app("sinergia-dd-burner")
 
-  @pyqtSlot()
-  def open_repo(self):
-    QDesktopServices.openUrl(
-        QUrl("https://nacho-telmo.github.io/sinergia-repo/")
-    )
+    @pyqtSlot()
+    def on_services_clicked(self):
+        self.run_app("sinergia-service-manager")
 
-  def run_in_terminal(self, command_str):
-    term = shutil.which("alacritty")
-    if not term:
-      QMessageBox.warning(
-          self,
-          "Terminal no encontrada",
-          "El emulador 'alacritty' no está instalado.",
-      )
-      return
+    @pyqtSlot()
+    def on_aur_clicked(self):
+        self.run_app("sinergia-aur-helper")
 
-    args = [term, "-e", "bash", "-c", command_str + "; read"]
-    try:
-      subprocess.Popen(
-          args,
-          start_new_session=True,
-          stdin=subprocess.DEVNULL,
-          stdout=subprocess.DEVNULL,
-          stderr=subprocess.DEVNULL,
-      )
-    except Exception as e:
-      print(f"Error al abrir terminal: {e}")
+    @pyqtSlot()
+    def on_top_clicked(self):
+        # Al ser una TUI, se lanza correctamente dentro de Alacritty
+        self.run_in_terminal("sinergia-top")
 
-  def run_app(self, app_name):
-    if not shutil.which(app_name):
-      QMessageBox.warning(
-          self,
-          "Herramienta no encontrada",
-          f"El ejecutable '{app_name}' no está instalado en el sistema.",
-      )
-      return
+    @pyqtSlot()
+    def on_dns_clicked(self):
+        # Lanza la interfaz gráfica de Sinergia DNS Manager
+        self.run_app("sinergia-dns-manager")
 
-    try:
-      subprocess.Popen(
-          [app_name],
-          start_new_session=True,
-          stdin=subprocess.DEVNULL,
-          stdout=subprocess.DEVNULL,
-          stderr=subprocess.DEVNULL,
-      )
-    except Exception as e:
-      print(f"Error al lanzar app: {e}")
+    @pyqtSlot()
+    def on_codec_clicked(self):
+        # Lanza la interfaz gráfica de Sinergia Codec Fixer
+        self.run_app("sinergia-codec-fixer")
 
-  def is_autostart_enabled(self):
-    if os.path.exists(AUTOSTART_PATH):
-      try:
-        with open(AUTOSTART_PATH, "r", encoding="utf-8") as f:
-          for line in f:
-            if line.strip().lower() == "hidden=true":
-              return False
-        return True
-      except Exception:
-        return True
-    return os.path.exists(SYSTEM_AUTOSTART_PATH)
+    @pyqtSlot()
+    def on_perifericos_clicked(self):
+        # Lanza la interfaz gráfica de Sinergia Periféricos
+        self.run_app("sinergia-perifericos")
 
-  def crear_archivo_autostart(self, hidden=False):
-    os.makedirs(os.path.dirname(AUTOSTART_PATH), exist_ok=True)
-    hidden_line = "Hidden=true\n" if hidden else ""
-    content = (
-        "[Desktop Entry]\n"
-        "Type=Application\n"
-        "Name=Sinergia Welcome\n"
-        "Exec=/usr/bin/sinergia-welcome\n"
-        "Icon=sinergia-welcome\n"
-        "Terminal=false\n"
-        "Categories=Utility;\n"
-        "X-KDE-autostart-phase=2\n"
-        f"{hidden_line}"
-    )
-    with open(AUTOSTART_PATH, "w", encoding="utf-8") as f:
-      f.write(content)
+    @pyqtSlot()
+    def on_info_clicked(self):
+        fetch_cmd = (
+            "fastfetch"
+            if shutil.which("fastfetch")
+            else (
+                "neofetch" if shutil.which("neofetch") else "uname -a && lscpu"
+            )
+        )
+        self.run_in_terminal(fetch_cmd)
 
-  @pyqtSlot(bool)
-  def toggle_autostart(self, checked):
-    if checked:
-      self.crear_archivo_autostart(hidden=False)
-    else:
-      if os.path.exists(SYSTEM_AUTOSTART_PATH):
-        self.crear_archivo_autostart(hidden=True)
-      elif os.path.exists(AUTOSTART_PATH):
-        os.remove(AUTOSTART_PATH)
+    @pyqtSlot()
+    def on_net_clicked(self):
+        self.run_in_terminal("ping -c 4 1.1.1.1 && ping -c 4 google.com")
+
+    @pyqtSlot()
+    def on_logs_clicked(self):
+        self.run_in_terminal("journalctl -p 3 -xb")
+
+    @pyqtSlot()
+    def open_yt(self):
+        QDesktopServices.openUrl(
+            QUrl("https://www.youtube.com/@Sinergia-Comunidad-Linuxera")
+        )
+
+    @pyqtSlot()
+    def open_tg(self):
+        QDesktopServices.openUrl(QUrl("https://t.me/Guias_NovumSinergia"))
+
+    @pyqtSlot()
+    def open_repo(self):
+        QDesktopServices.openUrl(
+            QUrl("https://nacho-telmo.github.io/sinergia-repo/")
+        )
+
+    def run_in_terminal(self, command_str):
+        term = shutil.which("alacritty")
+        if not term:
+            QMessageBox.warning(
+                self,
+                "Terminal no encontrada",
+                "El emulador 'alacritty' no está instalado.",
+            )
+            return
+
+        args = [term, "-e", "bash", "-c", command_str + "; read"]
+        try:
+            subprocess.Popen(
+                args,
+                start_new_session=True,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception as e:
+            print(f"Error al abrir terminal: {e}")
+
+    def run_app(self, app_name):
+        if not shutil.which(app_name):
+            QMessageBox.warning(
+                self,
+                "Herramienta no encontrada",
+                f"El ejecutable '{app_name}' no está instalado en el sistema.",
+            )
+            return
+
+        try:
+            subprocess.Popen(
+                [app_name],
+                start_new_session=True,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception as e:
+            print(f"Error al lanzar app: {e}")
+
+    def is_autostart_enabled(self):
+        if os.path.exists(AUTOSTART_PATH):
+            try:
+                with open(AUTOSTART_PATH, "r", encoding="utf-8") as f:
+                    for line in f:
+                        if line.strip().lower() == "hidden=true":
+                            return False
+                return True
+            except Exception:
+                return True
+        return os.path.exists(SYSTEM_AUTOSTART_PATH)
+
+    def crear_archivo_autostart(self, hidden=False):
+        os.makedirs(os.path.dirname(AUTOSTART_PATH), exist_ok=True)
+        hidden_line = "Hidden=true\n" if hidden else ""
+        content = (
+            "[Desktop Entry]\n"
+            "Type=Application\n"
+            "Name=Sinergia Welcome\n"
+            "Exec=/usr/bin/sinergia-welcome\n"
+            "Icon=sinergia-welcome\n"
+            "Terminal=false\n"
+            "Categories=Utility;\n"
+            "X-KDE-autostart-phase=2\n"
+            f"{hidden_line}"
+        )
+        with open(AUTOSTART_PATH, "w", encoding="utf-8") as f:
+            f.write(content)
+
+    @pyqtSlot(bool)
+    def toggle_autostart(self, checked):
+        if checked:
+            self.crear_archivo_autostart(hidden=False)
+        else:
+            if os.path.exists(SYSTEM_AUTOSTART_PATH):
+                self.crear_archivo_autostart(hidden=True)
+            elif os.path.exists(AUTOSTART_PATH):
+                os.remove(AUTOSTART_PATH)
 
 
 if __name__ == "__main__":
-  QApplication.setDesktopFileName("sinergia-welcome")
+    QApplication.setDesktopFileName("sinergia-welcome")
 
-  app = QApplication(sys.argv)
-  window = SinergiaWelcome()
-  window.show()
-  sys.exit(app.exec())
+    app = QApplication(sys.argv)
+    window = SinergiaWelcome()
+    window.show()
+    sys.exit(app.exec())
